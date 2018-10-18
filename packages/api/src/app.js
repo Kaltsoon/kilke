@@ -4,7 +4,7 @@ import morgan from 'koa-morgan';
 
 import routes from './routes';
 
-import { ApplicationError } from './errors';
+import { ApplicationError, NotFoundError } from './errors';
 
 const errorHandler = () => async (ctx, next) => {
   try {
@@ -14,7 +14,7 @@ const errorHandler = () => async (ctx, next) => {
       ctx.status = e.statusCode || 500;
       ctx.body = e.toJson();
     } else {
-      res.status = 500;
+      ctx.status = 500;
       ctx.body = new ApplicationError('Something went wrong').toJson();
     }
 
@@ -35,6 +35,10 @@ export default ({ logStream, context = {} } = {}) => {
 
   app.use(cors());
   app.use(routes.routes());
+
+  app.use(ctx => {
+    throw new NotFoundError(`The path "${ctx.request.path}" is not found`);
+  });
 
   return app;
 };
