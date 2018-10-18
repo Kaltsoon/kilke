@@ -1,0 +1,27 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./build/index.js",
+    "start:dev": "yarn babel-node ./src/index.js",
+    "build": "rm -rf build && yarn babel ./src --out-dir ./build"
+  },
+  "dependencies": {
+    "@koa/cors": "^2.2.2",
+    "esm": "^3.0.84",
+    "koa": "^2.5.3",
+    "koa-morgan": "^1.0.1",
+    "koa-router": "^7.4.0",
+    "through2": "^2.0.3",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "babel-plugin-module-resolver": "^3.1.1"
+  }
+}
