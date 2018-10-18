@@ -11,6 +11,7 @@
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "esm": "^3.0.84",
+    "knex": "^0.15.2",
     "koa": "^2.5.3",
     "koa-morgan": "^1.0.1",
     "koa-router": "^7.4.0",

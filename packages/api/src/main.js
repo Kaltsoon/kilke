@@ -1,5 +1,7 @@
 import through from 'through2';
 import http from 'http';
+import knex from 'knex';
+import path from 'path';
 
 import createApp from './app';
 import createLogger from './logger';
@@ -8,8 +10,17 @@ const { PORT = 3000 } = process.env;
 
 const logger = createLogger();
 
+const db = knex({
+  client: 'sqlite3',
+  connection: {
+    filename: path.join(__dirname, '..', '..', '..', 'db.sqlite'),
+  },
+  useNullAsDefault: true,
+});
+
 const context = {
   logger,
+  db,
 };
 
 const logStream = through((chunk, enc, callback) => {
