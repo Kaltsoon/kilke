@@ -1,7 +1,8 @@
 import merge from 'lodash/merge';
 import get from 'lodash/get';
-
-export const themeProp = path => props => get(props, typeof path === 'string' ? `theme.${path}` : ['theme', ...path]);
+import mapValues from 'lodash/mapValues';
+import pick from 'lodash/pick';
+import flatMap from 'lodash/flatMap';
 
 const createPalette = (color, contrastText = '#ffffff') => {
   return {
@@ -44,9 +45,12 @@ const defaultTheme = {
       marginBottom: '24px',
       marginTop: '0px',
     },
+    headingFontSizes: [2.5, 2, 1.5, 1.25],
     heading: {
-      fontFamily,
+      lineHeight: 1.2,
       color: headingColor,
+      marginBottom: '24px',
+      marginTop: '0px',
     },
     link: {
       color: primaryColor,
@@ -60,6 +64,35 @@ const defaultTheme = {
 
 const createTheme = (theme = {}) => {
   return merge({}, defaultTheme, theme);
+};
+
+export const themeProp = path => props => get(props, typeof path === 'string' ? `theme.${path}` : ['theme', ...path]);
+
+export const px = val => `${val}px`;
+
+export const rem = val => `${val}rem`;
+
+export const getSpacingStyles = props => {
+  if (!props.theme) {
+    return {};
+  }
+
+  const directions = ['Top', 'Bottom', 'Left', 'Right'];
+  const attributes = ['margin', 'padding'];
+
+  const styles = pick(
+    props,
+    flatMap(attributes, attr => [attr, ...directions.map(dir => `${attr}${dir}`)]),
+  );
+
+  return mapValues(
+    styles,
+    val => {
+      const amount = typeof val === 'number' ? props.theme.spacing.unit * val : props.theme.spacing.unit;
+
+      return `${amount}px`;
+    },
+  );
 };
 
 export default createTheme;

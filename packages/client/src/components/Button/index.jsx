@@ -92,12 +92,12 @@ const Button = ({
   return (
     <Component color={color} disabled={disabled} {...props}>
       {iconBefore ? (
-        <ButtonIcon style={{ marginRight: '6px' }}>{iconBefore}</ButtonIcon>
+        <ButtonIcon style={{ marginRight: '4px' }}>{iconBefore}</ButtonIcon>
       ) : null}
       {children}
       {icon ? <ButtonIcon>{icon}</ButtonIcon> : null}
       {iconBefore ? (
-        <ButtonIcon style={{ marginLeft: '6px' }}>{iconAfter}</ButtonIcon>
+        <ButtonIcon style={{ marginLeft: '4px' }}>{iconAfter}</ButtonIcon>
       ) : null}
     </Component>
   );
