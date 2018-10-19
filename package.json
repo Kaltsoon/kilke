@@ -1,0 +1,12 @@
+{
+  "name": "kilke",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:Kaltsoon/kilke.git",
+  "author": "Kalle Ilves <kalleilv@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "knex": "^0.15.2",
+    "sqlite3": "^4.0.2"
+  }
+}
