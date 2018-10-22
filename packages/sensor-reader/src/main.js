@@ -5,13 +5,13 @@ import { createTcpClientObservable } from './utils';
 import createReader from './reader';
 import createLogger from './logger';
 
-const { PORT = 4000, HOST = '127.0.0.1' } = process.env;
+const { RECORD_SERVER_PORT = 4000, RECORD_SERVER_HOST = '127.0.0.1' } = process.env;
 
 const logger = createLogger();
 
 const observable = createTcpClientObservable({
-  host: HOST,
-  port: PORT,
+  host: RECORD_SERVER_HOST,
+  port: parseInt(RECORD_SERVER_PORT),
   onError: e => logger.error(e),
 });
 

@@ -3,25 +3,20 @@ module.exports = {
     {
       name: 'api',
       script: './packages/api/build/index.js',
-      env: {
-        NODE_ENV: 'development',
-      },
-      env_production: {
-        NODE_ENV: 'production',
-      },
     },
     {
       name: 'sensor-io',
-      script: './packages/sensor-io/build/sensor',
+      script: './packages/sensor-io/src/index.py',
+      env: {
+        RECORD_SERVER_PORT: 4000,
+      },
     },
     {
       name: 'sensor-reader',
       script: './packages/sensor-reader/src/index.js',
       env: {
-        NODE_ENV: 'development',
-      },
-      env_production: {
-        NODE_ENV: 'production',
+        RECORD_SERVER_PORT: 4000,
+        RECORD_SERVER_HOST: '127.0.0.1',
       },
     },
   ],
