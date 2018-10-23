@@ -29,13 +29,15 @@ const defaultTheme = {
       heading: headingColor,
       secondary: secondaryTextColor,
     },
+    separator: '#d9dbe8',
+    mainBackground: '#eff0f5',
   },
   borderRadius: {
     base: '4px',
   },
   typography: {
     lineHeight: 1.5,
-    fontSize: '16px',
+    fontSize: '14px',
     fontFamily,
     secondary: {
       fontSize: '0.75em',

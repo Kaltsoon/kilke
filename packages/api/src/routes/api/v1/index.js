@@ -1,11 +1,11 @@
 import Router from 'koa-router';
 
 import ping from './ping';
-import visualizations from './visualizations';
+import charts from './charts';
 
 const router = new Router();
 
 router.use('/ping', ping.routes());
-router.use('/visualizations', visualizations.routes());
+router.use('/charts', charts.routes());
 
 export default router;

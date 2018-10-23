@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { themeProp } from '../../theme';
-import Typography from '../Typography';
 
 const sizeToComponent = {
   '1': 'h1',
@@ -12,7 +11,7 @@ const sizeToComponent = {
 };
 
 const getFontSize = ({ theme, size }) => {
-  const fontSize = theme.typography.headingFontSizes[size] || 1;
+  const fontSize = theme.typography.headingFontSizes[size - 1] || 1;
 
   return `${fontSize}rem`;
 };

@@ -3,6 +3,9 @@ module.exports = {
     {
       name: 'api',
       script: './packages/api/build/index.js',
+      env: {
+        PORT: 5000,
+      },
     },
     {
       name: 'sensor-io',

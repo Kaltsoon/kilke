@@ -5,7 +5,7 @@ const router = new Router();
 
 import { ApplicationError } from '@/errors';
 
-const oneHour = 3600000;
+const oneMinute = 60000;
 
 router.get('/analogue-electrodes/:type', async ctx => {
   const { db, query } = ctx;
@@ -13,7 +13,7 @@ router.get('/analogue-electrodes/:type', async ctx => {
   const now = new Date();
 
   const to = query.to ? new Date(query.to) : now;
-  const from = query.from ? new Date(query.from) : new Date(+now - oneHour);
+  const from = query.from ? new Date(query.from) : new Date(+now - oneMinute);
 
   const results = await db('analogue_electrodes')
     .select('*')
@@ -24,7 +24,7 @@ router.get('/analogue-electrodes/:type', async ctx => {
     .andWhere('created_at', '<=', to)
     .orderBy('created_at', 'desc');
 
-  const data = results.map(({ created_at, value }) => ([new Date(created_at), value]));
+  const data = results.map(({ created_at, value }) => ([new Date(created_at).getTime(), value]));
 
   ctx.body = { data, options: { to, from } };
 });
