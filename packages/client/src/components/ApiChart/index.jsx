@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, lifecycle } from 'recompose';
+import { compose, lifecycle, withState } from 'recompose';
 import merge from 'lodash/merge';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -8,12 +8,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {
   selectTypeData,
   refetch,
-  startPoll,
-  stopPoll,
 } from '../../state/charts';
 
 import Chart from '../Chart';
-
 
 const SpinContainer = styled.div.attrs({
   children: <CircularProgress />,
@@ -30,6 +27,7 @@ const ApiChart = ({ options, type, pollInterval = null, loading }) => {
 };
 
 export default compose(
+  withState('interval', 'setInterval', null),
   connect(
     (state, { type, options = {} }) => {
       const typeData = selectTypeData(state, type);
@@ -39,13 +37,12 @@ export default compose(
           series: [{ data: typeData ? typeData.data : [] }],
         }),
         loading: typeData.loading || false,
+        pollInterval: typeData ? typeData.pollInterval : null,
       };
     },
     (dispatch, { type, pollInterval }) => {
       return {
         onRefetch: () => dispatch(refetch(type)),
-        onStartPoll: () => dispatch(startPoll({ type, pollInterval })),
-        onStopPoll: () => dispatch(stopPoll(type)),
       };
     },
   ),
@@ -54,7 +51,10 @@ export default compose(
       this.props.onRefetch();
 
       if (this.props.pollInterval) {
-        this.props.onStartPoll();
+        this.props.interval && clearInterval(this.props.interval);
+        this.props.setInterval(
+          setInterval(() => this.props.onRefetch(), this.props.pollInterval),
+        );
       }
     },
     componentWillUnmount() {
@@ -66,11 +66,14 @@ export default compose(
       }
 
       if (this.props.pollInterval && pollInterval !== this.props.pollInterval) {
-        this.props.onStartPoll();
+        this.props.interval && clearInterval(this.props.interval);
+        this.props.setInterval(
+          setInterval(() => this.props.onRefetch(), this.props.pollInterval),
+        );
       }
 
       if (!this.props.pollInterval) {
-        this.props.onStopPoll();
+        this.props.interval && clearInterval(this.props.interval);
       }
     },
   }),

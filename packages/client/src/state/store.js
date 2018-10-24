@@ -17,7 +17,7 @@ const {
   reducer: routerReducer,
   middleware: routerMiddleware,
   enhancer: routerEnhancer,
-} = connectRoutes(routesMap);
+} = connectRoutes(routesMap, { notFoundPath: '/' });
 
 const rootReducer = createRootReducer({
   location: routerReducer,

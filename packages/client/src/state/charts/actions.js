@@ -2,12 +2,40 @@ import { createAction } from 'redux-actions';
 
 export const UPDATE_TYPE = 'charts/UPDATE_TYPE';
 
+const oneHour = 3600000;
+const oneDay = 86400000;
+
+const getFilterByPreset = preset => {
+  const map = {
+    realTime: {},
+    lastHour: {
+      from: new Date().getTime() - oneHour,
+      to: new Date().getTime(),
+    },
+    last24Hours: {
+      from: new Date().getTime() - oneDay,
+      to: new Date().getTime(),
+    },
+  };
+
+  return map[preset] || {};
+};
+
 export const updateType = createAction(UPDATE_TYPE);
+
+export const updateFilterPreset =  ({ type, filterPreset }) => (dispatch, getState) => {
+  const pollInterval = filterPreset === 'realTime' ? 3000 : null;
+
+  dispatch(updateType({
+    type,
+    update: { pollInterval, filterPreset },
+  }));
+};
 
 export const refetch = type => async (dispatch, getState, { apiClient }) => {
   const state = getState();
 
-  const { api } = state.charts.types[type] || {};
+  const { api, filterPreset } = state.charts.types[type] || {};
 
   if (!api) {
     return;
@@ -20,7 +48,14 @@ export const refetch = type => async (dispatch, getState, { apiClient }) => {
     },
   }));
 
-  const response = await apiClient.get(api);
+  const filter = getFilterByPreset(filterPreset);
+
+  const response = await apiClient.get(api, {
+    params: {
+      ...(filter.from && { from: new Date(filter.from).toISOString() }),
+      ...(filter.to && { to: new Date(filter.to).toISOString() }),
+    },
+  });
 
   dispatch(updateType({
     type,
@@ -31,30 +66,4 @@ export const refetch = type => async (dispatch, getState, { apiClient }) => {
       options: response.data.options,
     },
   }));
-};
-
-export const stopPoll = type => (dispatch, getState) => {
-  const state = getState();
-
-  const typeData = state.charts.types[type];
-
-  if (!typeData) {
-    return;
-  }
-
-  const { pollInterval: oldInterval } = typeData;
-
-  if (oldInterval) {
-    clearInterval(oldInterval);
-  }
-};
-
-export const startPoll = ({ type, pollInterval = 1000 }) => (dispatch, getState) => {
-  dispatch(stopPoll(type));
-
-  const interval = setInterval(() => {
-    dispatch(refetch(type));
-  }, pollInterval);
-
-  dispatch(updateType({ type, update: { pollInterval: interval } }));
 };

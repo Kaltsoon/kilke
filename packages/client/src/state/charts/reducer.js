@@ -4,11 +4,12 @@ import produce from 'immer';
 import { UPDATE_TYPE } from './actions';
 
 const getTypeInitialState = () => ({
-  pollInterval: null,
+  pollInterval: 3000,
   data: null,
   options: null,
   averages: null,
-  filters: null,
+  filter: null,
+  filterPreset: 'realTime',
   error: null,
   loading: false,
 })

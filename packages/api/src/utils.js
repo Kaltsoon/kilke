@@ -20,7 +20,7 @@ export const getChartData = async ({ db, table, valueColumn = 'value', createdAt
     .andWhere(createdAtColumn, '>=', from)
     .andWhere(createdAtColumn, '<=', to)
     .groupBy('created_at_fixed')
-    .orderBy('created_at_fixed', 'desc');
+    .orderBy('created_at_fixed');
 
   return results.map(({ created_at_fixed, avg_value }) => ([new Date(created_at_fixed).getTime(), avg_value]));
 };

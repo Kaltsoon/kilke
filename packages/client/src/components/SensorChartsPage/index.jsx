@@ -22,24 +22,16 @@ const ChartsPage = () => {
     <ChartGrid>
       <ChartGridItem>
         <ApiChartContainer title="CON" type="con">
-          <ApiChart options={options} type="con" pollInterval={3000} />
+          <ApiChart options={options} type="con" />
         </ApiChartContainer>
       </ChartGridItem>
       <ChartGridItem>
         <ApiChartContainer title="TCO" type="tco">
-          <ApiChart options={options} type="tco" pollInterval={3000} />
+          <ApiChart options={options} type="tco" />
         </ApiChartContainer>
       </ChartGridItem>
     </ChartGrid>
   );
 };
-
-/*
-<ChartGridItem>
-  <ApiChartContainer title="TCO">
-    <ApiChart options={options} type="tco" pollInterval={3000} />
-  </ApiChartContainer>
-</ChartGridItem>
-*/
 
 export default ChartsPage;

@@ -6,7 +6,7 @@ import path from 'path';
 import createApp from './app';
 import createLogger from './logger';
 
-const { PORT = 3000 } = process.env;
+const { PORT = 5000 } = process.env;
 
 const logger = createLogger();
 
