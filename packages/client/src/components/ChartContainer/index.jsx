@@ -1,39 +1,48 @@
 import React from 'react';
 import styled from 'styled-components';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
 import { themeProp } from '../../theme';
-import Heading from '../Heading';
 
-const TitleWrapper = styled.div`
-  padding: ${({ theme }) => theme.spacing.unit * 0.5}px ${themeProp('spacing.unit')}px;
-  border-bottom: 1px solid ${themeProp('palette.separator')};
+const Title = styled.div`
+  margin-bottom: ${themeProp('spacing.unit')}px;
+  display: flex;
+  justify-content: space-between;
 `;
 
-const ChartWrapper = styled.div`
-  padding: ${themeProp('spacing.unit')}px;
+const AverageWrapper = styled.div`
+  margin-left: ${themeProp('spacing.unit')}px;
 `;
 
-const Container = styled.div`
-   border: 1px solid ${themeProp('palette.separator')};
-   border-radius: ${themeProp('borderRadius.base')};
-   background-color: white;
+const Filters = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: ${themeProp('spacing.unit')}px;
 `;
 
-const Title = styled(Heading).attrs({ size: 4 })`
-  margin-bottom: 0px;
-`;
-
-const ChartContainer = ({ children = null, title, ...props }) => {
+const ChartContainer = ({
+  children = null,
+  title = null,
+  average = null,
+  filters = null,
+  ...props
+}) => {
   return (
-    <Container>
-      <TitleWrapper>
-        <Title>{title}</Title>
-      </TitleWrapper>
-      <ChartWrapper>
+    <Card>
+      <CardContent>
+        <Title>
+          <Typography component="h5" variant="h5">
+            {title}
+          </Typography>
+          {average ? <AverageWrapper>{average}</AverageWrapper> : null}
+        </Title>
+        {filters ? <Filters>{filters}</Filters> : null}
         {children}
-      </ChartWrapper>
-    </Container>
-  )
+      </CardContent>
+    </Card>
+  );
 };
 
 export default ChartContainer;

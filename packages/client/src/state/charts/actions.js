@@ -27,6 +27,8 @@ export const refetch = type => async (dispatch, getState, { apiClient }) => {
     update: {
       loading: false,
       data: response.data.data || null,
+      averages: response.data.averages,
+      options: response.data.options,
     },
   }));
 };

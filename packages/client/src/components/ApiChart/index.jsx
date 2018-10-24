@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { compose, lifecycle } from 'recompose';
 import merge from 'lodash/merge';
 import styled from 'styled-components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {
   selectTypeData,
@@ -10,14 +11,14 @@ import {
   startPoll,
   stopPoll,
 } from '../../state/charts';
+
 import Chart from '../Chart';
-import Spin from '../Spin';
+
 
 const SpinContainer = styled.div.attrs({
-  children: <Spin size="medium" />,
+  children: <CircularProgress />,
 })`
-  display: flex;
-  justify-content: center;
+  text-align: center;
 `;
 
 const ApiChart = ({ options, type, pollInterval = null, loading }) => {

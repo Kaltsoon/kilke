@@ -6,6 +6,9 @@ import { UPDATE_TYPE } from './actions';
 const getTypeInitialState = () => ({
   pollInterval: null,
   data: null,
+  options: null,
+  averages: null,
+  filters: null,
   error: null,
   loading: false,
 })

@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import Typography from '@material-ui/core/Typography';
 
-import Typography from '../Typography';
 import Spacing from './index';
 
 storiesOf('Spacing', module)

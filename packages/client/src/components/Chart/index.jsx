@@ -18,16 +18,16 @@ const getDefaultOptions = theme => {
     },
     plotOptions: {
       line: {
-        color: theme.palette.primary.base,
+        color: theme.palette.primary.main,
       },
       spline: {
-        color: theme.palette.primary.base,
+        color: theme.palette.primary.main,
       },
       area: {
         fillOpacity: 0.2,
       },
       areaspline: {
-        color: theme.palette.primary.base,
+        color: theme.palette.primary.main,
         fillOpacity: 0.2,
       },
     },

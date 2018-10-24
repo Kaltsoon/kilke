@@ -2,7 +2,7 @@ import React from 'react';
 
 import ChartGrid, { ChartGridItem } from '../ChartGrid';
 
-import ChartContainer from '../ChartContainer';
+import ApiChartContainer from '../ApiChartContainer';
 import ApiChart from '../ApiChart';
 
 const options = {
@@ -21,17 +21,25 @@ const ChartsPage = () => {
   return (
     <ChartGrid>
       <ChartGridItem>
-        <ChartContainer title="Lorem ipsum">
-          <ApiChart options={options} type="con" pollInterval={2000} />
-        </ChartContainer>
+        <ApiChartContainer title="CON" type="con">
+          <ApiChart options={options} type="con" pollInterval={3000} />
+        </ApiChartContainer>
       </ChartGridItem>
       <ChartGridItem>
-        <ChartContainer title="Lorem ipsum">
-          <ApiChart options={options} type="tco" pollInterval={2000} />
-        </ChartContainer>
+        <ApiChartContainer title="TCO" type="tco">
+          <ApiChart options={options} type="tco" pollInterval={3000} />
+        </ApiChartContainer>
       </ChartGridItem>
     </ChartGrid>
   );
 };
+
+/*
+<ChartGridItem>
+  <ApiChartContainer title="TCO">
+    <ApiChart options={options} type="tco" pollInterval={3000} />
+  </ApiChartContainer>
+</ChartGridItem>
+*/
 
 export default ChartsPage;

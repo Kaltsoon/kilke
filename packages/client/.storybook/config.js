@@ -1,15 +1,18 @@
 import React from 'react';
 import { configure, addDecorator } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import createTheme from '../src/theme';
 
 const theme = createTheme();
 
 const themeDecorator = storyFn => (
-  <ThemeProvider theme={theme}>
-    {storyFn()}
-  </ThemeProvider>
+  <MuiThemeProvider>
+    <ThemeProvider theme={theme}>
+      {storyFn()}
+    </ThemeProvider>
+  </MuiThemeProvider>
 );
 
 addDecorator(themeDecorator);
