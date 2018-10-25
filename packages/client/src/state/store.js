@@ -28,8 +28,13 @@ const middleware = applyMiddleware(
   thunk.withExtraArgument(context),
 );
 
+const preloadedState = window.__SERVER_STATE__ === '__SERVER_STATE__' ? undefined : window.__SERVER_STATE__;
+
+console.log(preloadedState);
+
 const store = createStore(
   rootReducer,
+  preloadedState,
   composeWithDevTools(
     compose(
       routerEnhancer,

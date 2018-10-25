@@ -60,12 +60,10 @@ const createSubscribe = ({ db, logger }) => async data => {
   const { time, temperature1, conductivity1 } = data;
 
   try {
-    await Promise.all([
-      db('analogue_electrodes').insert([
-        { type: 'tco', created_at: time, id: uuid(), value: temperature1 },
-        { type: 'con', created_at: time, id: uuid(), value: conductivity1 },
-      ]),
-    ]);
+    return db('sensor_measurements').insert([
+      { type: 'tco', created_at: time, id: uuid(), value_1: temperature1 },
+      { type: 'con', created_at: time, id: uuid(), value_1: conductivity1 },
+    ])
   } catch (e) {
     log.error(e);
   }

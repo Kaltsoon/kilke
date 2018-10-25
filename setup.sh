@@ -12,5 +12,7 @@ cd ./packages/sensor-reader && yarn install &&
 cd $CURRENT_PATH
 cd ./packages/api && yarn install &&
 cd $CURRENT_PATH
+cd ./packages/client && yarn install &&
+cd $CURRENT_PATH
 
 bash ./build.sh

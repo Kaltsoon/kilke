@@ -6,7 +6,7 @@ export const selectAsTimeslot = ({ db, column, columnAlias, interval }) => {
   });
 };
 
-export const getChartData = async ({ db, table, valueColumn = 'value', createdAtColumn = 'created_at', from, to, points, type }) => {
+export const getChartData = async ({ db, table, valueColumn = 'value_1', createdAtColumn = 'created_at', from, to, points, type }) => {
   const interval = Math.round(((to.getTime() - from.getTime()) / points));
 
   const results = await db(table)
@@ -25,7 +25,7 @@ export const getChartData = async ({ db, table, valueColumn = 'value', createdAt
   return results.map(({ created_at_fixed, avg_value }) => ([new Date(created_at_fixed).getTime(), avg_value]));
 };
 
-export const getAverages = async ({ db, table, createdAtColumn = 'created_at', from, to, type }) => {
+export const getAverages = async ({ db, table, valueColumn = 'value_1', createdAtColumn = 'created_at', from, to, type }) => {
   const delta = to.getTime() - from.getTime();
 
   const previousFrom = new Date(from.getTime() - delta);
@@ -45,7 +45,7 @@ export const getAverages = async ({ db, table, createdAtColumn = 'created_at', f
         `,
         { created_at: createdAtColumn, to, from },
       ),
-      db.raw('avg(value) as avg_value'),
+      db.raw('avg(:value:) as avg_value', { value: valueColumn }),
     )
     .where({ type })
     .andWhere(createdAtColumn, '>=', previousFrom)

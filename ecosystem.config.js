@@ -22,5 +22,12 @@ module.exports = {
         RECORD_SERVER_HOST: '127.0.0.1',
       },
     },
+    {
+      name: 'client',
+      script: './packages/client/server/index.js',
+      env: {
+        PORT: 8080,
+      },
+    },
   ],
 };

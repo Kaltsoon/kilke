@@ -17,11 +17,11 @@ const getTypeInitialState = () => ({
 const initialState = {
   types: {
     tco: {
-      api: '/v1/charts/analogue-electrodes/tco',
+      api: '/v1/charts/tco',
       ...getTypeInitialState(),
     },
     con: {
-      api: '/v1/charts/analogue-electrodes/con',
+      api: '/v1/charts/con',
       ...getTypeInitialState(),
     },
   },

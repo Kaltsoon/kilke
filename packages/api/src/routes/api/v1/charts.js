@@ -8,7 +8,7 @@ import { getChartData, getAverages } from '@/utils';
 
 const fiveMinutes = 300000;
 
-router.get('/analogue-electrodes/:type', async ctx => {
+router.get('/:type', async ctx => {
   const { db, query } = ctx;
 
   const now = new Date();
@@ -21,8 +21,8 @@ router.get('/analogue-electrodes/:type', async ctx => {
   const interval = Math.round(((to.getTime() - from.getTime()) / points));
 
   const [data, averages] = await Promise.all([
-    getChartData({ db, table: 'analogue_electrodes', from, to, points, type }),
-    getAverages({ db, table: 'analogue_electrodes', from, to, type }),
+    getChartData({ db, table: 'sensor_measurements', from, to, points, type }),
+    getAverages({ db, table: 'sensor_measurements', from, to, type }),
   ]);
 
   ctx.body = { data, averages, options: { to, from, points } };
