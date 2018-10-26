@@ -2,19 +2,25 @@
 
 ## Setup
 
-Run the setup script:
+1. Define value for environment variable `REACT_APP_API_URL` in `packages/client/.env` file. You can use the default environment variable values, which are:
 
 ```
-sudo ./setup.sh
+REACT_APP_API_URL=http://localhost:5000
 ```
 
-Start everything:
+2. Run the setup script:
+
+```
+./setup.sh
+```
+
+3. Start everything:
 
 ```
 yarn pm2 start
 ```
 
-Done!
+4. All set!
 
 ## Stop
 

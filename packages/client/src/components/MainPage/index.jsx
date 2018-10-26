@@ -5,9 +5,11 @@ import { themeProp } from '../../theme';
 
 import RouteSwitch from '../RouteSwitch';
 import MainNavigation from '../MainNavigation';
-import SensorChartsPage from '../SensorChartsPage';
+import TemperatureChartsPage from '../TemperatureChartsPage';
+import WeightChartsPage from '../WeightChartsPage';
+import PhChartsPage from '../PhChartsPage';
 
-import { ROUTE_SENSORS } from '../../routes';
+import { ROUTE_CHARTS_TEMPERATURE, ROUTE_CHARTS_PH, ROUTE_CHARTS_WEIGHT } from '../../routes';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -25,7 +27,9 @@ const NavigationContainer = styled.div`
 `;
 
 const tests = [
-  { test: ({ type }) => type === ROUTE_SENSORS, component: SensorChartsPage },
+  { test: ({ type }) => type === ROUTE_CHARTS_TEMPERATURE, component: TemperatureChartsPage },
+  { test: ({ type }) => type === ROUTE_CHARTS_WEIGHT, component: WeightChartsPage },
+  { test: ({ type }) => type === ROUTE_CHARTS_PH, component: PhChartsPage },
 ];
 
 const MainPage = () => {

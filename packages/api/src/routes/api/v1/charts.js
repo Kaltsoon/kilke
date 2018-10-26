@@ -5,8 +5,11 @@ const router = new Router();
 
 import { ApplicationError } from '@/errors';
 import { getChartData, getAverages } from '@/utils';
+import { sensorUnits } from '@/constants';
 
 const fiveMinutes = 300000;
+
+const getUnit = type => sensorUnits[type] || null;
 
 router.get('/:type', async ctx => {
   const { db, query } = ctx;
@@ -25,7 +28,7 @@ router.get('/:type', async ctx => {
     getAverages({ db, table: 'sensor_measurements', from, to, type }),
   ]);
 
-  ctx.body = { data, averages, options: { to, from, points } };
+  ctx.body = { data, averages, options: { to, from, points }, unit: getUnit(type) };
 });
 
 export default router;

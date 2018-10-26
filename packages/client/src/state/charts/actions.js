@@ -64,6 +64,7 @@ export const refetch = type => async (dispatch, getState, { apiClient }) => {
       data: response.data.data || null,
       averages: response.data.averages,
       options: response.data.options,
+      unit: response.data.unit,
     },
   }));
 };

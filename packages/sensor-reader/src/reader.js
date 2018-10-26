@@ -7,31 +7,30 @@ const isValidRecord = data => {
     return false;
   }
 
-  const { time, temperature1, conductivity1 } = data;
+  const { time } = data;
 
   if (!time || time.toString() === 'Invalid Date') {
-    return false;
-  }
-
-  if (isNaN(temperature1)) {
-    return false;
-  }
-
-  if (isNaN(conductivity1)) {
     return false;
   }
 
   return true;
 }
 
+const floatOrNull = val => !isNaN(parseFloat(val)) ? parseFloat(val) : null;
+
 const parseRecord = data => {
   try {
-    const [time, temperature1, conductivity1] = data.split(' ');
+    const [time, cond, tco, phd, phf, wd, wf, tamb] = data.split(' ');
 
     return {
       time: time ? new Date(parseInt(time) * 1000) : null,
-      temperature1: temperature1 ? parseFloat(temperature1) : null,
-      conductivity1: conductivity1 ? parseFloat(conductivity1) : null,
+      cond: floatOrNull(cond),
+      tco: floatOrNull(tco),
+      phd: floatOrNull(phd),
+      phf: floatOrNull(phf),
+      wd: floatOrNull(wd),
+      wf: floatOrNull(wf),
+      tamb: floatOrNull(tamb),
     };
   } catch {
     return null;
@@ -42,14 +41,14 @@ const createObservable = ({ sensorObservable, logger }) => {
   return sensorObservable
     .pipe(
       map(parseRecord),
-      flatMap(data => {
-        if (!isValidRecord(data)) {
-          logger.error('Invalid record', { record: data });
+      flatMap(record => {
+        if (!isValidRecord(record)) {
+          logger.info('Record is invalid', { record });
 
           return empty();
         }
 
-        return observableOf(data);
+        return observableOf(record);
       }),
     );
 };
@@ -57,13 +56,20 @@ const createObservable = ({ sensorObservable, logger }) => {
 const createSubscribe = ({ db, logger }) => async data => {
   logger.info('New record', { record: data });
 
-  const { time, temperature1, conductivity1 } = data;
+  const { time, cond, tco, phd, phf, wd, wf, tamb } = data;
+
+  const rows = [
+    cond !== null ? { type: 'cond', created_at: time, id: uuid(), value_1: cond } : null,
+    tco !== null ? { type: 'tco', created_at: time, id: uuid(), value_1: tco } : null,
+    phd !== null ? { type: 'phd', created_at: time, id: uuid(), value_1: phd } : null,
+    phf !== null ? { type: 'phf', created_at: time, id: uuid(), value_1: phf } : null,
+    wd !== null ? { type: 'wd', created_at: time, id: uuid(), value_1: wd } : null,
+    wf !== null ? { type: 'wf', created_at: time, id: uuid(), value_1: wf } : null,
+    tamb !== null ? { type: 'tamb', created_at: time, id: uuid(), value_1: tamb } : null,
+  ].filter(r => !!r);
 
   try {
-    return db('sensor_measurements').insert([
-      { type: 'tco', created_at: time, id: uuid(), value_1: temperature1 },
-      { type: 'con', created_at: time, id: uuid(), value_1: conductivity1 },
-    ])
+    return db('sensor_measurements').insert(rows)
   } catch (e) {
     log.error(e);
   }

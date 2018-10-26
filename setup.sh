@@ -2,8 +2,6 @@
 
 CURRENT_PATH=$(pwd)
 
-echo $CURRENT_PATH
-
 if ! [ -x "$(command -v nvm)" ]; then
   echo 'node not installed, installing...'
   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash

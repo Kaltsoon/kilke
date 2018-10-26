@@ -5,12 +5,19 @@ import ChartGrid, { ChartGridItem } from '../ChartGrid';
 import ApiChartContainer from '../ApiChartContainer';
 import ApiChart from '../ApiChart';
 
-const ChartsPage = () => {
+const PhChartsPage = () => {
   return (
     <ChartGrid>
       <ChartGridItem>
-        <ApiChartContainer title="Conductivity" type="cond">
-          <ApiChart type="cond" />
+        <ApiChartContainer
+          title={
+            <Fragment>
+              pH<sub>draw</sub>
+            </Fragment>
+          }
+          type="phd"
+        >
+          <ApiChart type="phd" />
         </ApiChartContainer>
       </ChartGridItem>
 
@@ -18,29 +25,16 @@ const ChartsPage = () => {
         <ApiChartContainer
           title={
             <Fragment>
-              T<sub>conductivity</sub>
+              pH<sub>feed</sub>
             </Fragment>
           }
-          type="tco"
+          type="phf"
         >
-          <ApiChart type="tco" />
-        </ApiChartContainer>
-      </ChartGridItem>
-
-      <ChartGridItem>
-        <ApiChartContainer
-          title={
-            <Fragment>
-              T<sub>ambient</sub>
-            </Fragment>
-          }
-          type="tamb"
-        >
-          <ApiChart type="tamb" />
+          <ApiChart type="phf" />
         </ApiChartContainer>
       </ChartGridItem>
     </ChartGrid>
   );
 };
 
-export default ChartsPage;
+export default PhChartsPage;

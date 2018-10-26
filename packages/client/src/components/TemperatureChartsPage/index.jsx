@@ -5,7 +5,7 @@ import ChartGrid, { ChartGridItem } from '../ChartGrid';
 import ApiChartContainer from '../ApiChartContainer';
 import ApiChart from '../ApiChart';
 
-const ChartsPage = () => {
+const TemperatureChartsPage = () => {
   return (
     <ChartGrid>
       <ChartGridItem>
@@ -43,4 +43,4 @@ const ChartsPage = () => {
   );
 };
 
-export default ChartsPage;
+export default TemperatureChartsPage;

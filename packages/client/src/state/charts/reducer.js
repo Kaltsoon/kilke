@@ -25,14 +25,37 @@ const initialState = {
   types: {
     tco: {
       api: '/v1/charts/tco',
-      unit: '°C',
       config: defaultConfig.yAxisTitle('Temperature').toObject(),
       ...getTypeInitialState(),
     },
-    con: {
-      api: '/v1/charts/con',
-      unit: 'm/S',
+    cond: {
+      api: '/v1/charts/cond',
       config: defaultConfig.yAxisTitle('Conductivity').toObject(),
+      ...getTypeInitialState(),
+    },
+    tamb: {
+      api: '/v1/charts/tamb',
+      config: defaultConfig.yAxisTitle('Temperature').toObject(),
+      ...getTypeInitialState(),
+    },
+    phd: {
+      api: '/v1/charts/phd',
+      config: defaultConfig.yAxisTitle('pH').toObject(),
+      ...getTypeInitialState(),
+    },
+    phf: {
+      api: '/v1/charts/phf',
+      config: defaultConfig.yAxisTitle('pH').toObject(),
+      ...getTypeInitialState(),
+    },
+    wd: {
+      api: '/v1/charts/wd',
+      config: defaultConfig.yAxisTitle('Weight').toObject(),
+      ...getTypeInitialState(),
+    },
+    wf: {
+      api: '/v1/charts/wf',
+      config: defaultConfig.yAxisTitle('Weight').toObject(),
       ...getTypeInitialState(),
     },
   },
