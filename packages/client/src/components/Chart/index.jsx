@@ -6,6 +6,14 @@ import HighchartsReact from 'highcharts-react-official';
 
 const getDefaultOptions = theme => {
   return {
+    tooltip: {
+      valueDecimals: 2,
+      pointFormatter: function() {
+        return `
+          <span style="color:${this.color}">●</span> ${this.series.name}: <b>${typeof this.y === 'number' ? this.y.toFixed(2) : this.y}</b><br/>
+        `
+      },
+    },
     time: {
       useUTC: false
     },

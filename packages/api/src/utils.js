@@ -56,7 +56,7 @@ export const getAverages = async ({ db, table, valueColumn = 'value_1', createdA
   const previous = results.find(({ time_group }) => time_group === 0);
 
   return {
-    current: (current ? current.avg_value : 0).toFixed(2),
-    previous: (previous ? previous.avg_value : 0).toFixed(2),
+    current: current ? current.avg_value : 0,
+    previous: previous ? previous.avg_value : 0,
   };
 };

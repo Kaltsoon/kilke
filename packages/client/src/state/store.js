@@ -30,8 +30,6 @@ const middleware = applyMiddleware(
 
 const preloadedState = window.__SERVER_STATE__ === '__SERVER_STATE__' ? undefined : window.__SERVER_STATE__;
 
-console.log(preloadedState);
-
 const store = createStore(
   rootReducer,
   preloadedState,

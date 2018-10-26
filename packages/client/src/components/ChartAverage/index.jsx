@@ -43,14 +43,14 @@ const TrendIcon = styled(Icon)`
 `;
 
 const ChartAverage = ({ current, previous, timespan, unit = '', ...props }) => {
-  const delta = (current - previous).toFixed(2);
+  const delta = current - previous;
 
   return (
     <Container {...props}>
       <ValuesWrapper>
-        <Current>{current}{unit}</Current>
+        <Current>{current.toFixed(2)} {unit}</Current>
         <Trend delta={delta}>
-          {delta >= 0 ? '+' : ''}{delta}{unit} <TrendIcon>{delta < 0 ? 'trending_down' : 'trending_up'}</TrendIcon>
+          {delta >= 0 ? '+' : ''}{delta.toFixed(2)} <TrendIcon>{delta < 0 ? 'trending_down' : 'trending_up'}</TrendIcon>
         </Trend>
       </ValuesWrapper>
       <Footer>

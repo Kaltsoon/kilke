@@ -29,10 +29,21 @@ const defaultTheme = {
 };
 
 const createTheme = (theme = {}) => {
-  return createMuiTheme(merge({}, defaultTheme, theme));
+  return createMuiTheme(
+    merge(
+      {
+        typography: {
+          useNextVariants: true,
+        },
+      },
+      defaultTheme,
+      theme,
+    ),
+  );
 };
 
-export const themeProp = path => props => get(props, typeof path === 'string' ? `theme.${path}` : ['theme', ...path]);
+export const themeProp = path => props =>
+  get(props, typeof path === 'string' ? `theme.${path}` : ['theme', ...path]);
 
 export const px = val => `${val}px`;
 
@@ -48,17 +59,20 @@ export const getSpacingStyles = props => {
 
   const styles = pick(
     props,
-    flatMap(attributes, attr => [attr, ...directions.map(dir => `${attr}${dir}`)]),
+    flatMap(attributes, attr => [
+      attr,
+      ...directions.map(dir => `${attr}${dir}`),
+    ]),
   );
 
-  return mapValues(
-    styles,
-    val => {
-      const amount = typeof val === 'number' ? props.theme.spacing.unit * val : props.theme.spacing.unit;
+  return mapValues(styles, val => {
+    const amount =
+      typeof val === 'number'
+        ? props.theme.spacing.unit * val
+        : props.theme.spacing.unit;
 
-      return `${amount}px`;
-    },
-  );
+    return `${amount}px`;
+  });
 };
 
 export default createTheme;

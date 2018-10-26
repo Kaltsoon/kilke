@@ -7,6 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "knex": "^0.15.2",
+    "pm2": "^3.2.2",
     "sqlite3": "^4.0.2"
   }
 }

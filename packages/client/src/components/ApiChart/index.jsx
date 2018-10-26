@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, lifecycle, withState } from 'recompose';
-import merge from 'lodash/merge';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {
   selectTypeData,
   refetch,
+  selectChartOptions,
 } from '../../state/charts';
 
 import Chart from '../Chart';
@@ -29,13 +29,12 @@ const ApiChart = ({ options, type, pollInterval = null, loading }) => {
 export default compose(
   withState('interval', 'setInterval', null),
   connect(
-    (state, { type, options = {} }) => {
+    (state, { type, seriesName = 'Value' }) => {
       const typeData = selectTypeData(state, type);
+      const options = selectChartOptions(state, type);
 
       return {
-        options: merge({}, options, {
-          series: [{ data: typeData ? typeData.data : [] }],
-        }),
+        options,
         loading: typeData.loading || false,
         pollInterval: typeData ? typeData.pollInterval : null,
       };
@@ -58,7 +57,7 @@ export default compose(
       }
     },
     componentWillUnmount() {
-      this.props.onStopPoll();
+      this.props.interval && clearInterval(this.props.interval);
     },
     componentDidUpdate({ type, pollInterval }) {
       if (type !== this.props.type) {

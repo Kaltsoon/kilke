@@ -20,7 +20,7 @@ export default compose(
       },
     }),
   ),
-  connect((state, { type, unit = '', onFilterPresetChange }) => {
+  connect((state, { type, onFilterPresetChange }) => {
     const typeData = selectTypeData(state, type);
 
     let newProps = {};
@@ -29,7 +29,7 @@ export default compose(
       return newProps;
     }
 
-    const { options, averages, data, filterPreset } = typeData;
+    const { options, averages, data, filterPreset, unit = '' } = typeData;
 
     if (options && options.from && options.to && averages) {
       const timespan =
