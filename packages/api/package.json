@@ -11,12 +11,10 @@
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "esm": "^3.0.84",
-    "knex": "^0.15.2",
     "koa": "^2.5.3",
     "koa-morgan": "^1.0.1",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.11",
-    "sqlite3": "^4.0.2",
     "through2": "^2.0.3",
     "winston": "^3.1.0"
   },

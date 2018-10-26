@@ -9,11 +9,9 @@
   "dependencies": {
     "any-observable": "^0.3.0",
     "esm": "^3.0.84",
-    "knex": "^0.15.2",
     "lodash": "^4.17.11",
     "reconnect-core": "^1.3.0",
     "rxjs": "^6.3.3",
-    "sqlite3": "^4.0.2",
     "uuid": "^3.3.2",
     "winston": "^3.1.0"
   }
