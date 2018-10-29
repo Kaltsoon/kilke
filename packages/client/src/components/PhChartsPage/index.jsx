@@ -16,6 +16,7 @@ const PhChartsPage = () => {
             </Fragment>
           }
           type="phd"
+          calibratable
         >
           <ApiChart type="phd" />
         </ApiChartContainer>
@@ -29,6 +30,7 @@ const PhChartsPage = () => {
             </Fragment>
           }
           type="phf"
+          calibratable
         >
           <ApiChart type="phf" />
         </ApiChartContainer>

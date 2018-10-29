@@ -5,7 +5,7 @@ import { UPDATE_TYPE } from './actions';
 import { createConfig } from '../../chart';
 
 const getTypeInitialState = () => ({
-  pollInterval: 3000,
+  pollInterval: 5000,
   data: null,
   options: null,
   averages: null,

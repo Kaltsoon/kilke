@@ -12,10 +12,12 @@
     "@koa/cors": "^2.2.2",
     "esm": "^3.0.84",
     "koa": "^2.5.3",
+    "koa-bodyparser": "^4.2.1",
     "koa-morgan": "^1.0.1",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.11",
     "through2": "^2.0.3",
+    "uuid": "^3.3.2",
     "winston": "^3.1.0"
   },
   "devDependencies": {

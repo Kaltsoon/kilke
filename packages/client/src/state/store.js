@@ -3,6 +3,7 @@ import { connectRoutes } from 'redux-first-router';
 import axios from 'axios';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { reducer as formReducer } from 'redux-form';
 
 import routesMap from '../routes';
 import { createApiClient } from '../api';
@@ -21,6 +22,7 @@ const {
 
 const rootReducer = createRootReducer({
   location: routerReducer,
+  form: formReducer,
 });
 
 const middleware = applyMiddleware(

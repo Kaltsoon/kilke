@@ -1,6 +1,7 @@
 import Koa from 'koa';
 import cors from '@koa/cors';
 import morgan from 'koa-morgan';
+import bodyParser from 'koa-bodyparser';
 
 import routes from './routes';
 
@@ -27,6 +28,7 @@ export default ({ logStream, context = {} } = {}) => {
 
   app.context = Object.assign(app.context, context);
 
+  app.use(bodyParser());
   app.use(errorHandler());
 
   if (logStream) {

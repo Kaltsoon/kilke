@@ -1,16 +1,33 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
+import styled from 'styled-components';
+import { compose, withProps } from 'recompose';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 
-import { selectTypeData, updateFilterPreset, refetch } from '../../state/charts';
+import {
+  selectTypeData,
+  updateFilterPreset,
+  refetch,
+} from '../../state/charts';
+
 import ChartContainer from '../ChartContainer';
 import ChartAverage from '../ChartAverage';
+import CalibrationModal from '../CalibrationModal';
+
+import { themeProp } from '../../theme';
+
+const CalibrateIcon = styled(Icon).attrs({ children: 'tune' })`
+  margin-right: ${themeProp('spacing.unit')}px;
+`;
 
 export default compose(
   connect(
-    null,
+    (state, { type }) => ({
+      data: selectTypeData(state, type),
+    }),
     (dispatch, { type }) => ({
       onFilterPresetChange: e => {
         const filterPreset = e.target.value;
@@ -20,47 +37,54 @@ export default compose(
       },
     }),
   ),
-  connect((state, { type, onFilterPresetChange }) => {
-    const typeData = selectTypeData(state, type);
+  withProps(({ type, onFilterPresetChange, calibratable, data: typeData }) => {
+    const { options, averages, data, filterPreset, unit = '' } = typeData || {};
 
-    let newProps = {};
-
-    if (!typeData) {
-      return newProps;
-    }
-
-    const { options, averages, data, filterPreset, unit = '' } = typeData;
+    let average = null;
+    let filters = null;
+    let actions = null;
 
     if (options && options.from && options.to && averages) {
       const timespan =
         new Date(options.to).getTime() - new Date(options.from).getTime();
 
-      newProps = {
-        ...newProps,
-        average: (
-          <ChartAverage
-            timespan={timespan}
-            current={averages.current}
-            previous={averages.previous}
-            unit={unit}
-          />
-        ),
-      };
+      average = (
+        <ChartAverage
+          timespan={timespan}
+          current={averages.current || 0}
+          previous={averages.previous || 0}
+          unit={unit}
+        />
+      );
     }
 
     if (data) {
-      newProps = {
-        ...newProps,
-        filters: (
-          <Select value={filterPreset} onChange={onFilterPresetChange}>
-            <MenuItem value="realTime">Real-time</MenuItem>
-            <MenuItem value="lastHour">Last hour</MenuItem>
-            <MenuItem value="last24Hours">Last 24 hours</MenuItem>
-          </Select>
-        ),
-      };
+      filters = (
+        <Select value={filterPreset} onChange={onFilterPresetChange}>
+          <MenuItem value="realTime">Real-time</MenuItem>
+          <MenuItem value="lastHour">Last hour</MenuItem>
+          <MenuItem value="last24Hours">Last 24 hours</MenuItem>
+        </Select>
+      );
     }
 
-    return newProps;
+    if (calibratable) {
+      actions = (
+        <CalibrationModal type={type}>
+          {({ onToggle }) => (
+            <Button color="primary" variant="contained" onClick={onToggle}>
+              <CalibrateIcon />
+              Calibrate
+            </Button>
+          )}
+        </CalibrationModal>
+      );
+    }
+
+    return {
+      average,
+      filters,
+      actions,
+    };
   }),
 )(ChartContainer);

@@ -18,7 +18,7 @@ router.get('/:type', async ctx => {
 
   const to = query.to ? new Date(query.to) : now;
   const from = query.from ? new Date(query.from) : new Date(+now - fiveMinutes);
-  const points = query.points ? parseInt(query.points) : 100;
+  const points = query.points ? parseInt(query.points) : 50;
   const { type } = ctx.params;
 
   const interval = Math.round(((to.getTime() - from.getTime()) / points));

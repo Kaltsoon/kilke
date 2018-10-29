@@ -22,11 +22,16 @@ const Filters = styled.div`
   margin-bottom: ${themeProp('spacing.unit')}px;
 `;
 
+const Actions = styled.div`
+  margin-top: ${themeProp('spacing.unit')}px;
+`;
+
 const ChartContainer = ({
   children = null,
   title = null,
   average = null,
   filters = null,
+  actions = null,
   ...props
 }) => {
   return (
@@ -40,6 +45,7 @@ const ChartContainer = ({
         </Title>
         {filters ? <Filters>{filters}</Filters> : null}
         {children}
+        {actions ? <Actions>{actions}</Actions> : null}
       </CardContent>
     </Card>
   );
