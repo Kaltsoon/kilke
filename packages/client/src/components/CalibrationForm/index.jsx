@@ -38,7 +38,7 @@ const CalibrationForm = ({ handleSubmit }) => {
         <Item>
           <FormControl fullWidth>
             <InputLabel htmlFor="calibration-x1">
-              Observed value
+              Display value
             </InputLabel>
             <Field name="x1" component={renderInputField} props={{ id: 'calibration-x1', type: 'number' }} />
           </FormControl>
@@ -58,7 +58,7 @@ const CalibrationForm = ({ handleSubmit }) => {
         <Item>
           <FormControl fullWidth>
             <InputLabel htmlFor="calibration-x2">
-              Observed value
+              Display value
             </InputLabel>
             <Field name="x2" component={renderInputField} props={{ id: 'calibration-x2', type: 'number' }} />
           </FormControl>
