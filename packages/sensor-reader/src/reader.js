@@ -84,7 +84,7 @@ const createSubscribe = ({ db, logger }) => async data => {
       calibratedPhd = await calibrate({ db, value: phd, type: 'phd' });
       console.log(calibratedPhd);
     } catch (e) {
-      log.info(`Sensor "phd" is not calibrated`);
+      logger.info(`Sensor "phd" is not calibrated`);
     }
   }
 
@@ -92,7 +92,7 @@ const createSubscribe = ({ db, logger }) => async data => {
     try {
       calibratedPhf = await calibrate({ db, value: phf, type: 'phf' });
     } catch (e) {
-      log.info(`Sensor "phf" is not calibrated`);
+      logger.info(`Sensor "phf" is not calibrated`);
     }
   }
 
@@ -109,7 +109,7 @@ const createSubscribe = ({ db, logger }) => async data => {
   try {
     return db('sensor_measurements').insert(rows)
   } catch (e) {
-    log.error(e);
+    logger.error(e);
   }
 };
 
