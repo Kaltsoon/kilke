@@ -19,17 +19,6 @@ if ! [ -x "$(command -v yarn)" ]; then
   sudo apt-get update && sudo apt-get install --no-install-recommends yarn
 fi
 
-yarn install
-
 touch db.sqlite
-
-yarn knex migrate:latest
-
-cd ./packages/sensor-reader && yarn install &&
-cd $CURRENT_PATH
-cd ./packages/api && yarn install &&
-cd $CURRENT_PATH
-cd ./packages/client && yarn install &&
-cd $CURRENT_PATH
 
 bash ./build.sh
