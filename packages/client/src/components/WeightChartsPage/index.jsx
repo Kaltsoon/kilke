@@ -12,6 +12,7 @@ const WeightChartsPage = () => {
         <ApiChartContainer
           title="Feed weight"
           type="wf"
+          calibratable
         >
           <ApiChart type="wf" />
         </ApiChartContainer>
@@ -21,6 +22,7 @@ const WeightChartsPage = () => {
         <ApiChartContainer
           title="Draw weight"
           type="wd"
+          calibratable
         >
           <ApiChart type="wd" />
         </ApiChartContainer>

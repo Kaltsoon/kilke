@@ -78,6 +78,8 @@ const createSubscribe = ({ db, logger }) => async data => {
 
   let calibratedPhd = null;
   let calibratedPhf = null;
+  let calibratedWd = null;
+  let calibratedWf = null;
 
   if (typeof phd === 'number') {
     try {
@@ -96,13 +98,29 @@ const createSubscribe = ({ db, logger }) => async data => {
     }
   }
 
+  if (typeof wd === 'number') {
+    try {
+      calibratedWd = await calibrate({ db, value: wd, type: 'wd' });
+    } catch (e) {
+      logger.info(`Sensor "wd" is not calibrated`);
+    }
+  }
+
+  if (typeof wf === 'number') {
+    try {
+      calibratedWf = await calibrate({ db, value: wf, type: 'wf' });
+    } catch (e) {
+      logger.info(`Sensor "wf" is not calibrated`);
+    }
+  }
+
   const rows = [
     cond !== null ? { type: 'cond', created_at: time, id: uuid(), value_1: cond } : null,
     tco !== null ? { type: 'tco', created_at: time, id: uuid(), value_1: tco } : null,
     calibratedPhd !== null ? { type: 'phd', created_at: time, id: uuid(), value_1: calibratedPhd } : null,
     calibratedPhf !== null ? { type: 'phf', created_at: time, id: uuid(), value_1: calibratedPhf } : null,
-    wd !== null ? { type: 'wd', created_at: time, id: uuid(), value_1: wd } : null,
-    wf !== null ? { type: 'wf', created_at: time, id: uuid(), value_1: wf } : null,
+    calibratedWd !== null ? { type: 'wd', created_at: time, id: uuid(), value_1: calibratedWd } : null,
+    calibratedWf !== null ? { type: 'wf', created_at: time, id: uuid(), value_1: calibratedWf } : null,
     tamb !== null ? { type: 'tamb', created_at: time, id: uuid(), value_1: tamb } : null,
   ].filter(r => !!r);
 

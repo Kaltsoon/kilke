@@ -25,6 +25,9 @@ const getDefaultOptions = theme => {
       enabled: false,
     },
     plotOptions: {
+      series: {
+        animation: false,
+      },
       line: {
         color: theme.palette.primary.main,
       },
