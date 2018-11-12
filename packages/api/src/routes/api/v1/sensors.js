@@ -64,4 +64,26 @@ router.get('/:type/calibrations', async ctx => {
   }));
 });
 
+router.get('/:type/measurements', async ctx => {
+  const { db, query, params } = ctx;
+
+  const { type } = params;
+  const limit = query.limit ? parseInt(query.limit) : 20;
+
+  const results = await db('sensor_measurements')
+    .select('*')
+    .where({
+      type,
+    })
+    .orderBy('created_at', 'desc')
+    .limit(limit);
+
+    ctx.body = results.map(({ value_1, id, type, created_at }) => ({
+      type,
+      id,
+      createdAt: created_at,
+      value: value_1,
+    }));
+});
+
 export default router;

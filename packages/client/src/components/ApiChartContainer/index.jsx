@@ -23,6 +23,13 @@ const CalibrateIcon = styled(Icon).attrs({ children: 'tune' })`
   margin-right: ${themeProp('spacing.unit')}px;
 `;
 
+const renderCalibrationButton = ({ onToggle }) => (
+  <Button color="primary" variant="contained" onClick={onToggle}>
+    <CalibrateIcon />
+    Calibrate
+  </Button>
+);
+
 export default compose(
   connect(
     (state, { type }) => ({
@@ -71,12 +78,7 @@ export default compose(
     if (calibratable) {
       actions = (
         <CalibrationModal type={type}>
-          {({ onToggle }) => (
-            <Button color="primary" variant="contained" onClick={onToggle}>
-              <CalibrateIcon />
-              Calibrate
-            </Button>
-          )}
+          {renderCalibrationButton}
         </CalibrationModal>
       );
     }

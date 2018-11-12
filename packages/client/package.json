@@ -19,6 +19,7 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
+    "react-refetch": "^2.0.1",
     "react-scripts": "2.0.5",
     "recompose": "^0.30.0",
     "redux": "^4.0.1",

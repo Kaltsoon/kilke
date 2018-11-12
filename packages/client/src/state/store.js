@@ -4,7 +4,6 @@ import axios from 'axios';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { reducer as formReducer } from 'redux-form';
-
 import routesMap from '../routes';
 import { createApiClient } from '../api';
 import createRootReducer from './rootReducer';
@@ -30,7 +29,10 @@ const middleware = applyMiddleware(
   thunk.withExtraArgument(context),
 );
 
-const preloadedState = window.__SERVER_STATE__ === '__SERVER_STATE__' ? undefined : window.__SERVER_STATE__;
+const preloadedState =
+  window.__SERVER_STATE__ === '__SERVER_STATE__'
+    ? undefined
+    : window.__SERVER_STATE__;
 
 const store = createStore(
   rootReducer,

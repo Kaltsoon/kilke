@@ -4,8 +4,13 @@ import merge from 'lodash/merge';
 import { withTheme } from 'styled-components';
 import HighchartsReact from 'highcharts-react-official';
 
+import 'highcharts/modules/boost';
+
 const getDefaultOptions = theme => {
   return {
+    boost: {
+      seriesThreshold: 0,
+    },
     tooltip: {
       valueDecimals: 2,
       pointFormatter: function() {

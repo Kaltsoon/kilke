@@ -8,10 +8,8 @@ import createTheme from '../src/theme';
 const theme = createTheme();
 
 const themeDecorator = storyFn => (
-  <MuiThemeProvider>
-    <ThemeProvider theme={theme}>
-      {storyFn()}
-    </ThemeProvider>
+  <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>{storyFn()}</ThemeProvider>
   </MuiThemeProvider>
 );
 

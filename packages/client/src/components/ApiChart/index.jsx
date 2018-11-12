@@ -29,7 +29,7 @@ const ApiChart = ({ options, type, pollInterval = null, loading }) => {
 export default compose(
   withState('interval', 'setInterval', null),
   connect(
-    (state, { type, seriesName = 'Value' }) => {
+    (state, { type }) => {
       const typeData = selectTypeData(state, type);
       const options = selectChartOptions(state, type);
 
