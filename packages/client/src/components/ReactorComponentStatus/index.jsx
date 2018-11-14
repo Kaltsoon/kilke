@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { setLightness, darken } from 'polished';
-import capitalize from 'lodash/capitalize';
 
 import { themeProp } from '../../theme';
 

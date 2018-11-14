@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@koa/cors": "^2.2.2",
+    "axios": "^0.18.0",
     "esm": "^3.0.84",
     "koa": "^2.5.3",
     "koa-bodyparser": "^4.2.1",

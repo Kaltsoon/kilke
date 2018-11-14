@@ -1,7 +1,6 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import FormControl from '@material-ui/core/FormControl';
-import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import { Field } from 'redux-form';
@@ -30,6 +29,7 @@ const renderStatusSelectField = props => {
       <MenuItem value="off">Off</MenuItem>,
       <MenuItem value="automatic">Automatic</MenuItem>,
       <MenuItem value="manual">Manual</MenuItem>,
+      <MenuItem value="fault">Fault</MenuItem>,
     ],
     ...props,
   });

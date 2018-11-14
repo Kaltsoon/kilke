@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import humanize from 'humanize-duration';
 import Icon from '@material-ui/core/Icon';
+import Typography from '@material-ui/core/Typography';
 
 import { themeProp } from '../../theme';
 
-const Container = styled.div`
-`;
+const Container = styled.div``;
 
 const ValuesWrapper = styled.div`
   display: flex;
@@ -14,27 +14,20 @@ const ValuesWrapper = styled.div`
   white-space: nowrap;
 `;
 
-const Current = styled.div`
-  font-family: ${themeProp('typography.fontFamily')};
-  color: ${themeProp('palette.text.primary')};
-  font-weight: bold;
-  font-size: 1.2em;
-`;
+const Current = styled(Typography).attrs({ variant: 'body1' })``;
 
-const Footer = styled.div`
+const Footer = styled(Typography)`
   margin-top: 0.25em;
-  font-size: 0.75em;
-  font-family: ${themeProp('typography.fontFamily')};
-  color: ${themeProp('palette.text.secondary')};
+  color: ${themeProp('palette.text.secondary')} !important;
 `;
 
-const Trend = styled.div`
-  font-size: 1em;
-  margin-left: 0.5em;
-  font-family: ${themeProp('typography.fontFamily')};
+const Trend = styled(Typography).attrs({ variant: 'body1' })`
+  margin-left: ${themeProp('spacing.unit')}px !important;
 
   ${({ theme, delta }) => ({
-    color: delta < 0 ? theme.palette.danger.main : theme.palette.success.main,
+    color: `${
+      delta < 0 ? theme.palette.danger.main : theme.palette.success.main
+    } !important`,
   })}
 `;
 
@@ -48,14 +41,16 @@ const ChartAverage = ({ current, previous, timespan, unit = '', ...props }) => {
   return (
     <Container {...props}>
       <ValuesWrapper>
-        <Current>{current.toFixed(2)} {unit}</Current>
+        <Current>
+          {current.toFixed(2)} {unit}
+        </Current>
         <Trend delta={delta}>
-          {delta >= 0 ? '+' : ''}{delta.toFixed(2)} <TrendIcon>{delta < 0 ? 'trending_down' : 'trending_up'}</TrendIcon>
+          {delta >= 0 ? '+' : ''}
+          {delta.toFixed(2)}{' '}
+          <TrendIcon>{delta < 0 ? 'trending_down' : 'trending_up'}</TrendIcon>
         </Trend>
       </ValuesWrapper>
-      <Footer>
-        Past {humanize(timespan)} average
-      </Footer>
+      <Footer>Past {humanize(timespan)} average</Footer>
     </Container>
   );
 };

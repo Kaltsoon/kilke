@@ -1,5 +1,5 @@
 module.exports = {
-  apps : [
+  apps: [
     {
       name: 'api',
       script: './packages/api/build/index.js',
@@ -12,6 +12,7 @@ module.exports = {
       script: './packages/sensor-io/src/index.py',
       env: {
         RECORD_SERVER_PORT: 4000,
+        CONFIGURATION_SERVER_PORT: 4001,
       },
     },
     {
@@ -20,6 +21,7 @@ module.exports = {
       env: {
         RECORD_SERVER_PORT: 4000,
         RECORD_SERVER_HOST: '127.0.0.1',
+        SENSOR_CONFIGURATION_SERVER_URL: 'http://localhost:4001',
       },
     },
     {

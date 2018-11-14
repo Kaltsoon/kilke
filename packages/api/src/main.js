@@ -6,7 +6,14 @@ import path from 'path';
 import createApp from './app';
 import createLogger from './logger';
 
-const { PORT = 5000 } = process.env;
+import createSensorIoClient, {
+  createApi as createSensorIoApi,
+} from './sensorIo';
+
+const {
+  PORT = 5000,
+  SENSOR_CONFIGURATION_SERVER_URL = 'http://localhost:4001',
+} = process.env;
 
 const logger = createLogger();
 
@@ -18,9 +25,16 @@ const db = knex({
   useNullAsDefault: true,
 });
 
+const sensorIoClient = createSensorIoClient({
+  url: SENSOR_CONFIGURATION_SERVER_URL,
+});
+const sensorIoApi = createSensorIoApi({ client: sensorIoClient });
+
 const context = {
   logger,
   db,
+  sensorIoClient,
+  sensorIoApi,
 };
 
 const logStream = through((chunk, enc, callback) => {

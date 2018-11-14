@@ -21,14 +21,17 @@ router.get('/:type', async ctx => {
   const points = query.points ? parseInt(query.points) : 50;
   const { type } = ctx.params;
 
-  const interval = Math.round(((to.getTime() - from.getTime()) / points));
-
   const [data, averages] = await Promise.all([
     getChartData({ db, table: 'sensor_measurements', from, to, points, type }),
     getAverages({ db, table: 'sensor_measurements', from, to, type }),
   ]);
 
-  ctx.body = { data, averages, options: { to, from, points }, unit: getUnit(type) };
+  ctx.body = {
+    data,
+    averages,
+    options: { to, from, points },
+    unit: getUnit(type),
+  };
 });
 
 export default router;

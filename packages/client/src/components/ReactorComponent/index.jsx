@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
+import CardActionArea from '@material-ui/core/CardActionArea';
 
 const Container = styled.div`
   display: flex;
@@ -23,10 +22,12 @@ const InfoContainer = styled.div`
 const ReactorComponent = ({ icon = null, children = null, ...props }) => {
   return (
     <Card {...props}>
-      <Container>
-        <IconContainer>{icon}</IconContainer>
-        <InfoContainer>{children}</InfoContainer>
-      </Container>
+      <CardActionArea>
+        <Container>
+          <IconContainer>{icon}</IconContainer>
+          <InfoContainer>{children}</InfoContainer>
+        </Container>
+      </CardActionArea>
     </Card>
   );
 };

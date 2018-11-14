@@ -1,5 +1,6 @@
 import thread
 import socket
+import json
 
 class RecordServer:
     def __init__(self, port):
@@ -21,7 +22,7 @@ class RecordServer:
     def send_to_sockets(self, message):
         for socket in self.client_sockets:
             try:
-                socket.send(message)
+                socket.send(json.dumps(message))
             except:
                 # Socket is likely closed, at it can be removed
                 self.client_sockets.remove(socket)

@@ -1,80 +1,45 @@
 import { empty, of as observableOf } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, flatMap, filter } from 'rxjs/operators';
 import uuid from 'uuid/v4';
 
-const isValidRecord = data => {
-  if (!data) {
+import { calibrate } from './utils';
+
+const isValidMessage = data => {
+  if (!data && typeof data === 'object') {
     return false;
   }
 
-  const { time } = data;
+  const { type } = data;
 
-  if (!time || time.toString() === 'Invalid Date') {
+  if (typeof type !== 'string') {
     return false;
   }
 
   return true;
 };
 
-const calibrate = async ({ db, value, type }) => {
-  const calibration = await db('calibrations')
-    .where({ type })
-    .orderBy('created_at', 'desc')
-    .first('x_1', 'y_1', 'x_2', 'y_2');
-
-  if (!calibration) {
-    throw new Error(`No calibration found for sensor type "${type}"`);
-  }
-
-  const { x_1: x1, y_1: y1, x_2: x2, y_2: y2 } = calibration;
-
-  const k = (y1 - y2) / (x1 - x2);
-  const b = (x1 * y2 - x2 * y1) / (x1 - x2);
-
-  return k * value + b;
-};
-
-const floatOrNull = val => !isNaN(parseFloat(val)) ? parseFloat(val) : null;
-
-const parseRecord = data => {
-  try {
-    const [time, cond, tco, phd, phf, wd, wf, tamb] = data.split(' ');
-
-    return {
-      time: time ? new Date(parseInt(time) * 1000) : null,
-      cond: floatOrNull(cond),
-      tco: floatOrNull(tco),
-      phd: floatOrNull(phd),
-      phf: floatOrNull(phf),
-      wd: floatOrNull(wd),
-      wf: floatOrNull(wf),
-      tamb: floatOrNull(tamb),
-    };
-  } catch {
-    return null;
-  }
-};
-
 const createObservable = ({ sensorObservable, logger }) => {
-  return sensorObservable
-    .pipe(
-      map(parseRecord),
-      flatMap(record => {
-        if (!isValidRecord(record)) {
-          logger.info('Record is invalid', { record });
+  return sensorObservable.pipe(
+    flatMap(message => {
+      if (!isValidMessage(message)) {
+        logger.info('Message is invalid', { message });
 
-          return empty();
-        }
+        return empty();
+      }
 
-        return observableOf(record);
-      }),
-    );
+      return observableOf(message);
+    }),
+  );
 };
 
-const createSubscribe = ({ db, logger }) => async data => {
-  logger.info('New record', { record: data });
+const createMeasurementSubscribe = ({ db, logger }) => async ({
+  payload: data,
+}) => {
+  logger.info('New measurement', { measurement: data });
 
-  const { time, cond, tco, phd, phf, wd, wf, tamb } = data;
+  const { time: rawTime, cond, tco, phd, phf, wd, wf, tamb } = data;
+
+  const time = new Date(parseInt(rawTime) * 1000);
 
   let calibratedPhd = null;
   let calibratedPhf = null;
@@ -115,23 +80,58 @@ const createSubscribe = ({ db, logger }) => async data => {
   }
 
   const rows = [
-    cond !== null ? { type: 'cond', created_at: time, id: uuid(), value_1: cond } : null,
-    tco !== null ? { type: 'tco', created_at: time, id: uuid(), value_1: tco } : null,
-    calibratedPhd !== null ? { type: 'phd', created_at: time, id: uuid(), value_1: calibratedPhd } : null,
-    calibratedPhf !== null ? { type: 'phf', created_at: time, id: uuid(), value_1: calibratedPhf } : null,
-    calibratedWd !== null ? { type: 'wd', created_at: time, id: uuid(), value_1: calibratedWd } : null,
-    calibratedWf !== null ? { type: 'wf', created_at: time, id: uuid(), value_1: calibratedWf } : null,
-    tamb !== null ? { type: 'tamb', created_at: time, id: uuid(), value_1: tamb } : null,
+    cond !== null
+      ? { type: 'cond', created_at: time, id: uuid(), value_1: cond }
+      : null,
+    tco !== null
+      ? { type: 'tco', created_at: time, id: uuid(), value_1: tco }
+      : null,
+    calibratedPhd !== null
+      ? { type: 'phd', created_at: time, id: uuid(), value_1: calibratedPhd }
+      : null,
+    calibratedPhf !== null
+      ? { type: 'phf', created_at: time, id: uuid(), value_1: calibratedPhf }
+      : null,
+    calibratedWd !== null
+      ? { type: 'wd', created_at: time, id: uuid(), value_1: calibratedWd }
+      : null,
+    calibratedWf !== null
+      ? { type: 'wf', created_at: time, id: uuid(), value_1: calibratedWf }
+      : null,
+    tamb !== null
+      ? { type: 'tamb', created_at: time, id: uuid(), value_1: tamb }
+      : null,
   ].filter(r => !!r);
 
   try {
-    return db('sensor_measurements').insert(rows)
+    return db('sensor_measurements').insert(rows);
   } catch (e) {
     logger.error(e);
   }
 };
 
+const createPumpFaultSubscribe = ({ db, logger }) => async ({ payload }) => {
+  logger.info('Pump fault', { payload });
+
+  if (payload.pumpId) {
+    try {
+      await db('pumps')
+        .where({ id: payload.pumpId })
+        .update({ status: 'fault' });
+    } catch (e) {
+      logger.error(e);
+    }
+  }
+};
+
 export default ({ sensorObservable, db, logger }) => {
-  createObservable({ sensorObservable, logger })
-    .subscribe(createSubscribe({ db, logger }));
+  const observable = createObservable({ sensorObservable, logger });
+
+  observable
+    .pipe(filter(({ type }) => type === 'measurement'))
+    .subscribe(createMeasurementSubscribe({ db, logger }));
+
+  observable
+    .pipe(filter(({ type }) => type === 'pump_fault'))
+    .subscribe(createPumpFaultSubscribe({ db, logger }));
 };

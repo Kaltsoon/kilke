@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import logger from '../../../logger';
 
 const router = new Router();
 
@@ -25,7 +26,7 @@ router.get('/:id', async ctx => {
 });
 
 router.put('/:id', async ctx => {
-  const { db } = ctx;
+  const { db, sensorIoApi, logger } = ctx;
   const { id } = ctx.params;
 
   const { status, minRpm, maxRpm, manualRpm } = ctx.request.body;
@@ -37,13 +38,13 @@ router.put('/:id', async ctx => {
     ...(manualRpm && { manual_rpm: manualRpm }),
   };
 
+  await sensorIoApi.sendPumpConfiguration({ configuration: { ...update, id } });
+
   await db('pumps')
     .where({
       id,
     })
     .update(update);
-
-  // TODO: signal pump
 
   const pump = await db('pumps')
     .where({

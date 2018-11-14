@@ -1,8 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 
 const ReactorGridBase = styled.div`
   display: flex;

@@ -38,7 +38,7 @@ const ChartContainer = ({
     <Card>
       <CardContent>
         <Title>
-          <Typography component="h5" variant="h5">
+          <Typography component="h6" variant="h6">
             {title}
           </Typography>
           {average ? <AverageWrapper>{average}</AverageWrapper> : null}
