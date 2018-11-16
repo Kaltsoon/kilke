@@ -78,12 +78,12 @@ router.get('/:type/measurements', async ctx => {
     .orderBy('created_at', 'desc')
     .limit(limit);
 
-    ctx.body = results.map(({ value_1, id, type, created_at }) => ({
-      type,
-      id,
-      createdAt: created_at,
-      value: value_1,
-    }));
+  ctx.body = results.map(({ value_1, id, type, created_at }) => ({
+    type,
+    id,
+    createdAt: created_at,
+    value: value_1,
+  }));
 });
 
 export default router;

@@ -12,7 +12,4 @@ const options = {
   ],
 };
 
-storiesOf('Chart', module)
-  .add('Basic', () => (
-    <Chart options={options} />
-  ));
+storiesOf('Chart', module).add('Basic', () => <Chart options={options} />);

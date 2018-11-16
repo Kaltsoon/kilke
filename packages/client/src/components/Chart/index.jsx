@@ -15,16 +15,18 @@ const getDefaultOptions = theme => {
       valueDecimals: 2,
       pointFormatter: function() {
         return `
-          <span style="color:${this.color}">●</span> ${this.series.name}: <b>${typeof this.y === 'number' ? this.y.toFixed(2) : this.y}</b><br/>
-        `
+          <span style="color:${this.color}">●</span> ${this.series.name}: <b>${
+          typeof this.y === 'number' ? this.y.toFixed(2) : this.y
+        }</b><br/>
+        `;
       },
     },
     time: {
-      useUTC: false
+      useUTC: false,
     },
     title: null,
     credits: {
-      enabled: false
+      enabled: false,
     },
     legend: {
       enabled: false,
@@ -47,13 +49,24 @@ const getDefaultOptions = theme => {
         fillOpacity: 0.2,
       },
     },
-  }
+  };
 };
 
-const ChartBase = ({ highcharts = Highcharts, theme, options = {}, ...props }) => {
+const ChartBase = ({
+  highcharts = Highcharts,
+  theme,
+  options = {},
+  ...props
+}) => {
   const chartOptions = merge({}, getDefaultOptions(theme), options);
 
-  return <HighchartsReact highcharts={highcharts} options={chartOptions} {...props} />;
+  return (
+    <HighchartsReact
+      highcharts={highcharts}
+      options={chartOptions}
+      {...props}
+    />
+  );
 };
 
 export default withTheme(ChartBase);

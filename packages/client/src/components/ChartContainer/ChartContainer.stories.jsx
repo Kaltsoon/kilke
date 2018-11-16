@@ -8,7 +8,7 @@ const now = new Date();
 
 const options = {
   chart: {
-    type: 'spline'
+    type: 'spline',
   },
   xAxis: {
     type: 'datetime',
@@ -19,16 +19,17 @@ const options = {
   series: [
     {
       name: 'Values',
-      data: [[now.getTime(), 2], [new Date(+now + 1000).getTime(), 3], [new Date(+now + 2000).getTime(), 4]],
+      data: [
+        [now.getTime(), 2],
+        [new Date(+now + 1000).getTime(), 3],
+        [new Date(+now + 2000).getTime(), 4],
+      ],
     },
   ],
 };
 
 const chart = <Chart options={options} />;
 
-storiesOf('ChartContainer', module)
-  .add('Basic', () => (
-    <ChartContainer title="Lorem ipsum">
-      {chart}
-    </ChartContainer>
-  ));
+storiesOf('ChartContainer', module).add('Basic', () => (
+  <ChartContainer title="Lorem ipsum">{chart}</ChartContainer>
+));

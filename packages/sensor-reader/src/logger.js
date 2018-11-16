@@ -14,8 +14,6 @@ export default () => {
       winston.format.timestamp(),
       winston.format.json(),
     ),
-    transports: [
-      new winston.transports.Console(),
-    ],
+    transports: [new winston.transports.Console()],
   });
 };

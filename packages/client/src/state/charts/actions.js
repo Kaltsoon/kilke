@@ -23,30 +23,37 @@ const getFilterByPreset = preset => {
 
 export const updateType = createAction(UPDATE_TYPE);
 
-export const updateFilterPreset =  ({ type, filterPreset }) => (dispatch, getState) => {
+export const updateFilterPreset = ({ type, filterPreset }) => (
+  dispatch,
+  getState,
+) => {
   const pollInterval = filterPreset === 'realTime' ? 3000 : null;
 
-  dispatch(updateType({
-    type,
-    update: { pollInterval, filterPreset },
-  }));
+  dispatch(
+    updateType({
+      type,
+      update: { pollInterval, filterPreset },
+    }),
+  );
 };
 
 export const refetch = type => async (dispatch, getState, { apiClient }) => {
   const state = getState();
 
-  const { api, filterPreset } = state.charts.types[type] || {};
+  const { api, filterPreset } = state.charts.types[type] || {};
 
   if (!api) {
     return;
   }
 
-  dispatch(updateType({
-    type,
-    update: {
-      loading: true,
-    },
-  }));
+  dispatch(
+    updateType({
+      type,
+      update: {
+        loading: true,
+      },
+    }),
+  );
 
   const filter = getFilterByPreset(filterPreset);
 
@@ -57,14 +64,16 @@ export const refetch = type => async (dispatch, getState, { apiClient }) => {
     },
   });
 
-  dispatch(updateType({
-    type,
-    update: {
-      loading: false,
-      data: response.data.data || null,
-      averages: response.data.averages,
-      options: response.data.options,
-      unit: response.data.unit,
-    },
-  }));
+  dispatch(
+    updateType({
+      type,
+      update: {
+        loading: false,
+        data: response.data.data || null,
+        averages: response.data.averages,
+        options: response.data.options,
+        unit: response.data.unit,
+      },
+    }),
+  );
 };

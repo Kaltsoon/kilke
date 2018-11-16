@@ -62,7 +62,12 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [UPDATE_TYPE](state, { payload: { type, update } }) {
+  [UPDATE_TYPE](
+    state,
+    {
+      payload: { type, update },
+    },
+  ) {
     return produce(state, draft => {
       if (!draft.types[type]) {
         return draft;
@@ -74,4 +79,4 @@ export default createReducer(initialState, {
       };
     });
   },
-})
+});

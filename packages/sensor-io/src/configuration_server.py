@@ -34,7 +34,9 @@ class ConfigurationServer():
     def subscribe(self, callback):
         self.subscriptions.append(callback)
 
-        return self.unsubscribe
+        unsubscribe = lambda: self.unsubscribe(callback)
+
+        return unsubscribe
 
     def publish(self, message):
         for subscription in self.subscriptions:

@@ -1,19 +1,36 @@
 export const selectAsTimeslot = ({ db, column, columnAlias, interval }) => {
-  return db.raw(`cast((:column: / :interval) as int) * :interval as :column_alias:`, {
-    column,
-    column_alias: columnAlias,
-    interval,
-  });
+  return db.raw(
+    `cast((:column: / :interval) as int) * :interval as :column_alias:`,
+    {
+      column,
+      column_alias: columnAlias,
+      interval,
+    },
+  );
 };
 
-export const getChartData = async ({ db, table, valueColumn = 'value_1', createdAtColumn = 'created_at', from, to, points, type }) => {
-  const interval = Math.round(((to.getTime() - from.getTime()) / points));
+export const getChartData = async ({
+  db,
+  table,
+  valueColumn = 'value_1',
+  createdAtColumn = 'created_at',
+  from,
+  to,
+  points,
+  type,
+}) => {
+  const interval = Math.round((to.getTime() - from.getTime()) / points);
 
   const results = await db(table)
     .select(
       createdAtColumn,
       valueColumn,
-      selectAsTimeslot({ db, column: createdAtColumn, columnAlias: 'created_at_fixed', interval }),
+      selectAsTimeslot({
+        db,
+        column: createdAtColumn,
+        columnAlias: 'created_at_fixed',
+        interval,
+      }),
       db.raw('avg(:value:) as avg_value', { value: valueColumn }),
     )
     .where({ type })
@@ -22,10 +39,21 @@ export const getChartData = async ({ db, table, valueColumn = 'value_1', created
     .groupBy('created_at_fixed')
     .orderBy('created_at_fixed');
 
-  return results.map(({ created_at_fixed, avg_value }) => ([new Date(created_at_fixed).getTime(), avg_value]));
+  return results.map(({ created_at_fixed, avg_value }) => [
+    new Date(created_at_fixed).getTime(),
+    avg_value,
+  ]);
 };
 
-export const getAverages = async ({ db, table, valueColumn = 'value_1', createdAtColumn = 'created_at', from, to, type }) => {
+export const getAverages = async ({
+  db,
+  table,
+  valueColumn = 'value_1',
+  createdAtColumn = 'created_at',
+  from,
+  to,
+  type,
+}) => {
   const delta = to.getTime() - from.getTime();
 
   const previousFrom = new Date(from.getTime() - delta);

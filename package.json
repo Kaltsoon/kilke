@@ -5,9 +5,28 @@
   "repository": "git@github.com:Kaltsoon/kilke.git",
   "author": "Kalle Ilves <kalleilv@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "format": "yarn prettier --write \"./packages/{api/src,client/src,client/server,sensor-reader/src}/**/*.{js,jsx}\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "yarn prettier --write ",
+      "git add"
+    ]
+  },
   "dependencies": {
     "knex": "^0.15.2",
     "pm2": "^3.2.2",
     "sqlite3": "^4.0.2"
+  },
+  "devDependencies": {
+    "husky": "^1.1.4",
+    "lint-staged": "^8.0.4",
+    "prettier": "^1.15.2"
   }
 }

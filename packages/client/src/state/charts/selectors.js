@@ -10,7 +10,10 @@ export const selectChartOptions = createSelector(
   selectTypeData,
   typeData => {
     return typeData
-      ? { ...(typeData.config || {}), series: { name: 'Value', data: typeData.data || [] } }
+      ? {
+          ...(typeData.config || {}),
+          series: { name: 'Value', data: typeData.data || [] },
+        }
       : {};
   },
 );

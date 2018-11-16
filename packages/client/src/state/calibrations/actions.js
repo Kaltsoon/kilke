@@ -9,46 +9,69 @@ export const updateById = createAction(UPDATE_BY_ID);
 
 export const updateLatestByType = createAction(UPDATE_LATEST_BY_TYPE);
 
-export const fetchLatestByType = type => async (dispatch, getState, { apiClient }) => {
-  dispatch(updateLatestByType({
-    type,
-    update: { loading: true },
-  }));
+export const fetchLatestByType = type => async (
+  dispatch,
+  getState,
+  { apiClient },
+) => {
+  dispatch(
+    updateLatestByType({
+      type,
+      update: { loading: true },
+    }),
+  );
 
-  const response = await apiClient.get(`/v1/sensors/${type}/calibrations?limit=1`);
+  const response = await apiClient.get(
+    `/v1/sensors/${type}/calibrations?limit=1`,
+  );
 
   const { data } = response;
 
   const calibration = data.length > 0 ? data[0] : null;
 
   if (calibration) {
-    dispatch(updateById({
-      id: calibration.id,
-      update: calibration,
-    }));
+    dispatch(
+      updateById({
+        id: calibration.id,
+        update: calibration,
+      }),
+    );
   }
 
-  dispatch(updateLatestByType({
-    type,
-    update: { loading: false, data: calibration ? calibration.id : null },
-  }));
+  dispatch(
+    updateLatestByType({
+      type,
+      update: { loading: false, data: calibration ? calibration.id : null },
+    }),
+  );
 };
 
-export const createCalibration = calibration => async (dispatch, getState, { apiClient }) => {
+export const createCalibration = calibration => async (
+  dispatch,
+  getState,
+  { apiClient },
+) => {
   const { type, ...rest } = calibration;
 
-  const response = await apiClient.post(`/v1/sensors/${type}/calibrations`, rest);
+  const response = await apiClient.post(
+    `/v1/sensors/${type}/calibrations`,
+    rest,
+  );
 
   if (get(response, 'data.id')) {
-    dispatch(updateById({
-      id: response.data.id,
-      update: response.data,
-    }));
+    dispatch(
+      updateById({
+        id: response.data.id,
+        update: response.data,
+      }),
+    );
 
-    dispatch(updateLatestByType({
-      type,
-      update: { data: response.data.id },
-    }));
+    dispatch(
+      updateLatestByType({
+        type,
+        update: { data: response.data.id },
+      }),
+    );
   }
 
   return response.data;

@@ -9,9 +9,6 @@ import * as serviceWorker from './serviceWorker';
 
 const theme = createTheme();
 
-render(
-  <App store={store} theme={theme} />,
-  document.getElementById('root'),
-);
+render(<App store={store} theme={theme} />, document.getElementById('root'));
 
 serviceWorker.unregister();

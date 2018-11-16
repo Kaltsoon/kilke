@@ -16,7 +16,7 @@ export class ApplicationError extends Error {
       type: this.type,
     };
   }
-};
+}
 
 export class NotFoundError extends ApplicationError {
   constructor(message, properties = {}) {

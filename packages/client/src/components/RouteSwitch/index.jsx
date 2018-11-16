@@ -10,11 +10,11 @@ const RouteSwitch = ({ tests, location }) => {
 
   const { component: Component } = match;
 
-  return <Component location={{ type: location.type, payload: location.payload }} />
-}
+  return (
+    <Component location={{ type: location.type, payload: location.payload }} />
+  );
+};
 
-export default connect(
-  state => ({
-    location: state.location,
-  }),
-)(RouteSwitch);
+export default connect(state => ({
+  location: state.location,
+}))(RouteSwitch);

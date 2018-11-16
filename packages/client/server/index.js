@@ -18,12 +18,15 @@ const readFile = (...args) => {
       resolve(data);
     });
   });
-}
+};
 
 app.use(koaStatic(path.join(__dirname, '..', 'build')));
 
 app.use(async (ctx, next) => {
-  const data = await readFile(path.join(__dirname, '..', 'build', 'index.html'), 'utf-8');
+  const data = await readFile(
+    path.join(__dirname, '..', 'build', 'index.html'),
+    'utf-8',
+  );
 
   ctx.body = data.replace(/"__SERVER_STATE__"/, JSON.stringify({ config }));
 

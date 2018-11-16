@@ -27,7 +27,7 @@ const Item = styled.div`
 const renderInputField = props => {
   const { input, meta, ...rest } = props;
 
-  return <Input { ...input } {...rest} />;
+  return <Input {...input} {...rest} />;
 };
 
 const CalibrationForm = ({ handleSubmit }) => {
@@ -37,18 +37,22 @@ const CalibrationForm = ({ handleSubmit }) => {
       <ItemWrapper>
         <Item>
           <FormControl fullWidth>
-            <InputLabel htmlFor="calibration-x1">
-              Display value
-            </InputLabel>
-            <Field name="x1" component={renderInputField} props={{ id: 'calibration-x1', type: 'number' }} />
+            <InputLabel htmlFor="calibration-x1">Display value</InputLabel>
+            <Field
+              name="x1"
+              component={renderInputField}
+              props={{ id: 'calibration-x1', type: 'number' }}
+            />
           </FormControl>
         </Item>
         <Item>
           <FormControl fullWidth>
-            <InputLabel htmlFor="calibration-y1">
-              Measured value
-            </InputLabel>
-            <Field name="y1" component={renderInputField} props={{ id: 'calibration-y1', type: 'number' }} />
+            <InputLabel htmlFor="calibration-y1">Measured value</InputLabel>
+            <Field
+              name="y1"
+              component={renderInputField}
+              props={{ id: 'calibration-y1', type: 'number' }}
+            />
           </FormControl>
         </Item>
       </ItemWrapper>
@@ -57,18 +61,22 @@ const CalibrationForm = ({ handleSubmit }) => {
       <ItemWrapper>
         <Item>
           <FormControl fullWidth>
-            <InputLabel htmlFor="calibration-x2">
-              Display value
-            </InputLabel>
-            <Field name="x2" component={renderInputField} props={{ id: 'calibration-x2', type: 'number' }} />
+            <InputLabel htmlFor="calibration-x2">Display value</InputLabel>
+            <Field
+              name="x2"
+              component={renderInputField}
+              props={{ id: 'calibration-x2', type: 'number' }}
+            />
           </FormControl>
         </Item>
         <Item>
           <FormControl fullWidth>
-            <InputLabel htmlFor="calibration-y2">
-              Measured value
-            </InputLabel>
-            <Field name="y2" component={renderInputField} props={{ id: 'calibration-y2', type: 'number' }} />
+            <InputLabel htmlFor="calibration-y2">Measured value</InputLabel>
+            <Field
+              name="y2"
+              component={renderInputField}
+              props={{ id: 'calibration-y2', type: 'number' }}
+            />
           </FormControl>
         </Item>
       </ItemWrapper>

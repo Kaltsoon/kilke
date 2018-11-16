@@ -67,9 +67,10 @@ export default compose(
   connect(
     (state, { type }) => ({
       calibration: selectLatestByType(state, type),
-      loading: state.calibrations.latestByType[type] !== undefined
-        ? state.calibrations.latestByType[type].loading
-        : true,
+      loading:
+        state.calibrations.latestByType[type] !== undefined
+          ? state.calibrations.latestByType[type].loading
+          : true,
     }),
     (dispatch, { type, onClose }) => ({
       onFetch: () => {

@@ -9,21 +9,13 @@ const WeightChartsPage = () => {
   return (
     <ChartGrid>
       <ChartGridItem>
-        <ApiChartContainer
-          title="Feed weight"
-          type="wf"
-          calibratable
-        >
+        <ApiChartContainer title="Feed weight" type="wf" calibratable>
           <ApiChart type="wf" />
         </ApiChartContainer>
       </ChartGridItem>
 
       <ChartGridItem>
-        <ApiChartContainer
-          title="Draw weight"
-          type="wd"
-          calibratable
-        >
+        <ApiChartContainer title="Draw weight" type="wd" calibratable>
           <ApiChart type="wd" />
         </ApiChartContainer>
       </ChartGridItem>
