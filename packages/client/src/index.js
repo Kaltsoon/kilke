@@ -1,3 +1,5 @@
+import './icons.sass';
+
 import React from 'react';
 import { render } from 'react-dom';
 

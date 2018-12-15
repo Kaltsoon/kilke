@@ -3,6 +3,7 @@ import Highcharts from 'highcharts';
 import merge from 'lodash/merge';
 import { withTheme } from 'styled-components';
 import HighchartsReact from 'highcharts-react-official';
+import { compose, pure } from 'recompose';
 
 import 'highcharts/modules/boost';
 
@@ -69,4 +70,7 @@ const ChartBase = ({
   );
 };
 
-export default withTheme(ChartBase);
+export default compose(
+  withTheme,
+  pure,
+)(ChartBase);

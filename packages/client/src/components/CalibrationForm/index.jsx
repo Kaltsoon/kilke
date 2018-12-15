@@ -37,7 +37,7 @@ const CalibrationForm = ({ handleSubmit }) => {
       <ItemWrapper>
         <Item>
           <FormControl fullWidth>
-            <InputLabel htmlFor="calibration-x1">Display value</InputLabel>
+            <InputLabel htmlFor="calibration-x1">Raw value</InputLabel>
             <Field
               name="x1"
               component={renderInputField}
@@ -47,7 +47,7 @@ const CalibrationForm = ({ handleSubmit }) => {
         </Item>
         <Item>
           <FormControl fullWidth>
-            <InputLabel htmlFor="calibration-y1">Measured value</InputLabel>
+            <InputLabel htmlFor="calibration-y1">Real value</InputLabel>
             <Field
               name="y1"
               component={renderInputField}
@@ -61,7 +61,7 @@ const CalibrationForm = ({ handleSubmit }) => {
       <ItemWrapper>
         <Item>
           <FormControl fullWidth>
-            <InputLabel htmlFor="calibration-x2">Display value</InputLabel>
+            <InputLabel htmlFor="calibration-x2">Raw value</InputLabel>
             <Field
               name="x2"
               component={renderInputField}
@@ -71,7 +71,7 @@ const CalibrationForm = ({ handleSubmit }) => {
         </Item>
         <Item>
           <FormControl fullWidth>
-            <InputLabel htmlFor="calibration-y2">Measured value</InputLabel>
+            <InputLabel htmlFor="calibration-y2">Real value</InputLabel>
             <Field
               name="y2"
               component={renderInputField}
