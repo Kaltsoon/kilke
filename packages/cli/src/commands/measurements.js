@@ -20,7 +20,7 @@ const getMeasurements = async ({ db, from, to, interval }) => {
     )
     .where('created_at', '>=', from)
     .andWhere('created_at', '<=', to)
-    .groupBy('created_at_fixed')
+    .groupBy('created_at_fixed', 'type')
     .orderBy('created_at_fixed');
 
   return results.map(({ created_at_fixed, avg_value, type }) => ({
