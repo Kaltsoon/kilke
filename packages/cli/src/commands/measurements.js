@@ -4,6 +4,12 @@ import isValidDate from 'date-fns/is_valid';
 
 import { selectAsTimeslot } from '../utils';
 
+const round = (value, decimal = 3) => {
+  return parseFloat(value.toFixed(decimal));
+};
+
+const periodsToCommas = value => value.toString().replace(/\./g, ',');
+
 const getMeasurements = async ({ db, from, to, interval }) => {
   const results = await db('sensor_measurements')
     .select(
@@ -23,11 +29,35 @@ const getMeasurements = async ({ db, from, to, interval }) => {
     .groupBy('created_at_fixed', 'type')
     .orderBy('created_at_fixed');
 
-  return results.map(({ created_at_fixed, avg_value, type }) => ({
-    createdAt: created_at_fixed,
-    value: avg_value,
-    type,
-  }));
+  const byTime = results.reduce((acc, curr) => {
+    const timeKey = curr.created_at_fixed
+      ? curr.created_at_fixed.toString()
+      : '_';
+    const typeKey = curr.type || '_';
+
+    acc[timeKey] = acc[timeKey] || {};
+    acc[timeKey][typeKey] = round(curr.avg_value);
+
+    return acc;
+  }, {});
+
+  return Object.keys(byTime)
+    .filter(k => k !== '_')
+    .map(k => {
+      const entry = byTime[k];
+
+      return {
+        createdAt: parseInt(k),
+        cond: entry.cond,
+        tco: entry.tco,
+        phd: entry.phd,
+        phf: entry.phf,
+        wd: entry.wd,
+        wf: entry.wf,
+        tamb: entry.tamb,
+      };
+    })
+    .sort((a, b) => a.createdAt - b.createdAt);
 };
 
 const toCSVString = data => {
@@ -36,12 +66,7 @@ const toCSVString = data => {
   }, '');
 };
 
-const createCommandFn = ({
-  db,
-  program,
-  writeFileOutput,
-  logger,
-}) => async argv => {
+const createCommandFn = ({ db, writeFileOutput, logger }) => async argv => {
   if (!argv.from) {
     throw new Error('From date is required');
   }
@@ -77,11 +102,19 @@ const createCommandFn = ({
     interval,
   });
 
-  const content = data.map(({ createdAt, value, type }) => [
-    createdAt ? Math.round(+new Date(createdAt) / 1000) : 0,
-    type,
-    value,
-  ]);
+  const content = data.map(
+    ({ createdAt, cond, tco, phd, phf, wd, wf, tamb }) => [
+      formatDate(new Date(createdAt), 'dd/MM/yyyy'),
+      formatDate(new Date(createdAt), 'HH:mm:ss'),
+      periodsToCommas(cond),
+      periodsToCommas(tco),
+      periodsToCommas(phd),
+      periodsToCommas(phf),
+      periodsToCommas(wd),
+      periodsToCommas(wf),
+      periodsToCommas(tamb),
+    ],
+  );
 
   const fileName = `measurements-${formatDate(
     new Date(),
@@ -90,7 +123,10 @@ const createCommandFn = ({
 
   await writeFileOutput({
     fileName,
-    content: toCSVString(content),
+    content: toCSVString([
+      ['date', 'time', 'cond', 'tco', 'phd', 'phf', 'wd', 'wf', 'tamb'],
+      ...content,
+    ]),
   });
 
   logger.success(`Generated CSV file ${fileName}`);

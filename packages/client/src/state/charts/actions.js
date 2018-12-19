@@ -23,11 +23,8 @@ const getFilterByPreset = preset => {
 
 export const updateType = createAction(UPDATE_TYPE);
 
-export const updateFilterPreset = ({ type, filterPreset }) => (
-  dispatch,
-  getState,
-) => {
-  const pollInterval = filterPreset === 'realTime' ? 3000 : null;
+export const updateFilterPreset = ({ type, filterPreset }) => dispatch => {
+  const pollInterval = filterPreset === 'realTime' ? 5000 : null;
 
   dispatch(
     updateType({

@@ -39,7 +39,7 @@ export default compose(
         pollInterval: typeData ? typeData.pollInterval : null,
       };
     },
-    (dispatch, { type, pollInterval }) => {
+    (dispatch, { type }) => {
       return {
         onRefetch: () => dispatch(refetch(type)),
       };
@@ -50,14 +50,15 @@ export default compose(
       this.props.onRefetch();
 
       if (this.props.pollInterval) {
-        this.props.interval && clearInterval(this.props.interval);
+        clearInterval(this.props.interval);
+
         this.props.setInterval(
           setInterval(() => this.props.onRefetch(), this.props.pollInterval),
         );
       }
     },
     componentWillUnmount() {
-      this.props.interval && clearInterval(this.props.interval);
+      clearInterval(this.props.interval);
     },
     componentDidUpdate({ type, pollInterval }) {
       if (type !== this.props.type) {
@@ -65,14 +66,15 @@ export default compose(
       }
 
       if (this.props.pollInterval && pollInterval !== this.props.pollInterval) {
-        this.props.interval && clearInterval(this.props.interval);
+        clearInterval(this.props.interval);
+
         this.props.setInterval(
           setInterval(() => this.props.onRefetch(), this.props.pollInterval),
         );
       }
 
       if (!this.props.pollInterval) {
-        this.props.interval && clearInterval(this.props.interval);
+        clearInterval(this.props.interval);
       }
     },
   }),

@@ -8,9 +8,7 @@ import PumpReactorComponentInfo from '../PumpReactorComponentInfo';
 import PumpConfigurationModal from '../PumpConfigurationModal';
 
 const ApiPumpReactorComponent = ({ pumpFetch, measurementFetch }) => {
-  const loading = pumpFetch.pending || measurementFetch.pending;
-
-  if (loading) {
+  if (!pumpFetch.value) {
     return null;
   }
 
