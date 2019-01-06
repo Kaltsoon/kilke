@@ -12,7 +12,7 @@ const PhChartsPage = () => {
         <ApiChartContainer
           title={
             <Fragment>
-              pH<sub>feed</sub>
+              pH
             </Fragment>
           }
           type="phf"
@@ -26,13 +26,26 @@ const PhChartsPage = () => {
         <ApiChartContainer
           title={
             <Fragment>
-              pH<sub>draw</sub>
+              Redox
             </Fragment>
           }
           type="phd"
           calibratable
         >
           <ApiChart type="phd" />
+        </ApiChartContainer>
+      </ChartGridItem>
+
+      <ChartGridItem>
+        <ApiChartContainer
+          title={
+            <Fragment>
+              T<sub>ambient</sub>
+            </Fragment>
+          }
+          type="tamb"
+        >
+          <ApiChart type="tamb" />
         </ApiChartContainer>
       </ChartGridItem>
     </ChartGrid>

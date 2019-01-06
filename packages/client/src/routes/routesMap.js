@@ -5,8 +5,7 @@ import * as types from './types';
 export default {
   [types.ROUTE_INDEX]: {
     path: '/',
-    thunk: dispatch =>
-      dispatch(redirect({ type: types.ROUTE_CHARTS_TEMPERATURE })),
+    thunk: dispatch => dispatch(redirect({ type: types.ROUTE_CHARTS_PH })),
   },
   [types.ROUTE_CHARTS_TEMPERATURE]: '/temperature',
   [types.ROUTE_CHARTS_PH]: '/ph',

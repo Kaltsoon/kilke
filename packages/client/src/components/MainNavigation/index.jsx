@@ -6,17 +6,11 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 import {
-  ROUTE_CHARTS_TEMPERATURE,
-  ROUTE_CHARTS_WEIGHT,
   ROUTE_CHARTS_PH,
-  ROUTE_PROCESS,
 } from '../../routes';
 
 const typeToValue = {
-  [ROUTE_CHARTS_TEMPERATURE]: 0,
-  [ROUTE_CHARTS_PH]: 1,
-  [ROUTE_CHARTS_WEIGHT]: 2,
-  [ROUTE_PROCESS]: 3,
+  [ROUTE_CHARTS_PH]: 0,
 };
 
 const MainNavigation = ({ type }) => {
@@ -26,14 +20,7 @@ const MainNavigation = ({ type }) => {
       indicatorColor="primary"
       textColor="primary"
     >
-      <Tab
-        component={Link}
-        to={{ type: ROUTE_CHARTS_TEMPERATURE }}
-        label="Temperature"
-      />
       <Tab component={Link} to={{ type: ROUTE_CHARTS_PH }} label="pH" />
-      <Tab component={Link} to={{ type: ROUTE_CHARTS_WEIGHT }} label="Weight" />
-      <Tab component={Link} to={{ type: ROUTE_PROCESS }} label="Process" />
     </Tabs>
   );
 };
