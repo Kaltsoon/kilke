@@ -1,5 +1,6 @@
 import knex from 'knex';
 import path from 'path';
+import { readFileSync } from 'fs';
 
 import { createTcpClientObservable } from './utils';
 import createReader from './reader';
@@ -9,6 +10,10 @@ const {
   RECORD_SERVER_PORT = 4000,
   RECORD_SERVER_HOST = '127.0.0.1',
 } = process.env;
+
+const config = JSON.parse(
+  readFileSync(path.join(__dirname, '..', '..', '..', 'config.json')),
+);
 
 const logger = createLogger();
 
@@ -26,4 +31,4 @@ const db = knex({
   useNullAsDefault: true,
 });
 
-createReader({ sensorObservable: observable, db, logger });
+createReader({ sensorObservable: observable, db, logger, config });

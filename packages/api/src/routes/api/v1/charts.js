@@ -1,15 +1,10 @@
 import Router from 'koa-router';
-import { groupBy, mapValues } from 'lodash';
 
 const router = new Router();
 
-import { ApplicationError } from '@/errors';
 import { getChartData, getAverages } from '@/utils';
-import { sensorUnits } from '@/constants';
 
 const fiveMinutes = 300000;
-
-const getUnit = type => sensorUnits[type] || null;
 
 router.get('/:type', async ctx => {
   const { db, query } = ctx;
@@ -30,7 +25,6 @@ router.get('/:type', async ctx => {
     data,
     averages,
     options: { to, from, points },
-    unit: getUnit(type),
   };
 });
 

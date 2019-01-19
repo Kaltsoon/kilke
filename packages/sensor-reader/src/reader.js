@@ -1,8 +1,10 @@
 import { empty, of as observableOf } from 'rxjs';
-import { map, flatMap, filter } from 'rxjs/operators';
+import { flatMap, filter } from 'rxjs/operators';
 import uuid from 'uuid/v4';
+import { isNumber } from 'lodash';
 
-import { calibrate } from './utils';
+import { calibrate, isCalibrated } from './utils';
+import { __values } from 'tslib';
 
 const isValidMessage = data => {
   if (!data && typeof data === 'object') {
@@ -32,76 +34,42 @@ const createObservable = ({ sensorObservable, logger }) => {
   );
 };
 
-const createMeasurementSubscribe = ({ db, logger }) => async ({
+const createMeasurementSubscribe = ({ db, logger, config }) => async ({
   payload: data,
 }) => {
   logger.info('New measurement', { measurement: data });
 
-  const { time: rawTime, cond, tco, phd, phf, wd, wf, tamb } = data;
+  const { time, ...sensors } = data;
+  const measurementTime = isNumber(time) ? new Date(time * 1000) : new Date();
 
-  const time = new Date(parseInt(rawTime) * 1000);
+  const nonNumberSensors = Object.entries(sensors)
+    .filter(([, value]) => !isNumber(value))
+    .map(([type]) => type);
 
-  let calibratedPhd = null;
-  let calibratedPhf = null;
-  let calibratedWd = null;
-  let calibratedWf = null;
-
-  if (typeof phd === 'number') {
-    try {
-      calibratedPhd = await calibrate({ db, value: phd, type: 'phd' });
-      console.log(calibratedPhd);
-    } catch (e) {
-      logger.info(`Sensor "phd" is not calibrated`);
-    }
+  if (nonNumberSensors.length > 0) {
+    logger.warn(
+      `Sensors "${nonNumberSensors.join(
+        ', ',
+      )}" did not provide a numeric measurement`,
+    );
   }
 
-  if (typeof phf === 'number') {
-    try {
-      calibratedPhf = await calibrate({ db, value: phf, type: 'phf' });
-    } catch (e) {
-      logger.info(`Sensor "phf" is not calibrated`);
-    }
-  }
+  const rows = Object.entries(sensors)
+    .filter(([, value]) => isNumber(value))
+    .map(([type, value]) => {
+      if (!isCalibrated({ config, type })) {
+        logger.warn(`Sensor of type "${type}" is not calibrated`);
+      }
 
-  if (typeof wd === 'number') {
-    try {
-      calibratedWd = await calibrate({ db, value: wd, type: 'wd' });
-    } catch (e) {
-      logger.info(`Sensor "wd" is not calibrated`);
-    }
-  }
+      const calibratedValue = calibrate({ config, type, value });
 
-  if (typeof wf === 'number') {
-    try {
-      calibratedWf = await calibrate({ db, value: wf, type: 'wf' });
-    } catch (e) {
-      logger.info(`Sensor "wf" is not calibrated`);
-    }
-  }
-
-  const rows = [
-    cond !== null
-      ? { type: 'cond', created_at: time, id: uuid(), value_1: cond }
-      : null,
-    tco !== null
-      ? { type: 'tco', created_at: time, id: uuid(), value_1: tco }
-      : null,
-    calibratedPhd !== null
-      ? { type: 'phd', created_at: time, id: uuid(), value_1: calibratedPhd }
-      : null,
-    calibratedPhf !== null
-      ? { type: 'phf', created_at: time, id: uuid(), value_1: calibratedPhf }
-      : null,
-    calibratedWd !== null
-      ? { type: 'wd', created_at: time, id: uuid(), value_1: calibratedWd }
-      : null,
-    calibratedWf !== null
-      ? { type: 'wf', created_at: time, id: uuid(), value_1: calibratedWf }
-      : null,
-    tamb !== null
-      ? { type: 'tamb', created_at: time, id: uuid(), value_1: tamb }
-      : null,
-  ].filter(r => !!r);
+      return {
+        type,
+        created_at: measurementTime,
+        id: uuid(),
+        value_1: calibratedValue,
+      };
+    });
 
   try {
     return db('sensor_measurements').insert(rows);
@@ -124,12 +92,12 @@ const createPumpFaultSubscribe = ({ db, logger }) => async ({ payload }) => {
   }
 };
 
-export default ({ sensorObservable, db, logger }) => {
+export default ({ sensorObservable, db, logger, config }) => {
   const observable = createObservable({ sensorObservable, logger });
 
   observable
     .pipe(filter(({ type }) => type === 'measurement'))
-    .subscribe(createMeasurementSubscribe({ db, logger }));
+    .subscribe(createMeasurementSubscribe({ db, logger, config }));
 
   observable
     .pipe(filter(({ type }) => type === 'pump_fault'))

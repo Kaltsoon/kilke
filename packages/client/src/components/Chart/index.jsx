@@ -3,15 +3,9 @@ import Highcharts from 'highcharts';
 import merge from 'lodash/merge';
 import { withTheme } from 'styled-components';
 import HighchartsReact from 'highcharts-react-official';
-import { compose, pure } from 'recompose';
-
-import 'highcharts/modules/boost';
 
 const getDefaultOptions = theme => {
   return {
-    boost: {
-      seriesThreshold: 0,
-    },
     tooltip: {
       valueDecimals: 2,
       pointFormatter: function() {
@@ -70,7 +64,4 @@ const ChartBase = ({
   );
 };
 
-export default compose(
-  withTheme,
-  pure,
-)(ChartBase);
+export default withTheme(ChartBase);

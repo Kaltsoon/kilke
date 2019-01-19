@@ -20,5 +20,6 @@ if ! [ -x "$(command -v yarn)" ]; then
 fi
 
 touch db.sqlite
+touch config.json
 
 bash ./build.sh

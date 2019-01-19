@@ -1,7 +1,7 @@
 import time
 import random
 
-def read_sensors(publish_record):
+def read_sensors(publish_record, config):
     while True:
         publish_record([
             int(round(time.time(), 0)),

@@ -2,6 +2,7 @@ import through from 'through2';
 import http from 'http';
 import knex from 'knex';
 import path from 'path';
+import { readFileSync } from 'fs';
 
 import createApp from './app';
 import createLogger from './logger';
@@ -14,6 +15,10 @@ const {
   PORT = 5000,
   SENSOR_CONFIGURATION_SERVER_URL = 'http://localhost:4001',
 } = process.env;
+
+const config = JSON.parse(
+  readFileSync(path.join(__dirname, '..', '..', '..', 'config.json')),
+);
 
 const logger = createLogger();
 
@@ -35,6 +40,7 @@ const context = {
   db,
   sensorIoClient,
   sensorIoApi,
+  config,
 };
 
 const logStream = through((chunk, enc, callback) => {

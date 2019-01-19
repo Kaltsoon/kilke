@@ -14,13 +14,15 @@ REACT_APP_API_URL=http://localhost:5000
 ./setup.sh
 ```
 
-3. Start everything:
+3. Add the configuration to the `config.json` file
+
+4. Start everything:
 
 ```
 yarn pm2 start
 ```
 
-4. All set!
+5. All set!
 
 ## Stop
 

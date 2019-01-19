@@ -1,43 +1,61 @@
 import React from 'react';
-import Link from 'redux-first-router-link';
 import { connect } from 'react-redux';
-
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { Route, Link } from 'react-router-dom';
+import get from 'lodash/get';
 
-import {
-  ROUTE_CHARTS_TEMPERATURE,
-  ROUTE_CHARTS_WEIGHT,
-  ROUTE_CHARTS_PH,
-  ROUTE_PROCESS,
-} from '../../routes';
+import { selectTabsArray } from '../../state/config';
 
-const typeToValue = {
-  [ROUTE_CHARTS_TEMPERATURE]: 0,
-  [ROUTE_CHARTS_PH]: 1,
-  [ROUTE_CHARTS_WEIGHT]: 2,
-  [ROUTE_PROCESS]: 3,
-};
+const TabsContainerBase = ({ activeTab, isReactorPath, tabs, reactor }) => {
+  let activeIndex = activeTab
+    ? tabs.map(({ key }) => key).indexOf(activeTab)
+    : null;
 
-const MainNavigation = ({ type }) => {
+  let children = tabs.map(({ key, title }) => (
+    <Tab key={key} label={title} component={Link} to={`/tabs/${key}`} />
+  ));
+
+  if (reactor) {
+    children = [
+      ...children,
+      <Tab key="reactor" label="Reactor" component={Link} to="/reactor" />,
+    ];
+  }
+
+  if (reactor && isReactorPath) {
+    activeIndex = children.length - 1;
+  }
+
   return (
     <Tabs
-      value={typeToValue[type]}
+      value={activeIndex}
       indicatorColor="primary"
       textColor="primary"
-    >
-      <Tab
-        component={Link}
-        to={{ type: ROUTE_CHARTS_TEMPERATURE }}
-        label="Temperature"
-      />
-      <Tab component={Link} to={{ type: ROUTE_CHARTS_PH }} label="pH" />
-      <Tab component={Link} to={{ type: ROUTE_CHARTS_WEIGHT }} label="Weight" />
-      <Tab component={Link} to={{ type: ROUTE_PROCESS }} label="Process" />
-    </Tabs>
+      children={children}
+    />
   );
 };
 
-export default connect(({ location }) => ({
-  type: location.type,
-}))(MainNavigation);
+const TabsContainer = connect(state => ({
+  tabs: selectTabsArray(state),
+  reactor: get(state, 'config.reactor'),
+}))(TabsContainerBase);
+
+const MainNavigation = () => {
+  return (
+    <Route
+      path="/reactor"
+      children={({ match: reactorMatch }) => (
+        <Route
+          path="/tabs/:tab"
+          children={({ match: tabMatch }) => (
+            <TabsContainer isReactorPath={!!reactorMatch} activeTab={get(tabMatch, 'params.tab')} />
+          )}
+        />
+      )}
+    />
+  );
+};
+
+export default MainNavigation;

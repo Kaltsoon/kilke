@@ -35,7 +35,7 @@ const ChartContainer = ({
   ...props
 }) => {
   return (
-    <Card>
+    <Card {...props}>
       <CardContent>
         <Title>
           <Typography component="h6" variant="h6">

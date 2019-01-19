@@ -9,6 +9,7 @@ packages/**/build
 .env.production.local
 *.pyc
 .vscode
+/config.json
 
 npm-debug.log*
 yarn-debug.log*

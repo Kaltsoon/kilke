@@ -1,21 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Route } from 'react-router-dom';
 
 import { themeProp } from '../../theme';
+import TabPage from '../TabPage';
 
-import RouteSwitch from '../RouteSwitch';
 import MainNavigation from '../MainNavigation';
-import TemperatureChartsPage from '../TemperatureChartsPage';
-import WeightChartsPage from '../WeightChartsPage';
-import PhChartsPage from '../PhChartsPage';
-import ProcessPage from '../ProcessPage';
-
-import {
-  ROUTE_CHARTS_TEMPERATURE,
-  ROUTE_CHARTS_PH,
-  ROUTE_CHARTS_WEIGHT,
-  ROUTE_PROCESS,
-} from '../../routes';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -32,26 +22,13 @@ const NavigationContainer = styled.div`
   background-color: white;
 `;
 
-const tests = [
-  {
-    test: ({ type }) => type === ROUTE_CHARTS_TEMPERATURE,
-    component: TemperatureChartsPage,
-  },
-  {
-    test: ({ type }) => type === ROUTE_CHARTS_WEIGHT,
-    component: WeightChartsPage,
-  },
-  { test: ({ type }) => type === ROUTE_CHARTS_PH, component: PhChartsPage },
-  { test: ({ type }) => type === ROUTE_PROCESS, component: ProcessPage },
-];
-
 const MainPage = () => {
   return (
     <Container>
       <NavigationContainer>
         <MainNavigation />
       </NavigationContainer>
-      <RouteSwitch tests={tests} />
+      <Route path="/tabs/:tab" component={TabPage} />
     </Container>
   );
 };

@@ -26,7 +26,7 @@ router.get('/:id', async ctx => {
 });
 
 router.put('/:id', async ctx => {
-  const { db, sensorIoApi, logger } = ctx;
+  const { db, sensorIoApi } = ctx;
   const { id } = ctx.params;
 
   const { status, minRpm, maxRpm, manualRpm } = ctx.request.body;

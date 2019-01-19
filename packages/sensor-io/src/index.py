@@ -3,6 +3,11 @@ from configuration_server import ConfigurationServer
 from read_sensors import read_sensors
 from pump_configuration import configurate_pump
 import os
+import json
+
+config_file = open(os.path.join(os.path.dirname(__file__), '../../../config.json'), 'r');
+
+CONFIG = json.loads(config_file.read())
 
 def send_measurements(record_server, measurement):
     measurement_dic = {
@@ -29,9 +34,19 @@ def send_pump_fault(record_server, pump_id):
         }
     })
 
-def handle_pump_configuration(record_server, configuration):
+def send_pump_ack(record_server, pump_id, data):
+    record_server.send_to_sockets({
+        'type': 'pump_ack',
+        'payload': {
+            'pumpId': pump_id,
+            'data': data
+        }
+    })
+
+def handle_pump_configuration(record_server, command):
     on_error = lambda: send_pump_fault(record_server, configuration['id'])
-    configurate_pump(configuration, on_error)
+    on_ack = lambda data: send_pump_ack(record_server, configuration['id'], data)
+    configurate_pump(command, CONFIG, on_ack, on_error)
 
 def handle_message(record_server, message):
     print message
@@ -58,4 +73,4 @@ if __name__ == "__main__":
 
     configuration_server.subscribe(lambda message: handle_message(record_server, message))
 
-    read_sensors(lambda measurement: send_measurements(record_server, measurement))
+    read_sensors(lambda measurement: send_measurements(record_server, measurement), CONFIG)

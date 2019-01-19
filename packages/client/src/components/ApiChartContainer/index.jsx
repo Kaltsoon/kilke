@@ -1,92 +1,149 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { compose, withProps } from 'recompose';
+import { compose } from 'recompose';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
+import get from 'lodash/get';
+import isString from 'lodash/isString';
 
-import {
-  selectTypeData,
-  updateFilterPreset,
-  refetch,
-} from '../../state/charts';
-
+import ApiAsync from '../ApiAsync';
+import { getSensorChart } from '../../apiUtils';
+import { selectSensorChartConfig } from '../../state/config';
+import { updateFilterPreset } from '../../state/charts';
 import ChartContainer from '../ChartContainer';
 import ChartAverage from '../ChartAverage';
-import CalibrationModal from '../CalibrationModal';
+import Chart from '../Chart';
+import Refresher from '../Refresher';
 
-import { themeProp } from '../../theme';
+const getSensorChartPromiseFn = ({ apiClient, from, to, type }) => {
+  return getSensorChart({ apiClient, from, to, type });
+};
 
-const CalibrateIcon = styled(Icon).attrs({ children: 'tune' })`
-  margin-right: ${themeProp('spacing.unit')}px;
-`;
+const oneHour = 3600000;
+const oneDay = 86400000;
 
-const renderCalibrationButton = ({ onToggle }) => (
-  <Button color="primary" variant="contained" onClick={onToggle}>
-    <CalibrateIcon />
-    Calibrate
-  </Button>
-);
+const refreshIntervalByFilterPreset = {
+  realTime: 5000,
+  lastHour: 60000,
+  last24Hours: 600000,
+};
+
+const getRefreshIntervalByFilterPreset = filterPreset => {
+  const { realTime } = refreshIntervalByFilterPreset;
+
+  return isString(filterPreset)
+    ? refreshIntervalByFilterPreset[filterPreset] || realTime
+    : realTime;
+};
+
+const getQueryByFilterPreset = preset => {
+  if (preset === 'lastHour') {
+    return { from: new Date(new Date() - oneHour).toISOString() };
+  } else if (preset === 'last24Hours') {
+    return { from: new Date(new Date() - oneDay).toISOString() };
+  }
+
+  return {};
+};
+
+const MemoChart = memo(({ series, chartConfig }) => {
+  const options = {
+    ...(chartConfig || {}),
+    ...(series ? { series: { name: 'Value', data: series } } : {}),
+  };
+
+  return <Chart options={options} />;
+});
+
+const renderAverage = ({ data, unit }) => {
+  if (get(data, 'options') && get(data, 'averages')) {
+    const { options, averages } = data;
+
+    const timespan =
+      new Date(options.to).getTime() - new Date(options.from).getTime();
+
+    return (
+      <ChartAverage
+        timespan={timespan}
+        current={averages.current || 0}
+        previous={averages.previous || 0}
+        unit={unit}
+      />
+    );
+  }
+
+  return null;
+};
+
+const renderChart = ({ data, chartConfig }) => {
+  const series = data ? data.data || [] : [];
+
+  return <MemoChart series={series} chartConfig={chartConfig} />;
+};
+
+const renderFilters = ({ onFilterPresetChange, filterPreset }) => {
+  return (
+    <Select value={filterPreset} onChange={onFilterPresetChange}>
+      <MenuItem value="realTime">Real-time</MenuItem>
+      <MenuItem value="lastHour">Last hour</MenuItem>
+      <MenuItem value="last24Hours">Last 24 hours</MenuItem>
+    </Select>
+  );
+};
+
+const ApiChartContainer = ({
+  chartConfig,
+  onFilterPresetChange,
+  filterPreset,
+  type,
+  unit,
+  ...props
+}) => {
+  const query = getQueryByFilterPreset(filterPreset);
+  const filters = renderFilters({ filterPreset, onFilterPresetChange });
+  const refreshInterval = getRefreshIntervalByFilterPreset(filterPreset);
+
+  return (
+    <Refresher interval={refreshInterval}>
+      {({ token }) => {
+        const watch = JSON.stringify({ type, token, ...query });
+
+        return (
+          <ApiAsync
+            promiseFn={getSensorChartPromiseFn}
+            type={type}
+            {...query}
+            watch={watch}
+          >
+            {({ data }) => {
+              const average = renderAverage({ data, unit });
+              const chart = renderChart({ data, chartConfig });
+
+              return (
+                <ChartContainer average={average} filters={filters} {...props}>
+                  {chart}
+                </ChartContainer>
+              );
+            }}
+          </ApiAsync>
+        );
+      }}
+    </Refresher>
+  );
+};
 
 export default compose(
   connect(
     (state, { type }) => ({
-      data: selectTypeData(state, type),
+      chartConfig: selectSensorChartConfig(state, type),
+      filterPreset:
+        get(state, ['charts', 'types', type, 'filterPreset']) || 'realTime',
+      unit: get(state, ['config', 'sensors', type, 'unit', 'unit']) || null,
     }),
     (dispatch, { type }) => ({
       onFilterPresetChange: e => {
-        const filterPreset = e.target.value;
-
-        dispatch(updateFilterPreset({ type, filterPreset }));
-        dispatch(refetch(type));
+        dispatch(updateFilterPreset({ type, filterPreset: e.target.value }));
       },
     }),
   ),
-  withProps(({ type, onFilterPresetChange, calibratable, data: typeData }) => {
-    const { options, averages, data, filterPreset, unit = '' } = typeData || {};
-
-    let average = null;
-    let filters = null;
-    let actions = null;
-
-    if (options && options.from && options.to && averages) {
-      const timespan =
-        new Date(options.to).getTime() - new Date(options.from).getTime();
-
-      average = (
-        <ChartAverage
-          timespan={timespan}
-          current={averages.current || 0}
-          previous={averages.previous || 0}
-          unit={unit}
-        />
-      );
-    }
-
-    if (data) {
-      filters = (
-        <Select value={filterPreset} onChange={onFilterPresetChange}>
-          <MenuItem value="realTime">Real-time</MenuItem>
-          <MenuItem value="lastHour">Last hour</MenuItem>
-          <MenuItem value="last24Hours">Last 24 hours</MenuItem>
-        </Select>
-      );
-    }
-
-    if (calibratable) {
-      actions = (
-        <CalibrationModal type={type}>
-          {renderCalibrationButton}
-        </CalibrationModal>
-      );
-    }
-
-    return {
-      average,
-      filters,
-      actions,
-    };
-  }),
-)(ChartContainer);
+)(ApiChartContainer);

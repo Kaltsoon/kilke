@@ -23,8 +23,6 @@ export const ReactorGridItem = ({ children }) => {
 const ReactorGrid = ({ width = 5, height = 5, children }) => {
   const childrenArr = React.Children.toArray(children);
 
-  console.log(childrenArr);
-
   return (
     <ReactorGridBase>
       {[...new Array(width * height)].map((v, i) => {

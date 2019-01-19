@@ -1,6 +1,7 @@
 import Observable from 'any-observable';
 import inject from 'reconnect-core';
 import net from 'net';
+import { get } from 'lodash';
 
 const reconnectNet = inject((...args) => {
   return net.connect(...args);
@@ -41,17 +42,13 @@ export const createTcpClientObservable = ({
   });
 };
 
-export const calibrate = async ({ db, value, type }) => {
-  const calibration = await db('calibrations')
-    .where({ type })
-    .orderBy('created_at', 'desc')
-    .first('x_1', 'y_1', 'x_2', 'y_2');
+export const isCalibrated = ({ config, type }) => {
+  return !!get(config, ['sensors', type, 'calibration']);
+};
 
-  if (!calibration) {
-    throw new Error(`No calibration found for sensor type "${type}"`);
-  }
-
-  const { x_1: x1, y_1: y1, x_2: x2, y_2: y2 } = calibration;
+export const calibrate = ({ config, value, type }) => {
+  const { x1 = 1, x2 = 2, y1 = 1, y2 = 2 } =
+    get(config, ['sensors', type, 'calibration']) || {};
 
   const k = (y1 - y2) / (x1 - x2);
   const b = (x1 * y2 - x2 * y1) / (x1 - x2);
