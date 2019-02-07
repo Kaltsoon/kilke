@@ -4,7 +4,6 @@ import uuid from 'uuid/v4';
 import { isNumber } from 'lodash';
 
 import { calibrate, isCalibrated } from './utils';
-import { __values } from 'tslib';
 
 const isValidMessage = data => {
   if (!data && typeof data === 'object') {
@@ -92,6 +91,23 @@ const createPumpFaultSubscribe = ({ db, logger }) => async ({ payload }) => {
   }
 };
 
+const createPumpAckSubscribe = ({ db, logger }) => async ({ payload }) => {
+  logger.info('Pump ack', { payload });
+
+  const { pumpId, data } = payload;
+
+  if (isNumber(data)) {
+    await db('sensor_measurements').insert({
+      type: pumpId,
+      value_1: data,
+      id: uuid(),
+      created_at: new Date(),
+    });
+  } else {
+    logger.warning(`Pump "${pumpId}" did not provide a numeric rpm`);
+  }
+};
+
 export default ({ sensorObservable, db, logger, config }) => {
   const observable = createObservable({ sensorObservable, logger });
 
@@ -102,4 +118,8 @@ export default ({ sensorObservable, db, logger, config }) => {
   observable
     .pipe(filter(({ type }) => type === 'pump_fault'))
     .subscribe(createPumpFaultSubscribe({ db, logger }));
+
+  observable
+    .pipe(filter(({ type }) => type === 'pump_ack'))
+    .subscribe(createPumpAckSubscribe({ db, logger }));
 };

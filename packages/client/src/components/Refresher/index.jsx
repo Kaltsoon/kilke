@@ -1,4 +1,4 @@
-import { Component, Children } from 'react';
+import { Component } from 'react';
 
 class Refresher extends Component {
   constructor() {

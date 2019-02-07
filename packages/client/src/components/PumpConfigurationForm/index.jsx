@@ -58,26 +58,6 @@ const PumpConfigurationForm = ({ handleSubmit }) => {
           />
         </FormControl>
       </Item>
-      <Item>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="configurationMinRpm">Minimum RPM</InputLabel>
-          <Field
-            name="minRpm"
-            component={renderInputField}
-            props={{ id: 'configurationMinRpm', type: 'number' }}
-          />
-        </FormControl>
-      </Item>
-      <Item>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="configurationMaxRpm">Maximum RPM</InputLabel>
-          <Field
-            name="maxRpm"
-            component={renderInputField}
-            props={{ id: 'configurationMaxRpm', type: 'number' }}
-          />
-        </FormControl>
-      </Item>
     </form>
   );
 };

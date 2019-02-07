@@ -1,16 +1,20 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 
+import Icon from '@material-ui/core/Icon';
 import ReactorComponent from './index';
-import ReactorComponentStatus from '../ReactorComponentStatus';
-import PumpReactorComponentInfo from '../PumpReactorComponentInfo';
 
 storiesOf('ReactorComponent', module).add('Basic', () => (
   <div>
     <ReactorComponent
-      icon={<ReactorComponentStatus status="online" variant="pump" />}
-    >
-      <PumpReactorComponentInfo name="Pump" rpm={2.3} status="online" />
-    </ReactorComponent>
+      onNameClick={action('nameClick')}
+      onValueClick={action('valueClick')}
+      onStatusClick={action('statusClick')}
+      label={<Icon>play_arrow</Icon>}
+      status="automatic"
+      name="Pump"
+      value="120 RPM"
+    />
   </div>
 ));

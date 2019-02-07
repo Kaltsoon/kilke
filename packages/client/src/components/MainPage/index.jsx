@@ -4,8 +4,8 @@ import { Route } from 'react-router-dom';
 
 import { themeProp } from '../../theme';
 import TabPage from '../TabPage';
-
 import MainNavigation from '../MainNavigation';
+import ReactorPage from '../ReactorPage';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -29,6 +29,7 @@ const MainPage = () => {
         <MainNavigation />
       </NavigationContainer>
       <Route path="/tabs/:tab" component={TabPage} />
+      <Route path="/reactor" component={ReactorPage} />
     </Container>
   );
 };

@@ -14,7 +14,8 @@ def make_configuration_handler(publish):
                     publish(json.loads(self.rfile.read(length)))
 
                     self.send_response(200)
-                except:
+                except Exception, e:
+                    print(e)
                     self.send_response(500)
             else:
                 self.send_response(400)

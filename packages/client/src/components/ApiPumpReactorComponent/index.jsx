@@ -1,53 +1,87 @@
 import React from 'react';
-import { compose } from 'recompose';
+import { connect } from 'react-redux';
+import get from 'lodash/get';
+import Icon from '@material-ui/core/Icon';
 
-import apiRefetch from '../apiRefetch';
+import ApiAsync from '../ApiAsync';
 import ReactorComponent from '../ReactorComponent';
-import ReactorComponentStatus from '../ReactorComponentStatus';
-import PumpReactorComponentInfo from '../PumpReactorComponentInfo';
+
+import {
+  getLatestSensorMeasurement,
+  getPumpConfiguration,
+} from '../../apiUtils';
+
+import Refresher from '../Refresher';
 import PumpConfigurationModal from '../PumpConfigurationModal';
 
-const ApiPumpReactorComponent = ({ pumpFetch, measurementFetch }) => {
-  if (!pumpFetch.value) {
-    return null;
-  }
+const getLatestSensorMeasurementPromiseFn = args => {
+  return Promise.all([
+    getLatestSensorMeasurement(args),
+    getPumpConfiguration(args),
+  ]).then(([measurement, config]) => ({
+    measurement,
+    config,
+  }));
+};
 
-  const {
-    value: { displayName, id, status },
-  } = pumpFetch;
-
-  const { value } = measurementFetch;
-  const rpm = value && value[0] ? value[0].value : null;
-  const pumpStatus = status || 'online';
+const SensorAsync = ({ type, token, ...props }) => {
+  const watch = JSON.stringify([type, token]);
 
   return (
-    <PumpConfigurationModal id={id}>
-      {({ onToggle }) => (
-        <ReactorComponent
-          onClick={onToggle}
-          icon={<ReactorComponentStatus status={pumpStatus} variant="pump" />}
-          style={{ cursor: 'pointer' }}
-        >
-          <PumpReactorComponentInfo
-            name={displayName || id}
-            rpm={rpm}
-            status={pumpStatus}
-          />
-        </ReactorComponent>
-      )}
-    </PumpConfigurationModal>
+    <ApiAsync
+      promiseFn={getLatestSensorMeasurementPromiseFn}
+      type={type}
+      watch={watch}
+      {...props}
+    />
   );
 };
 
-export default compose(
-  apiRefetch(props => ({
-    pumpFetch: {
-      url: `/v1/pumps/${props.id}`,
-      refreshInterval: 2000,
-    },
-    measurementFetch: {
-      url: `/v1/sensors/tco/measurements?limit=1`,
-      refreshInterval: 2000,
-    },
-  })),
-)(ApiPumpReactorComponent);
+const renderValue = ({ unit, value }) => {
+  return unit ? `${value} ${unit}` : value;
+};
+
+const renderName = ({ title, subtitle }) => {
+  return (
+    <>
+      {title}
+      {subtitle ? <sub>{subtitle}</sub> : null}
+    </>
+  );
+};
+
+const getStatus = ({ config }) => {
+  return config ? config.status : 'off';
+};
+
+const ApiPumpReactorComponent = ({ type, unit, title, subtitle }) => (
+  <Refresher interval={5000}>
+    {({ token }) => (
+      <SensorAsync type={type} token={token}>
+        {({ data }) => (
+          <PumpConfigurationModal type={type}>
+            {({ onToggle }) => (
+              <ReactorComponent
+                status={getStatus({ config: data ? data.config : null })}
+                value={
+                  data && data.measurement
+                    ? renderValue({ value: data.measurement.value, unit })
+                    : null
+                }
+                name={renderName({ title, subtitle })}
+                onStatusClick={onToggle}
+                label={<Icon>play_arrow</Icon>}
+              />
+            )}
+          </PumpConfigurationModal>
+        )}
+      </SensorAsync>
+    )}
+  </Refresher>
+);
+
+export default connect((state, { type }) => ({
+  unit: get(state, ['config', 'pumps', type, 'unit', 'unit']) || '',
+  title: get(state, ['config', 'pumps', type, 'title']),
+  subtitle: get(state, ['config', 'pumps', type, 'subtitle']),
+}))(ApiPumpReactorComponent);

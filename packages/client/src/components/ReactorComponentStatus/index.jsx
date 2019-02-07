@@ -36,38 +36,31 @@ const getColorCss = ({ status, theme }) => {
 
 const TypeContainer = styled.div`
   font-weight: bold;
-  text-transform: uppercase;
-  font-size: 0.6em;
+  font-size: 0.5em;
   flex: 0;
   font-family: ${themeProp('typography.fontFamily')};
 `;
 
 const Container = styled.div`
   border-radius: 50%;
-  width: 1em;
-  height: 1em;
+  width: 1.2em;
+  height: 1.2em;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   ${getColorCss};
 `;
 
-const getVariantLabel = variant => {
-  if (variant === 'pump') {
-    return 'p';
-  }
-};
-
 const ReactorComponentStatus = ({
-  variant,
   status,
   name = null,
   value = null,
+  children = null,
   ...props
 }) => {
   return (
     <Container status={status} {...props}>
-      <TypeContainer>{getVariantLabel(variant)}</TypeContainer>
+      <TypeContainer>{children}</TypeContainer>
     </Container>
   );
 };

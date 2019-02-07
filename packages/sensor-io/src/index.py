@@ -44,14 +44,13 @@ def send_pump_ack(record_server, pump_id, data):
     })
 
 def handle_pump_configuration(record_server, command):
-    on_error = lambda: send_pump_fault(record_server, configuration['id'])
-    on_ack = lambda data: send_pump_ack(record_server, configuration['id'], data)
+    on_error = lambda: send_pump_fault(record_server, command['id'])
+    on_ack = lambda data: send_pump_ack(record_server, command['id'], data)
     configurate_pump(command, CONFIG, on_ack, on_error)
 
 def handle_message(record_server, message):
-    print message
-
     if message['type'] == 'pump_configuration':
+        print(message['payload'])
         handle_pump_configuration(record_server, message['payload'])
 
 

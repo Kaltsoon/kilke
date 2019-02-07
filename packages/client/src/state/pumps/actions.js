@@ -23,20 +23,16 @@ export const updateRequest = update => async (
   const { id, ...rest } = update;
 
   try {
-    const response = await apiClient.put(`/v1/pumps/${id}`, rest);
-
-    if (response.data) {
-      dispatch(updateById({ id, update: response.data }));
-    }
+    await apiClient.put(`/v1/pumps/${id}`, rest);
   } catch (e) {}
 };
 
 export const submitConfiguration = id => (dispatch, getState) => {
   const state = getState();
 
-  const { status, minRpm, maxRpm, manualRpm } = getFormValues(
-    `pumpConfigurationForm.${id}`,
-  )(state);
+  const { status, manualRpm } = getFormValues(`pumpConfigurationForm.${id}`)(
+    state,
+  );
 
-  return dispatch(updateRequest({ id, status, minRpm, maxRpm, manualRpm }));
+  return dispatch(updateRequest({ id, status, manualRpm }));
 };
