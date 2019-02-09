@@ -2,7 +2,9 @@ import through from 'through2';
 import http from 'http';
 import knex from 'knex';
 import path from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFile } from 'fs';
+import { merge } from 'lodash';
+import { promisify } from 'util';
 
 import createApp from './app';
 import createLogger from './logger';
@@ -11,16 +13,44 @@ import createSensorIoClient, {
   createApi as createSensorIoApi,
 } from './sensorIo';
 
+const writeFileAsync = promisify(writeFile);
+
 const {
   PORT = 5000,
   SENSOR_CONFIGURATION_SERVER_URL = 'http://localhost:4001',
 } = process.env;
 
-const config = JSON.parse(
-  readFileSync(path.join(__dirname, '..', '..', '..', 'config.json')),
-);
+const configFilePath = path.join(__dirname, '..', '..', '..', 'config.json');
 
 const logger = createLogger();
+
+let config = {};
+
+try {
+  config = JSON.parse(readFileSync(configFilePath));
+} catch (e) {
+  logger.warning('No config file found');
+}
+
+const updateConfig = (newConfig = {}) => {
+  return writeFileAsync(
+    configFilePath,
+    JSON.stringify({ ...newConfig, updatedAt: new Date().toISOString() }, null, 2),
+  );
+};
+
+config = merge(
+  {
+    sensors: {},
+    pumps: {},
+    visualization: {
+      tabs: {},
+      tabOrder: [],
+    },
+    reactor: {},
+  },
+  config,
+);
 
 const db = knex({
   client: 'sqlite3',
@@ -41,6 +71,7 @@ const context = {
   sensorIoClient,
   sensorIoApi,
   config,
+  updateConfig,
 };
 
 const logStream = through((chunk, enc, callback) => {

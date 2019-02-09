@@ -53,7 +53,7 @@ class PumpConfigurationModalBase extends Component {
   }
 
   render() {
-    const { onSubmit, children, type } = this.props;
+    const { children, type } = this.props;
     const { open } = this.state;
 
     return (

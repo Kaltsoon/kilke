@@ -1,7 +1,37 @@
 import Router from 'koa-router';
 import uuid from 'uuid/v4';
+import { subMinutes } from 'date-fns';
 
 const router = new Router();
+
+router.get('/log', async ctx => {
+  const { db } = ctx;
+  const { from: fromParam, to: toParam, limit: limitParam, types: typesString } = ctx.query;
+
+  const to = toParam ? new Date(toParam) : new Date();
+  const from = fromParam ? new Date(fromParam) : subMinutes(new Date(), 2);
+  const types = typesString ? typesString.split(',') : null;
+  const limit = limitParam ? parseInt(limitParam) : 100;
+
+  let query = db('sensor_measurements')
+    .select('*')
+    .where('created_at', '<', to)
+    .andWhere('created_at', '>', from);
+
+  if (types) {
+    query = query.andWhere(qb => qb.whereIn('type', types));
+  }
+
+  const data = await query.orderBy('created_at', 'desc').limit(limit);
+
+  ctx.body = data.map(({ id, type, created_at, value_1, raw_value }) => ({
+    id,
+    type,
+    createdAt: created_at ? new Date(created_at) : null,
+    value: value_1,
+    rawValue: raw_value,
+  }));
+});
 
 router.post('/:type/calibrations', async ctx => {
   const id = uuid();

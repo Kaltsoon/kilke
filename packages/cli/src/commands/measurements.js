@@ -1,6 +1,7 @@
 import parseDate from 'date-fns/parse';
 import formatDate from 'date-fns/format';
 import isValidDate from 'date-fns/is_valid';
+import { pick, mapValues, zipObject } from 'lodash';
 
 import { selectAsTimeslot } from '../utils';
 
@@ -10,7 +11,7 @@ const round = (value, decimal = 3) => {
 
 const periodsToCommas = value => value.toString().replace(/\./g, ',');
 
-const getMeasurements = async ({ db, from, to, interval }) => {
+const getMeasurements = async ({ db, from, to, interval, types }) => {
   const results = await db('sensor_measurements')
     .select(
       'created_at',
@@ -24,7 +25,8 @@ const getMeasurements = async ({ db, from, to, interval }) => {
       }),
       db.raw('avg(value_1) as avg_value'),
     )
-    .where('created_at', '>=', from)
+    .whereIn('type', types)
+    .andWhere('created_at', '>=', from)
     .andWhere('created_at', '<=', to)
     .groupBy('created_at_fixed', 'type')
     .orderBy('created_at_fixed');
@@ -48,13 +50,8 @@ const getMeasurements = async ({ db, from, to, interval }) => {
 
       return {
         createdAt: parseInt(k),
-        cond: entry.cond,
-        tco: entry.tco,
-        phd: entry.phd,
-        phf: entry.phf,
-        wd: entry.wd,
-        wf: entry.wf,
-        tamb: entry.tamb,
+        ...zipObject(types, new Array(types.length).fill(0)),
+        ...pick(entry, types),
       };
     })
     .sort((a, b) => a.createdAt - b.createdAt);
@@ -70,6 +67,12 @@ const createCommandFn = ({ db, writeFileOutput, logger }) => async argv => {
   if (!argv.from) {
     throw new Error('From date is required');
   }
+
+  if (!argv.sesonrs || argv.sensors.split(',').length === 0) {
+    throw new Error('Sensors are required');
+  }
+
+  const types = argv.sensors.split(',');
 
   const dateFormat = 'd-M-yyyy-H-m-s';
 
@@ -93,28 +96,21 @@ const createCommandFn = ({ db, writeFileOutput, logger }) => async argv => {
     throw new Error('Interval is not a valid number');
   }
 
-  logger.info('Generating a CSV file out of the measurements...');
+  logger.info(`Generating a CSV file out of the measurements of sensors ${types.join(', ')}...`);
 
   const data = await getMeasurements({
     db,
     from: fromDate,
     to: toDate,
     interval,
+    types,
   });
 
-  const content = data.map(
-    ({ createdAt, cond, tco, phd, phf, wd, wf, tamb }) => [
-      formatDate(new Date(createdAt), 'dd/MM/yyyy'),
-      formatDate(new Date(createdAt), 'HH:mm:ss'),
-      periodsToCommas(cond),
-      periodsToCommas(tco),
-      periodsToCommas(phd),
-      periodsToCommas(phf),
-      periodsToCommas(wd),
-      periodsToCommas(wf),
-      periodsToCommas(tamb),
-    ],
-  );
+  const content = data.map(({ createdAt, ...typeData }) => [
+    formatDate(new Date(createdAt), 'dd/MM/yyyy'),
+    formatDate(new Date(createdAt), 'HH:mm:ss'),
+    ...mapValues(typeData, value => periodsToCommas(value)),
+  ]);
 
   const fileName = `measurements-${formatDate(
     new Date(),
@@ -123,10 +119,7 @@ const createCommandFn = ({ db, writeFileOutput, logger }) => async argv => {
 
   await writeFileOutput({
     fileName,
-    content: toCSVString([
-      ['date', 'time', 'cond', 'tco', 'phd', 'phf', 'wd', 'wf', 'tamb'],
-      ...content,
-    ]),
+    content: toCSVString([['date', ...types], ...content]),
   });
 
   logger.success(`Generated CSV file ${fileName}`);
@@ -140,6 +133,11 @@ const measurements = ctx => {
     'Get a CSV file of measurements',
     yargs => {
       return yargs
+        .options('sensors', {
+          alias: 's',
+          describe:
+            'List of sensors separated by comma, to include measurements',
+        })
         .option('from', {
           alias: 'f',
           describe: 'Date from which to include measurements',

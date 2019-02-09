@@ -27,3 +27,26 @@ export const getPumpConfiguration = async ({ apiClient, type }) => {
 
   return data;
 };
+
+export const updateConfig = ({ apiClient, config = {} }) => {
+  return apiClient.put('/v1/config', config);
+};
+
+export const getSensorMeasurementLog = async ({
+  apiClient,
+  from,
+  to,
+  limit,
+  types,
+}) => {
+  const params = {
+    ...(from && { from }),
+    ...(to && { to }),
+    ...(limit && { limit }),
+    ...(types && { types: types.join(',') }),
+  };
+
+  const { data } = await apiClient.get('/v1/sensors/log', { params });
+
+  return data;
+};

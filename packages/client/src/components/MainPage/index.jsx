@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Route } from 'react-router-dom';
+import { Route, Redirect, Switch } from 'react-router-dom';
 
 import { themeProp } from '../../theme';
 import TabPage from '../TabPage';
 import MainNavigation from '../MainNavigation';
 import ReactorPage from '../ReactorPage';
+import ConfigPage from '../ConfigPage';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -28,8 +29,12 @@ const MainPage = () => {
       <NavigationContainer>
         <MainNavigation />
       </NavigationContainer>
-      <Route path="/tabs/:tab" component={TabPage} />
-      <Route path="/reactor" component={ReactorPage} />
+      <Switch>
+        <Route path="/tabs/:tab" component={TabPage} />
+        <Route path="/reactor" component={ReactorPage} />
+        <Route path="/config" component={ConfigPage} />
+        <Redirect to="/config" />
+      </Switch>
     </Container>
   );
 };

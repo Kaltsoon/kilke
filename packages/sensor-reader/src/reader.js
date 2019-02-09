@@ -67,6 +67,7 @@ const createMeasurementSubscribe = ({ db, logger, config }) => async ({
         created_at: measurementTime,
         id: uuid(),
         value_1: calibratedValue,
+        raw_value: value,
       };
     });
 

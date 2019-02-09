@@ -7,7 +7,13 @@ import get from 'lodash/get';
 
 import { selectTabsArray } from '../../state/config';
 
-const TabsContainerBase = ({ activeTab, isReactorPath, tabs, reactor }) => {
+const TabsContainerBase = ({
+  activeTab,
+  isReactorPath,
+  isConfigPath,
+  tabs,
+  reactor,
+}) => {
   let activeIndex = activeTab
     ? tabs.map(({ key }) => key).indexOf(activeTab)
     : null;
@@ -23,8 +29,17 @@ const TabsContainerBase = ({ activeTab, isReactorPath, tabs, reactor }) => {
     ];
   }
 
-  if (reactor && isReactorPath) {
+  children = [
+    ...children,
+    <Tab key="config" label="Configuration" component={Link} to="/config" />,
+  ];
+
+  if (isConfigPath) {
     activeIndex = children.length - 1;
+  }
+
+  if (reactor && isReactorPath) {
+    activeIndex = children.length - 2;
   }
 
   return (
@@ -45,12 +60,21 @@ const TabsContainer = connect(state => ({
 const MainNavigation = () => {
   return (
     <Route
-      path="/reactor"
-      children={({ match: reactorMatch }) => (
+      path="/config"
+      children={({ match: configMatch }) => (
         <Route
-          path="/tabs/:tab"
-          children={({ match: tabMatch }) => (
-            <TabsContainer isReactorPath={!!reactorMatch} activeTab={get(tabMatch, 'params.tab')} />
+          path="/reactor"
+          children={({ match: reactorMatch }) => (
+            <Route
+              path="/tabs/:tab"
+              children={({ match: tabMatch }) => (
+                <TabsContainer
+                  isReactorPath={!!reactorMatch}
+                  isConfigPath={!!configMatch}
+                  activeTab={get(tabMatch, 'params.tab')}
+                />
+              )}
+            />
           )}
         />
       )}
