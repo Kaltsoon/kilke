@@ -9,18 +9,7 @@ config_file = open(os.path.join(os.path.dirname(__file__), '../../../config.json
 
 CONFIG = json.loads(config_file.read())
 
-def send_measurements(record_server, measurement):
-    measurement_dic = {
-        'time': measurement[0],
-        'cond': measurement[1],
-        'tco': measurement[2],
-        'phd': measurement[3],
-        'phf': measurement[4],
-        'wd': measurement[5],
-        'wf': measurement[6],
-        'tamb': measurement[7]
-    }
-
+def send_measurements(record_server, measurement_dic):
     record_server.send_to_sockets({
         'type': 'measurement',
         'payload': measurement_dic

@@ -5,6 +5,7 @@ import charts from './charts';
 import sensors from './sensors';
 import pumps from './pumps';
 import config from './config';
+import reports from './reports';
 
 const router = new Router();
 
@@ -13,5 +14,6 @@ router.use('/charts', charts.routes());
 router.use('/sensors', sensors.routes());
 router.use('/pumps', pumps.routes());
 router.use('/config', config.routes());
+router.use('/reports', reports.routes());
 
 export default router;
