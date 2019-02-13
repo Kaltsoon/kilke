@@ -74,7 +74,7 @@ const context = {
   updateConfig,
 };
 
-const logStream = through((chunk, enc, callback) => {
+const logStream = through(chunk => {
   logger.info(chunk.toString());
 });
 

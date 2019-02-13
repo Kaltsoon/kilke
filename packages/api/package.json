@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./build/index.js",
     "start:dev": "yarn babel-node ./src/index.js",
-    "build": "rm -rf build && yarn babel ./src --out-dir ./build"
+    "build": "rm -rf build && yarn babel ./src --out-dir ./build",
+    "lint": "yarn eslint"
   },
   "dependencies": {
     "@koa/cors": "^2.2.2",

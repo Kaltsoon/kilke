@@ -57,7 +57,6 @@ export const getAverages = async ({
   const delta = to.getTime() - from.getTime();
 
   const previousFrom = new Date(from.getTime() - delta);
-  const previousTo = new Date(from);
 
   const results = await db(table)
     .select(
