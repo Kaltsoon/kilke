@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useAsync } from 'async';
+import { useAsync } from 'react-async';
 
 import { useRefresher } from '../useRefresher';
 import ApiContext from '../ApiContext';

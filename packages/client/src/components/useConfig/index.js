@@ -19,4 +19,15 @@ export const useSensorConfig = type => {
   return useMappedState(mapState);
 };
 
+export const usePumpConfig = type => {
+  const mapState = useCallback(
+    state => {
+      return get(state, ['config', 'pumps', type]) || null;
+    },
+    [type],
+  );
+
+  return useMappedState(mapState);
+};
+
 export default useConfig;

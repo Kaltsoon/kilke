@@ -1,9 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import get from 'lodash/get';
 import Icon from '@material-ui/core/Icon';
 
-import ApiAsync from '../ApiAsync';
 import ReactorComponent from '../ReactorComponent';
 
 import {
@@ -11,8 +9,9 @@ import {
   getPumpConfiguration,
 } from '../../apiUtils';
 
-import Refresher from '../Refresher';
 import PumpConfigurationModal from '../PumpConfigurationModal';
+import { usePollingApiAsync } from '../useApiAsync';
+import { usePumpConfig } from '../useConfig';
 
 const getLatestSensorMeasurementPromiseFn = args => {
   return Promise.all([
@@ -22,19 +21,6 @@ const getLatestSensorMeasurementPromiseFn = args => {
     measurement,
     config,
   }));
-};
-
-const SensorAsync = ({ type, token, ...props }) => {
-  const watch = JSON.stringify([type, token]);
-
-  return (
-    <ApiAsync
-      promiseFn={getLatestSensorMeasurementPromiseFn}
-      type={type}
-      watch={watch}
-      {...props}
-    />
-  );
 };
 
 const renderValue = ({ unit, value }) => {
@@ -54,34 +40,37 @@ const getStatus = ({ config }) => {
   return config ? config.status : 'off';
 };
 
-const ApiPumpReactorComponent = ({ type, unit, title, subtitle }) => (
-  <Refresher interval={5000}>
-    {({ token }) => (
-      <SensorAsync type={type} token={token}>
-        {({ data }) => (
-          <PumpConfigurationModal type={type}>
-            {({ onToggle }) => (
-              <ReactorComponent
-                status={getStatus({ config: data ? data.config : null })}
-                value={
-                  data && data.measurement
-                    ? renderValue({ value: data.measurement.value, unit })
-                    : null
-                }
-                name={renderName({ title, subtitle })}
-                onStatusClick={onToggle}
-                label={<Icon>play_arrow</Icon>}
-              />
-            )}
-          </PumpConfigurationModal>
-        )}
-      </SensorAsync>
-    )}
-  </Refresher>
-);
+const ApiPumpReactorComponent = ({ type }) => {
+  const config = usePumpConfig(type);
 
-export default connect((state, { type }) => ({
-  unit: get(state, ['config', 'pumps', type, 'unit', 'unit']) || '',
-  title: get(state, ['config', 'pumps', type, 'title']),
-  subtitle: get(state, ['config', 'pumps', type, 'subtitle']),
-}))(ApiPumpReactorComponent);
+  const unit = get(config, 'unit.unit') || '';
+  const title = get(config, 'title') || '';
+  const subtitle = get(config, 'subtitle') || '';
+
+  const { data } = usePollingApiAsync({
+    promiseFn: getLatestSensorMeasurementPromiseFn,
+    watch: type,
+    pollInterval: 5000,
+    type,
+  });
+
+  return (
+    <PumpConfigurationModal type={type}>
+      {({ onToggle }) => (
+        <ReactorComponent
+          status={getStatus({ config: data ? data.config : null })}
+          value={
+            data && data.measurement
+              ? renderValue({ value: data.measurement.value, unit })
+              : null
+          }
+          name={renderName({ title, subtitle })}
+          onStatusClick={onToggle}
+          label={<Icon>play_arrow</Icon>}
+        />
+      )}
+    </PumpConfigurationModal>
+  );
+};
+
+export default ApiPumpReactorComponent;
