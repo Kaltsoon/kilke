@@ -1,13 +1,14 @@
 import through from 'through2';
 import http from 'http';
-import knex from 'knex';
 import path from 'path';
 import { readFileSync, writeFile } from 'fs';
 import { merge } from 'lodash';
 import { promisify } from 'util';
+import knex from 'knex';
 
 import createApp from './app';
 import createLogger from './logger';
+import knexFile from '../../../knexfile';
 
 import createSensorIoClient, {
   createApi as createSensorIoApi,
@@ -35,7 +36,11 @@ try {
 const updateConfig = (newConfig = {}) => {
   return writeFileAsync(
     configFilePath,
-    JSON.stringify({ ...newConfig, updatedAt: new Date().toISOString() }, null, 2),
+    JSON.stringify(
+      { ...newConfig, updatedAt: new Date().toISOString() },
+      null,
+      2,
+    ),
   );
 };
 
@@ -52,18 +57,12 @@ config = merge(
   config,
 );
 
-const db = knex({
-  client: 'sqlite3',
-  connection: {
-    filename: path.join(__dirname, '..', '..', '..', 'db.sqlite'),
-  },
-  useNullAsDefault: true,
-});
-
 const sensorIoClient = createSensorIoClient({
   url: SENSOR_CONFIGURATION_SERVER_URL,
 });
 const sensorIoApi = createSensorIoApi({ client: sensorIoClient });
+
+const db = knex(knexFile);
 
 const context = {
   logger,

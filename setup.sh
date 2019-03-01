@@ -19,7 +19,6 @@ if ! [ -x "$(command -v yarn)" ]; then
   sudo apt-get update && sudo apt-get install --no-install-recommends yarn
 fi
 
-touch db.sqlite
 touch config.json
 
 bash ./build.sh

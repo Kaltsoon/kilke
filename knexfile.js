@@ -1,8 +1,9 @@
 module.exports = {
-  client: 'sqlite3',
-  connection: './db.sqlite',
-  useNullAsDefault: true,
-  seeds: {
-    directory: './seeds',
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    database: 'kilke',
+    user: 'postgres',
+    password: 'postgres',
   },
 };

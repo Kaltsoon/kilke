@@ -8,21 +8,23 @@
 REACT_APP_API_URL=http://localhost:5000
 ```
 
-2. Run the setup script:
+2. Add database configuration to the `knexfile.js` file
+
+3. Run the setup script:
 
 ```
 ./setup.sh
 ```
 
-3. Add the configuration to the `config.json` file
+4. Add the configuration to the `config.json` file
 
-4. Start everything:
+5. Start everything:
 
 ```
 yarn pm2 start
 ```
 
-5. All set!
+6. All set!
 
 ## Configuration file
 
