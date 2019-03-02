@@ -1,6 +1,6 @@
 export const selectAsTimeslot = ({ db, column, columnAlias, interval }) => {
   return db.raw(
-    `cast((:column: / :interval) as int) * :interval as :column_alias:`,
+    `cast((extract(epoch from :column:) / :interval) as int) * :interval as :column_alias:`,
     {
       column,
       column_alias: columnAlias,
@@ -19,12 +19,10 @@ export const getChartData = async ({
   points,
   type,
 }) => {
-  const interval = Math.round((to.getTime() - from.getTime()) / points);
+  const interval = Math.round((to.getTime() - from.getTime()) / points / 1000);
 
   const results = await db(table)
     .select(
-      createdAtColumn,
-      valueColumn,
       selectAsTimeslot({
         db,
         column: createdAtColumn,
@@ -40,7 +38,7 @@ export const getChartData = async ({
     .orderBy('created_at_fixed');
 
   return results.map(({ created_at_fixed, avg_value }) => [
-    new Date(created_at_fixed).getTime(),
+    new Date(created_at_fixed * 1000).getTime(),
     avg_value,
   ]);
 };
@@ -60,7 +58,6 @@ export const getAverages = async ({
 
   const results = await db(table)
     .select(
-      createdAtColumn,
       db.raw(
         `
           CASE

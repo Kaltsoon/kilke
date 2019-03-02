@@ -8,6 +8,7 @@ import { StoreContext } from 'redux-react-hook';
 import GlobalStyle from '../GlobalStyle';
 import MainPage from '../MainPage';
 import ApiContext from '../ApiContext';
+import HttpErrorNotifications from '../HttpErrorNotifications';
 
 const App = ({ store, theme, history, apiClient }) => (
   <Provider store={store}>
@@ -16,6 +17,7 @@ const App = ({ store, theme, history, apiClient }) => (
         <MuiThemeProvider theme={theme}>
           <ThemeProvider theme={theme}>
             <Fragment>
+              <HttpErrorNotifications httpClient={apiClient} />
               <GlobalStyle />
               <Router history={history}>
                 <MainPage />
