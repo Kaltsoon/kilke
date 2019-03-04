@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import { sendPumpConfiguration } from '@kilke/core/sensorIo';
 
 const router = new Router();
 
@@ -25,7 +26,7 @@ router.get('/:id', async ctx => {
 });
 
 router.put('/:id', async ctx => {
-  const { db, sensorIoApi } = ctx;
+  const { db, sensorIoOutput } = ctx;
   const { id } = ctx.params;
 
   const { status, manualRpm } = ctx.request.body;
@@ -35,7 +36,10 @@ router.put('/:id', async ctx => {
     ...(manualRpm && { manual_rpm: manualRpm }),
   };
 
-  await sensorIoApi.sendPumpConfiguration({ configuration: { ...update, id } });
+  await sendPumpConfiguration({
+    configuration: { ...update, id },
+    sensorIoOutput,
+  });
 
   const existingPump = await await db('pumps')
     .where({

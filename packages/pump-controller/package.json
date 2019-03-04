@@ -1,0 +1,10 @@
+{
+  "name": "@kilke/pump-controller",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@kilke/core": "^1.0.0",
+    "esm": "^3.2.10"
+  }
+}

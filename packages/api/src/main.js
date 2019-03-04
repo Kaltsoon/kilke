@@ -5,14 +5,11 @@ import { readFileSync, writeFile } from 'fs';
 import { merge } from 'lodash';
 import { promisify } from 'util';
 import knex from 'knex';
+import createLogger from '@kilke/core/logger';
+import { createHttpOutput } from '@kilke/core/sensorIo';
 
 import createApp from './app';
-import createLogger from './logger';
 import knexFile from '../../../knexfile';
-
-import createSensorIoClient, {
-  createApi as createSensorIoApi,
-} from './sensorIo';
 
 const writeFileAsync = promisify(writeFile);
 
@@ -57,18 +54,16 @@ config = merge(
   config,
 );
 
-const sensorIoClient = createSensorIoClient({
+const sensorIoOutput = createHttpOutput({
   url: SENSOR_CONFIGURATION_SERVER_URL,
 });
-const sensorIoApi = createSensorIoApi({ client: sensorIoClient });
 
 const db = knex(knexFile);
 
 const context = {
   logger,
   db,
-  sensorIoClient,
-  sensorIoApi,
+  sensorIoOutput,
   config,
   updateConfig,
 };

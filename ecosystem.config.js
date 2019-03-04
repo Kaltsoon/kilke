@@ -31,5 +31,12 @@ module.exports = {
         PORT: 8080,
       },
     },
+    {
+      name: 'pump-controller',
+      script: './packages/pump-controller/src/index.js',
+      env: {
+        SENSOR_CONFIGURATION_SERVER_URL: 'http://localhost:4001',
+      },
+    },
   ],
 };

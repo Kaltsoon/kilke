@@ -1,37 +1,8 @@
-import { empty, of as observableOf } from 'rxjs';
-import { flatMap, filter } from 'rxjs/operators';
+import Observable from 'zen-observable';
 import uuid from 'uuid/v4';
 import { isNumber } from 'lodash';
 
 import { calibrate, isCalibrated } from './utils';
-
-const isValidMessage = data => {
-  if (!data && typeof data === 'object') {
-    return false;
-  }
-
-  const { type } = data;
-
-  if (typeof type !== 'string') {
-    return false;
-  }
-
-  return true;
-};
-
-const createObservable = ({ sensorObservable, logger }) => {
-  return sensorObservable.pipe(
-    flatMap(message => {
-      if (!isValidMessage(message)) {
-        logger.info('Message is invalid', { message });
-
-        return empty();
-      }
-
-      return observableOf(message);
-    }),
-  );
-};
 
 const createMeasurementSubscribe = ({ db, logger, config }) => async ({
   payload: data,
@@ -110,17 +81,17 @@ const createPumpAckSubscribe = ({ db, logger }) => async ({ payload }) => {
 };
 
 export default ({ sensorObservable, db, logger, config }) => {
-  const observable = createObservable({ sensorObservable, logger });
+  const observable = Observable.from(sensorObservable);
 
   observable
-    .pipe(filter(({ type }) => type === 'measurement'))
+    .filter(({ type }) => type === 'measurement')
     .subscribe(createMeasurementSubscribe({ db, logger, config }));
 
   observable
-    .pipe(filter(({ type }) => type === 'pump_fault'))
+    .filter(({ type }) => type === 'pump_fault')
     .subscribe(createPumpFaultSubscribe({ db, logger }));
 
   observable
-    .pipe(filter(({ type }) => type === 'pump_ack'))
+    .filter(({ type }) => type === 'pump_ack')
     .subscribe(createPumpAckSubscribe({ db, logger }));
 };

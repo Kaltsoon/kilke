@@ -2,29 +2,41 @@
 
 ## Setup
 
-1. Define value for environment variable `REACT_APP_API_URL` in `packages/client/.env` file. You can use the default environment variable values, which are:
+- Define value for environment variable `REACT_APP_API_URL` in `packages/client/.env` file. You can use the default environment variable values, which are:
 
 ```
 REACT_APP_API_URL=http://localhost:5000
 ```
 
-2. Add database configuration to the `knexfile.js` file
+- Install PostgreSQL, if not already installed:
 
-3. Run the setup script:
+```
+sudo apt-get install postgresql postgresql-client
+```
+
+Then open the `psql` shell:
+
+```
+sudo -u postgres psql
+```
+
+In the `psql` shell, run `create database kilke;` to create database and then `\password postgres` to set the password (memoize this password for the configuration).
+
+- Add database configuration (username, password, database) to the `knexfile.js` file
+
+- Run the setup script:
 
 ```
 ./setup.sh
 ```
 
-4. Add the configuration to the `config.json` file
+- Add the configuration to the `config.json` file
 
-5. Start everything:
+- Start everything:
 
 ```
 yarn pm2 start
 ```
-
-6. All set!
 
 ## Configuration file
 
@@ -69,7 +81,16 @@ yarn pm2 start
       address: string
     },
   },
-  reactor: {}
+  reactor: {
+    pumps: {
+      [string]: { // key for the pump
+      }
+    },
+    sensors: {
+      [string]: {  // key for the sensor
+      }
+    }
+  }
 }
 ```
 
@@ -93,4 +114,22 @@ Then, you can restart all the apps by running:
 
 ```
 yarn pm2 restart all
+```
+
+## Logs
+
+You can read the logs by running:
+
+```
+yarn pm2 logs
+```
+
+You can display logs from only certain services by definining their names, for example `yarn pm2 logs sensor-io`.
+
+## Database connection
+
+You can access the database from terminal by running the command:
+
+```
+sudo -u postgres psql -d kilke
 ```
