@@ -29,8 +29,6 @@
     "@babel/core": "^7.1.2",
     "@babel/node": "^7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "babel-eslint": "^10.0.1",
-    "babel-plugin-module-resolver": "^3.1.1",
-    "eslint": "^5.13.0"
+    "babel-plugin-module-resolver": "^3.1.1"
   }
 }
