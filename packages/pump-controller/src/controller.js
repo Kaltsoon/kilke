@@ -1,6 +1,6 @@
 const INTERVAL = 10000;
 
-const runController = context => {};
+const runController = () => {};
 
 export const controller = context => {
   const { logger } = context;
