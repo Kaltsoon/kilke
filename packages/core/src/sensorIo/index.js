@@ -1,37 +1,37 @@
 import axios from 'axios';
-import { createTcpClientObservable, makeInputObservable } from './utils';
+import { createTcpClientObservable, makeOutputObservable } from './utils';
 
-export const sendPumpConfiguration = ({ output, configuration = null }) => {
-  return output.sendMessage({
+export const sendPumpConfiguration = ({ input, configuration = null }) => {
+  return input.sendMessage({
     type: 'pump_configuration',
     payload: configuration,
   });
 };
 
-export const createClient = ({ url }) => {
-  return axios.create({
-    baseURL: url,
-  });
-};
-
-export const createTcpInput = ({ host, port, onError = () => {} }) => {
-  return makeInputObservable(
+export const createTcpOutput = ({ host, port, onError = () => {} }) => {
+  const observable = makeOutputObservable(
     createTcpClientObservable({
       host,
       port,
       onError,
     }),
   );
+
+  return {
+    observable() {
+      return observable;
+    },
+  };
 };
 
-export const createHttpOutput = ({ url }) => {
+export const createHttpInput = ({ url }) => {
   const client = axios.create({
     baseURL: url,
   });
 
   return {
     sendMessage: async message => {
-      const { data } = client.post('/', message);
+      const { data } = await client.post('/', message);
 
       return data;
     },

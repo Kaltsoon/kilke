@@ -26,7 +26,7 @@ router.get('/:id', async ctx => {
 });
 
 router.put('/:id', async ctx => {
-  const { db, sensorIoOutput } = ctx;
+  const { db, sensorIoInput } = ctx;
   const { id } = ctx.params;
 
   const { status, manualRpm } = ctx.request.body;
@@ -38,7 +38,7 @@ router.put('/:id', async ctx => {
 
   await sendPumpConfiguration({
     configuration: { ...update, id },
-    sensorIoOutput,
+    input: sensorIoInput,
   });
 
   const existingPump = await await db('pumps')

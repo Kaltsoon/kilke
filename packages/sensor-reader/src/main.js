@@ -3,7 +3,7 @@ import 'any-observable/register/zen';
 import path from 'path';
 import { readFileSync } from 'fs';
 import knex from 'knex';
-import { createTcpInput } from '@kilke/core/sensorIo';
+import { createTcpOutput } from '@kilke/core/sensorIo';
 import createLogger from '@kilke/core/logger';
 
 import knexFile from '../../../knexfile';
@@ -22,10 +22,10 @@ const db = knex(knexFile);
 
 const logger = createLogger();
 
-const observable = createTcpInput({
+const sensorIoOutput = createTcpOutput({
   host: RECORD_SERVER_HOST,
   port: parseInt(RECORD_SERVER_PORT),
   onError: e => logger.error(e),
 });
 
-createReader({ sensorObservable: observable, db, logger, config });
+createReader({ sensorIoOutput, db, logger, config });

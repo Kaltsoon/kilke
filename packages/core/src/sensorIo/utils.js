@@ -55,7 +55,7 @@ const isValidMessage = data => {
   return true;
 };
 
-export const makeInputObservable = observable =>
+export const makeOutputObservable = observable =>
   new Observable(observer => {
     const sub = observable.subscribe(value => {
       if (isValidMessage(value)) {

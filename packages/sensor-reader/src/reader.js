@@ -80,8 +80,8 @@ const createPumpAckSubscribe = ({ db, logger }) => async ({ payload }) => {
   }
 };
 
-export default ({ sensorObservable, db, logger, config }) => {
-  const observable = Observable.from(sensorObservable);
+export default ({ sensorIoOutput, db, logger, config }) => {
+  const observable = Observable.from(sensorIoOutput.observable());
 
   observable
     .filter(({ type }) => type === 'measurement')

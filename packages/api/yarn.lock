@@ -218,10 +218,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@kilke/core@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@kilke/core/-/core-1.0.0.tgz#4356ba8145394062f227ea351189370a9afe3479"
-  integrity sha512-0vTeQIsw3pDu1PRfmzVWr599uYfvCQ5w+HPCJqAt920OwiR6qr664l7wb9C3bqV7TRFL/PTzIk/ta5+kKbAAig==
+"@kilke/core@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@kilke/core/-/core-1.1.0.tgz#44d92e569aa3a28a69ed5715cdf226e08291488a"
+  integrity sha512-f38od16h9rWuBTsz0SwdVBhsCD+EhG/YAKSpn+xNPwadjH7Bi0d1zWX6IsskKYiHewgfIPbJxtOCNZ427+ItOg==
   dependencies:
     any-observable "^0.3.0"
     axios "^0.18.0"

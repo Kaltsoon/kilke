@@ -6,7 +6,7 @@ import { merge } from 'lodash';
 import { promisify } from 'util';
 import knex from 'knex';
 import createLogger from '@kilke/core/logger';
-import { createHttpOutput } from '@kilke/core/sensorIo';
+import { createHttpInput } from '@kilke/core/sensorIo';
 
 import createApp from './app';
 import knexFile from '../../../knexfile';
@@ -54,7 +54,7 @@ config = merge(
   config,
 );
 
-const sensorIoOutput = createHttpOutput({
+const sensorIoInput = createHttpInput({
   url: SENSOR_CONFIGURATION_SERVER_URL,
 });
 
@@ -63,7 +63,7 @@ const db = knex(knexFile);
 const context = {
   logger,
   db,
-  sensorIoOutput,
+  sensorIoInput,
   config,
   updateConfig,
 };
