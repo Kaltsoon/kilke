@@ -21,4 +21,4 @@ fi
 
 touch config.json
 
-bash ./build.sh
+bash build.sh
