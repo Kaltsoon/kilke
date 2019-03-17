@@ -1,25 +1,17 @@
-import regression from 'regression';
 import { clamp, get } from 'lodash';
 
 const isNumber = value => typeof value === 'number';
-
-const MAX_RPM_DIFF = 50;
-
-const getSafeRpmDiff = (rpm, diff) => {
-  if (rpm + diff < 0) {
-    return 10 - rpm;
-  }
-
-  return clamp(diff, -MAX_RPM_DIFF, MAX_RPM_DIFF);
-};
 
 class PumpController {
   constructor({
     name,
     targetValue,
     logger,
-    maxMeasurements = 300,
+    maxMeasurements = 10,
     errorMultiplier = 1,
+    differentialMultiplier = 1,
+    maxRpm = 100,
+    minRpm = 5,
   }) {
     if (!name) {
       throw new Error('Name is required');
@@ -36,26 +28,13 @@ class PumpController {
     this.measurements = [];
     this.name = name;
     this.errorMultiplier = errorMultiplier;
-  }
-
-  isSameState(stateA, stateB) {
-    const [rpmA, valueA] = stateA;
-    const [rpmB, valueB] = stateB;
-
-    return Math.abs(rpmA - rpmB) < 0.1 && Math.abs(valueA - valueB) < 0.1;
+    this.minRpm = minRpm;
+    this.maxRpm = maxRpm;
+    this.differentialMultiplier = differentialMultiplier;
   }
 
   addState({ rpm, value }) {
     if (!isNumber(rpm) || !isNumber(value)) {
-      return;
-    }
-
-    const latestState = this.getLatestState();
-
-    if (
-      latestState &&
-      this.isSameState([rpm, value], [latestState.rpm, latestState.value])
-    ) {
       return;
     }
 
@@ -66,21 +45,8 @@ class PumpController {
     }
   }
 
-  getPoints() {
-    if (this.measurements.length < 2) {
-      return [];
-    }
-
-    let points = [];
-
-    for (let i = 0; i < this.measurements.length - 1; i++) {
-      const a = this.measurements[i];
-      const b = this.measurements[i + 1];
-
-      points.push([b.value - a.value, b.rpm - a.rpm]);
-    }
-
-    return points;
+  getSafeRpm(rpm) {
+    return rpm < this.minRpm ? 0 : clamp(rpm, this.minRpm, this.maxRpm);
   }
 
   logInfo(message) {
@@ -89,16 +55,21 @@ class PumpController {
     }
   }
 
-  canCalculateModel() {
-    return this.measurements.length >= 4;
-  }
-
-  getModel() {
-    return regression.linear(this.getPoints());
-  }
-
   getLatestState() {
     return this.measurements[this.measurements.length - 1];
+  }
+
+  getLatestStateDifference() {
+    if (this.measurements.length < 2) {
+      return 0;
+    }
+
+    const latestState = this.measurements[this.measurements.length - 1];
+    const stateBeforeLatestState = this.measurements[
+      this.measurements.length - 2
+    ];
+
+    return latestState.value - stateBeforeLatestState.value;
   }
 
   getError(value) {
@@ -106,7 +77,7 @@ class PumpController {
       return 0;
     }
 
-    return value - this.targetValue;
+    return this.targetValue - value;
   }
 
   getRpm() {
@@ -120,46 +91,91 @@ class PumpController {
 
     const error = this.getError(latestState.value);
 
-    const safeRpmDiff = getSafeRpmDiff(
-      latestState.rpm,
-      error * this.errorMultiplier * -1,
-    );
+    const difference = Math.max(0, this.getLatestStateDifference());
+
+    const nextRpm =
+      error * this.errorMultiplier + difference * this.differentialMultiplier;
+
+    const safeRpm = this.getSafeRpm(nextRpm);
 
     this.logInfo(
-      `Adjusting the current RPM, ${
-        latestState.rpm
-      }, by ${safeRpmDiff} to achieve ${error} difference in current value, ${
+      `Adjusting the current RPM, ${latestState.rpm}, by ${safeRpm -
+        latestState.rpm} to achieve ${error} difference in current value, ${
         latestState.value
       }`,
     );
 
-    return latestState.rpm + safeRpmDiff;
+    return safeRpm;
   }
 }
 
 const makeController = context => {
-  const { logger } = context;
+  const { logger, config } = context;
 
-  // TODO: set correct error multiplier and target value
-  const c0Controller = new PumpController({
-    name: 'c0',
-    targetValue: 7,
-    logger,
-    errorMultiplier: 1,
+  const pumpConfig = get(config, 'pumps') || {};
+  const pumpControllerConfig = get(config, 'pumpController.pumps') || {};
+  const controlledPupms = Object.keys(pumpControllerConfig);
+
+  controlledPupms.forEach(pump => {
+    if (!isNumber(get(pumpControllerConfig, [pump, 'targetValue']))) {
+      throw new Error(`targetValue is missing for pump "${pump}"`);
+    }
+
+    if (!isNumber(get(pumpControllerConfig, [pump, 'errorMultiplier']))) {
+      throw new Error(`errorMultiplier is missing for pump "${pump}"`);
+    }
+
+    if (
+      !isNumber(get(pumpControllerConfig, [pump, 'differentialMultiplier']))
+    ) {
+      throw new Error(`differentialMultiplier is missing for pump "${pump}"`);
+    }
+
+    if (!get(pumpControllerConfig, [pump, 'targetSensor'])) {
+      throw new Error(`targetSensor is missing for pump "${pump}"`);
+    }
+
+    if (!isNumber(get(pumpConfig, [pump, 'minRpm']))) {
+      throw new Error(`minRpm is missing for pump "${pump}"`);
+    }
+
+    if (!isNumber(get(pumpConfig, [pump, 'maxRpm']))) {
+      throw new Error(`maxRpm is missing for pump "${pump}"`);
+    }
   });
+
+  const controllers = controlledPupms.map(
+    pump =>
+      new PumpController({
+        name: pump,
+        targetValue: get(pumpControllerConfig, [pump, 'targetValue']),
+        logger,
+        errorMultiplier: get(pumpControllerConfig, [pump, 'errorMultiplier']),
+        differentialMultiplier: get(pumpControllerConfig, [
+          pump,
+          'differentialMultiplier',
+        ]),
+        minRpm: pumpConfig[pump].minRpm,
+        maxRpm: pumpConfig[pump].maxRpm,
+      }),
+  );
 
   return ({ measurements: { sensors, pumps }, automaticPumps }) => {
     let rpms = [];
 
-    // TODO: set correct sensor name
-    c0Controller.addState({
-      rpm: get(pumps, 'c0.value'),
-      value: get(sensors, 'ph.value'),
-    });
+    controllers.forEach(c => {
+      c.addState({
+        rpm: get(pumps, [c.name, 'value']),
+        value: get(sensors, [
+          pumpControllerConfig[c.name].targetSensor,
+          'value',
+        ]),
+      });
 
-    if (automaticPumps.includes('c0')) {
-      rpms = [...rpms, { id: 'c0', manualRpm: c0Controller.getRpm() }];
-    }
+      if (automaticPumps.includes(c.name)) {
+        rpms = [...rpms, { id: c.name, manualRpm: c.getRpm() }];
+      }
+    });
 
     return rpms;
   };

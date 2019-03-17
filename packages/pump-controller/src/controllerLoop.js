@@ -68,12 +68,20 @@ const runController = async context => {
 
   logger.info('Running the pump controller', controllerArgs);
 
-  const manualRpms = await controller(controllerArgs);
+  try {
+    const manualRpms = await controller(controllerArgs);
 
-  manualRpms.forEach(({ id, manualRpm }) => {
-    logger.info(`Setting rpm of ${manualRpm} RPM for pump "${id}"`);
-    sendPumpConfiguration({ id, manual_rpm: manualRpm, status: 'manual' });
-  });
+    manualRpms.forEach(({ id, manualRpm }) => {
+      logger.info(`Setting rpm of ${manualRpm} RPM for pump "${id}"`);
+      sendPumpConfiguration({
+        id,
+        manual_rpm: manualRpm,
+        status: 'manual',
+      }).catch(e => logger.error(e));
+    });
+  } catch (e) {
+    logger.error(e);
+  }
 };
 
 export const startControllerLoop = context => {

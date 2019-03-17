@@ -6,7 +6,6 @@
   "dependencies": {
     "@kilke/core": "1.1.0",
     "esm": "^3.2.10",
-    "lodash": "^4.17.11",
-    "regression": "^2.0.1"
+    "lodash": "^4.17.11"
   }
 }

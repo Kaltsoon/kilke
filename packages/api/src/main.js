@@ -27,7 +27,7 @@ let config = {};
 try {
   config = JSON.parse(readFileSync(configFilePath));
 } catch (e) {
-  logger.warning('No config file found');
+  logger.warn('No config file found');
 }
 
 const updateConfig = (newConfig = {}) => {
