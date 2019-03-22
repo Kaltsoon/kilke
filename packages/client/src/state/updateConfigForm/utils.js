@@ -22,10 +22,10 @@ export const getConfigByValues = values => {
       if (type) {
         acc[type] = {
           calibration: {
-            x1: parseInt(x1),
-            y1: parseInt(y1),
-            x2: parseInt(x2),
-            y2: parseInt(y2),
+            x1: parseFloat(x1),
+            y1: parseFloat(y1),
+            x2: parseFloat(x2),
+            y2: parseFloat(y2),
           },
         };
       }

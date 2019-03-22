@@ -84,9 +84,9 @@ class PumpController {
     const latestState = this.getLatestState();
 
     if (!latestState) {
-      this.logInfo(`Current RPM is unknown`);
+      this.logInfo('Current RPM is unknown');
 
-      return 10;
+      return 20;
     }
 
     const error = this.getError(latestState.value);

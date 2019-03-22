@@ -6,18 +6,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 
-import ApiAsync from '../ApiAsync';
 import { getSensorChart } from '../../apiUtils';
 import { selectSensorChartConfig } from '../../state/config';
 import { updateFilterPreset } from '../../state/charts';
 import ChartContainer from '../ChartContainer';
 import ChartAverage from '../ChartAverage';
 import Chart from '../Chart';
-import Refresher from '../Refresher';
-
-const getSensorChartPromiseFn = ({ apiClient, from, to, type }) => {
-  return getSensorChart({ apiClient, from, to, type });
-};
+import { usePollingApiAsync } from '../useApiAsync';
 
 const oneHour = 3600000;
 const oneDay = 86400000;
@@ -28,14 +23,6 @@ const refreshIntervalByFilterPreset = {
   last24Hours: 600000,
 };
 
-const getRefreshIntervalByFilterPreset = filterPreset => {
-  const { realTime } = refreshIntervalByFilterPreset;
-
-  return isString(filterPreset)
-    ? refreshIntervalByFilterPreset[filterPreset] || realTime
-    : realTime;
-};
-
 const getQueryByFilterPreset = preset => {
   if (preset === 'lastHour') {
     return { from: new Date(new Date() - oneHour).toISOString() };
@@ -44,6 +31,22 @@ const getQueryByFilterPreset = preset => {
   }
 
   return {};
+};
+
+const getSensorChartPromiseFn = ({ apiClient, type, filterPreset }) => {
+  return getSensorChart({
+    apiClient,
+    type,
+    ...getQueryByFilterPreset(filterPreset),
+  });
+};
+
+const getRefreshIntervalByFilterPreset = filterPreset => {
+  const { realTime } = refreshIntervalByFilterPreset;
+
+  return isString(filterPreset)
+    ? refreshIntervalByFilterPreset[filterPreset] || realTime
+    : realTime;
 };
 
 const MemoChart = memo(({ series, chartConfig }) => {
@@ -99,36 +102,24 @@ const ApiChartContainer = ({
   unit,
   ...props
 }) => {
-  const query = getQueryByFilterPreset(filterPreset);
   const filters = renderFilters({ filterPreset, onFilterPresetChange });
   const refreshInterval = getRefreshIntervalByFilterPreset(filterPreset);
 
+  const { data } = usePollingApiAsync({
+    promiseFn: getSensorChartPromiseFn,
+    type,
+    filterPreset,
+    watch: JSON.stringify([type, filterPreset]),
+    pollInterval: refreshInterval,
+  });
+
+  const average = renderAverage({ data, unit });
+  const chart = renderChart({ data, chartConfig });
+
   return (
-    <Refresher interval={refreshInterval}>
-      {({ token }) => {
-        const watch = JSON.stringify({ type, token, ...query });
-
-        return (
-          <ApiAsync
-            promiseFn={getSensorChartPromiseFn}
-            type={type}
-            {...query}
-            watch={watch}
-          >
-            {({ data }) => {
-              const average = renderAverage({ data, unit });
-              const chart = renderChart({ data, chartConfig });
-
-              return (
-                <ChartContainer average={average} filters={filters} {...props}>
-                  {chart}
-                </ChartContainer>
-              );
-            }}
-          </ApiAsync>
-        );
-      }}
-    </Refresher>
+    <ChartContainer average={average} filters={filters} {...props}>
+      {chart}
+    </ChartContainer>
   );
 };
 
