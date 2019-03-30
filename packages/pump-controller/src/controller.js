@@ -1,4 +1,4 @@
-import { clamp, get } from 'lodash';
+import { clamp, get, reverse } from 'lodash';
 
 const isNumber = value => typeof value === 'number';
 
@@ -7,7 +7,7 @@ class PumpController {
     name,
     targetValue,
     logger,
-    maxMeasurements = 10,
+    maxMeasurements = 5,
     errorMultiplier = 1,
     differentialMultiplier = 1,
     maxRpm = 100,
@@ -49,9 +49,9 @@ class PumpController {
     return rpm < this.minRpm ? 0 : clamp(rpm, this.minRpm, this.maxRpm);
   }
 
-  logInfo(message) {
+  logInfo(message, data = {}) {
     if (this.logger && this.logger.info) {
-      this.logger.info(`[${this.name}]: ${message}`);
+      this.logger.info(`[${this.name}]: ${message}`, data);
     }
   }
 
@@ -80,7 +80,7 @@ class PumpController {
     return this.targetValue - value;
   }
 
-  getRpm() {
+  getRpmValue() {
     const latestState = this.getLatestState();
 
     if (!latestState) {
@@ -89,21 +89,47 @@ class PumpController {
       return 20;
     }
 
-    const error = this.getError(latestState.value);
+    const [firstValue, secondValue, thirdValue] = reverse(
+      this.measurements.map(({ value }) => value),
+    );
 
-    const difference = Math.max(0, this.getLatestStateDifference());
+    const difference = [firstValue, secondValue, thirdValue].find(
+      v => !isNumber(v),
+    )
+      ? 0
+      : 0.66 * firstValue - 0.33 * secondValue - 0.33 * thirdValue;
 
-    const nextRpm =
-      error * this.errorMultiplier + difference * this.differentialMultiplier;
+    const error =
+      this.targetValue -
+      latestState.value -
+      this.differentialMultiplier * difference;
 
-    const safeRpm = this.getSafeRpm(nextRpm);
+    const nextRpm = Math.max(
+      0,
+      (this.previousRpm || 0) + this.errorMultiplier * error,
+    );
 
     this.logInfo(
-      `Adjusting the current RPM, ${latestState.rpm}, by ${safeRpm -
+      `Adjusting the current RPM, ${latestState.rpm}, by ${nextRpm -
         latestState.rpm} to achieve ${error} difference in current value, ${
         latestState.value
       }`,
+      {
+        measurements: this.measurements.map(({ value }) => value),
+        difference,
+        previousRpm: this.previousRpm,
+      },
     );
+
+    return nextRpm;
+  }
+
+  getRpm() {
+    const nextRpm = this.getRpmValue();
+
+    this.previousRpm = nextRpm;
+
+    const safeRpm = this.getSafeRpm(nextRpm);
 
     return safeRpm;
   }
