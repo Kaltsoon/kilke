@@ -1,10 +1,8 @@
 import React from 'react';
-import get from 'lodash/get';
 
 import ReactorComponent from '../ReactorComponent';
 import { getLatestSensorMeasurement } from '../../apiUtils';
 import { usePollingApiAsync } from '../useApiAsync';
-import { useSensorConfig } from '../useConfig';
 
 const getLatestSensorMeasurementPromiseFn = args =>
   getLatestSensorMeasurement(args);
@@ -22,19 +20,17 @@ const renderName = ({ title, subtitle }) => {
   );
 };
 
-const ApiSensorReactorComponent = ({ type }) => {
-  const config = useSensorConfig(type);
-
-  const unit = get(config, 'unit.unit') || '';
-  const title = get(config, 'title') || '';
-  const subtitle = get(config, 'subtitle') || '';
-  const label = get(config, 'reactorTitle');
+const ApiSensorReactorComponent = ({ sensor }) => {
+  const unit = sensor ? sensor.unitShortName : '';
+  const title = sensor ? sensor.title : '';
+  const subtitle = sensor ? sensor.subtitle : '';
+  const label = sensor ? sensor.reactorTitle : '';
 
   const { data } = usePollingApiAsync({
     promiseFn: getLatestSensorMeasurementPromiseFn,
-    watch: type,
+    watch: sensor.type,
     pollInterval: 5000,
-    type,
+    type: sensor.type,
   });
 
   return (

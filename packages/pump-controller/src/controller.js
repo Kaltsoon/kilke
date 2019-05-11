@@ -1,4 +1,4 @@
-import { clamp, get, reverse } from 'lodash';
+import { clamp, get, reverse, difference } from 'lodash';
 
 const isNumber = value => typeof value === 'number';
 
@@ -23,7 +23,6 @@ class PumpController {
 
     this.logger = logger;
     this.targetValue = targetValue;
-    this.errorSum = 0;
     this.maxMeasurements = maxMeasurements;
     this.measurements = [];
     this.name = name;
@@ -31,6 +30,7 @@ class PumpController {
     this.minRpm = minRpm;
     this.maxRpm = maxRpm;
     this.differentialMultiplier = differentialMultiplier;
+    this.previousRpm = null;
   }
 
   addState({ rpm, value }) {
@@ -59,34 +59,24 @@ class PumpController {
     return this.measurements[this.measurements.length - 1];
   }
 
-  getLatestStateDifference() {
-    if (this.measurements.length < 2) {
-      return 0;
-    }
-
-    const latestState = this.measurements[this.measurements.length - 1];
-    const stateBeforeLatestState = this.measurements[
-      this.measurements.length - 2
-    ];
-
-    return latestState.value - stateBeforeLatestState.value;
+  reset() {
+    this.previousRpm = null;
+    this.measurements = [];
   }
 
-  getError(value) {
-    if (!value) {
-      return 0;
-    }
+  getPreviousRpm() {
+    return this.previousRpm;
+  }
 
-    return this.targetValue - value;
+  setPreviousRpm(rpm) {
+    this.previousRpm = rpm;
   }
 
   getRpmValue() {
-    const latestState = this.getLatestState();
-
-    if (!latestState) {
+    if (this.getPreviousRpm() === null) {
       this.logInfo('Current RPM is unknown');
 
-      return 20;
+      return this.minRpm;
     }
 
     const [firstValue, secondValue, thirdValue] = reverse(
@@ -100,26 +90,18 @@ class PumpController {
       : 0.66 * firstValue - 0.33 * secondValue - 0.33 * thirdValue;
 
     const error =
-      this.targetValue -
-      latestState.value -
-      this.differentialMultiplier * difference;
+      this.targetValue - firstValue - this.differentialMultiplier * difference;
 
     const nextRpm = Math.max(
       0,
-      (this.previousRpm || 0) + this.errorMultiplier * error,
+      this.getPreviousRpm() + this.errorMultiplier * error,
     );
 
-    this.logInfo(
-      `Adjusting the current RPM, ${latestState.rpm}, by ${nextRpm -
-        latestState.rpm} to achieve ${error} difference in current value, ${
-        latestState.value
-      }`,
-      {
-        measurements: this.measurements.map(({ value }) => value),
-        difference,
-        previousRpm: this.previousRpm,
-      },
-    );
+    this.logInfo(`Setting RPM to ${nextRpm}`, {
+      measurements: [firstValue, secondValue, thirdValue],
+      difference,
+      previousRpm: this.previousRpm,
+    });
 
     return nextRpm;
   }
@@ -127,7 +109,7 @@ class PumpController {
   getRpm() {
     const nextRpm = this.getRpmValue();
 
-    this.previousRpm = nextRpm;
+    this.setPreviousRpm(nextRpm);
 
     const safeRpm = this.getSafeRpm(nextRpm);
 
@@ -186,22 +168,41 @@ const makeController = context => {
       }),
   );
 
+  let previousAutomaticPumps = [];
+
   return ({ measurements: { sensors, pumps }, automaticPumps }) => {
     let rpms = [];
 
-    controllers.forEach(c => {
-      c.addState({
-        rpm: get(pumps, [c.name, 'value']),
-        value: get(sensors, [
-          pumpControllerConfig[c.name].targetSensor,
-          'value',
-        ]),
-      });
+    const controllersToReset = difference(
+      previousAutomaticPumps,
+      automaticPumps,
+    );
 
+    controllersToReset.forEach(c => {
+      c.reset();
+    });
+
+    if (controllersToReset.length > 0) {
+      logger.info(
+        `Reseting controllers ${controllersToReset.map(c => c.name)}`,
+      );
+    }
+
+    controllers.forEach(c => {
       if (automaticPumps.includes(c.name)) {
+        c.addState({
+          rpm: get(pumps, [c.name, 'value']),
+          value: get(sensors, [
+            pumpControllerConfig[c.name].targetSensor,
+            'value',
+          ]),
+        });
+
         rpms = [...rpms, { id: c.name, manualRpm: c.getRpm() }];
       }
     });
+
+    previousAutomaticPumps = automaticPumps;
 
     return rpms;
   };

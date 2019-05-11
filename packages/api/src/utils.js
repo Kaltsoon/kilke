@@ -12,7 +12,7 @@ export const selectAsTimeslot = ({ db, column, columnAlias, interval }) => {
 export const getChartData = async ({
   db,
   table,
-  valueColumn = 'value_1',
+  valueColumn = 'value',
   createdAtColumn = 'created_at',
   from,
   to,
@@ -37,16 +37,16 @@ export const getChartData = async ({
     .groupBy('created_at_fixed')
     .orderBy('created_at_fixed');
 
-  return results.map(({ created_at_fixed, avg_value }) => [
-    new Date(created_at_fixed * 1000).getTime(),
-    avg_value,
+  return results.map(({ createdAtFixed, avgValue }) => [
+    new Date(createdAtFixed * 1000).getTime(),
+    avgValue,
   ]);
 };
 
 export const getAverages = async ({
   db,
   table,
-  valueColumn = 'value_1',
+  valueColumn = 'value',
   createdAtColumn = 'created_at',
   from,
   to,
@@ -76,11 +76,19 @@ export const getAverages = async ({
     .andWhere(createdAtColumn, '<=', to)
     .groupBy('time_group');
 
-  const current = results.find(({ time_group }) => time_group === 1);
-  const previous = results.find(({ time_group }) => time_group === 0);
+  const current = results.find(({ timeGroup }) => timeGroup === 1);
+  const previous = results.find(({ timeGroup }) => timeGroup === 0);
 
   return {
-    current: current ? current.avg_value : 0,
-    previous: previous ? previous.avg_value : 0,
+    current: current ? current.avgValue : 0,
+    previous: previous ? previous.avgValue : 0,
   };
 };
+
+export const isArray = value => toString.call(value) === '[object Array]';
+
+export const isObject = value => toString.call(value) === '[object Object]';
+
+export const isNumber = value => typeof value === 'number';
+
+export const isDate = value => toString.call(value) === '[object Date]';

@@ -1,5 +1,4 @@
 import React from 'react';
-import get from 'lodash/get';
 import Icon from '@material-ui/core/Icon';
 
 import ReactorComponent from '../ReactorComponent';
@@ -11,7 +10,6 @@ import {
 
 import PumpConfigurationModal from '../PumpConfigurationModal';
 import { usePollingApiAsync } from '../useApiAsync';
-import { usePumpConfig } from '../useConfig';
 
 const getLatestSensorMeasurementPromiseFn = args => {
   return Promise.all([
@@ -40,22 +38,20 @@ const getStatus = ({ config }) => {
   return config ? config.status : 'off';
 };
 
-const ApiPumpReactorComponent = ({ type }) => {
-  const config = usePumpConfig(type);
-
-  const unit = get(config, 'unit.unit') || '';
-  const title = get(config, 'title') || '';
-  const subtitle = get(config, 'subtitle') || '';
+const ApiPumpReactorComponent = ({ pump }) => {
+  const unit = pump ? pump.unitShortName : '';
+  const title = pump ? pump.title : '';
+  const subtitle = pump ? pump.subtitle : '';
 
   const { data } = usePollingApiAsync({
     promiseFn: getLatestSensorMeasurementPromiseFn,
-    watch: type,
+    watch: pump.type,
     pollInterval: 5000,
-    type,
+    type: pump.type,
   });
 
   return (
-    <PumpConfigurationModal type={type}>
+    <PumpConfigurationModal type={pump.type}>
       {({ onToggle }) => (
         <ReactorComponent
           status={getStatus({ config: data ? data.config : null })}

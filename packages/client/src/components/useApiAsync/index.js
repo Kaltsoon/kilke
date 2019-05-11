@@ -3,11 +3,13 @@ import { useAsync } from 'react-async';
 
 import { useRefresher } from '../useRefresher';
 import ApiContext from '../ApiContext';
+import useSystemId from '../useSystemId';
 
 export const useApiAsync = (asyncArgs = {}) => {
   const apiClient = useContext(ApiContext);
+  const systemId = useSystemId();
 
-  return useAsync({ apiClient, ...asyncArgs });
+  return useAsync({ apiClient, systemId, ...asyncArgs });
 };
 
 export const usePollingApiAsync = ({

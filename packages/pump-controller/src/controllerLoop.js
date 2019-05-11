@@ -7,15 +7,15 @@ const getPumpTypes = config => Object.keys(get(config, 'pumps') || {});
 const getByTypes = ({ measurements = [], types = [] }) => {
   const byType = keyBy(
     measurements.filter(
-      ({ type, value_1 }) =>
-        Boolean(type) && types.includes(type) && typeof value_1 === 'number',
+      ({ type, value }) =>
+        Boolean(type) && types.includes(type) && typeof value === 'number',
     ),
     ({ type }) => type,
   );
 
   return mapValues(byType, v => {
     return {
-      value: v.value_1,
+      value: v.value,
       createdAt: v.max_created_at ? new Date(v.max_created_at) : null,
     };
   });
@@ -36,7 +36,7 @@ const getPumps = ({ measurements = [], config = {} }) => {
 };
 
 const getLatestMeasurements = ({ db }) => {
-  return db.select('sa.type', 'sa.max_created_at', 'sb.value_1').from(
+  return db.select('sa.type', 'sa.max_created_at', 'sb.value').from(
     db.raw(
       `(select max(created_at) as max_created_at, type from sensor_measurements sa group by type) sa left join sensor_measurements sb on sa.max_created_at = sb.created_at and sa.type = sb.type;
 `,

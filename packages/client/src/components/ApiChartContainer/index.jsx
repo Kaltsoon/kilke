@@ -7,12 +7,12 @@ import get from 'lodash/get';
 import isString from 'lodash/isString';
 
 import { getSensorChart } from '../../apiUtils';
-import { selectSensorChartConfig } from '../../state/config';
 import { updateFilterPreset } from '../../state/charts';
 import ChartContainer from '../ChartContainer';
 import ChartAverage from '../ChartAverage';
 import Chart from '../Chart';
 import { usePollingApiAsync } from '../useApiAsync';
+import useSensorChartConfig from './useSensorChartConfig';
 
 const oneHour = 3600000;
 const oneDay = 86400000;
@@ -95,26 +95,26 @@ const renderFilters = ({ onFilterPresetChange, filterPreset }) => {
 };
 
 const ApiChartContainer = ({
-  chartConfig,
   onFilterPresetChange,
   filterPreset,
-  type,
-  unit,
+  sensor,
   ...props
 }) => {
   const filters = renderFilters({ filterPreset, onFilterPresetChange });
   const refreshInterval = getRefreshIntervalByFilterPreset(filterPreset);
+  const chartConfig = useSensorChartConfig(sensor);
 
   const { data } = usePollingApiAsync({
     promiseFn: getSensorChartPromiseFn,
-    type,
+    type: sensor.type,
     filterPreset,
-    watch: JSON.stringify([type, filterPreset]),
+    watch: JSON.stringify([sensor.type, filterPreset]),
     pollInterval: refreshInterval,
   });
 
+  const unit = sensor ? sensor.unitShortName : null;
   const average = renderAverage({ data, unit });
-  const chart = renderChart({ data, chartConfig });
+  const chart = chartConfig ? renderChart({ data, chartConfig }) : null;
 
   return (
     <ChartContainer average={average} filters={filters} {...props}>
@@ -125,15 +125,19 @@ const ApiChartContainer = ({
 
 export default compose(
   connect(
-    (state, { type }) => ({
-      chartConfig: selectSensorChartConfig(state, type),
+    (state, { sensor }) => ({
       filterPreset:
-        get(state, ['charts', 'types', type, 'filterPreset']) || 'realTime',
-      unit: get(state, ['config', 'sensors', type, 'unit', 'unit']) || null,
+        get(state, ['charts', 'types', sensor.type, 'filterPreset']) ||
+        'realTime',
     }),
-    (dispatch, { type }) => ({
+    (dispatch, { sensor }) => ({
       onFilterPresetChange: e => {
-        dispatch(updateFilterPreset({ type, filterPreset: e.target.value }));
+        dispatch(
+          updateFilterPreset({
+            type: sensor.type,
+            filterPreset: e.target.value,
+          }),
+        );
       },
     }),
   ),

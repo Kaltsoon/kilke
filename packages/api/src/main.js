@@ -1,71 +1,42 @@
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
+
 import through from 'through2';
 import http from 'http';
-import path from 'path';
-import { readFileSync, writeFile } from 'fs';
-import { merge } from 'lodash';
-import { promisify } from 'util';
 import knex from 'knex';
 import createLogger from '@kilke/core/logger';
-import { createHttpInput } from '@kilke/core/sensorIo';
+import { SystemClient, SystemInput } from '@kilke/core/systemIo';
+import { knexSnakeCaseMappers } from 'objection';
 
 import createApp from './app';
-import knexFile from '../../../knexfile';
+import knexFile from '../knexfile';
+import bindModels from './models';
 
-const writeFileAsync = promisify(writeFile);
-
-const {
-  PORT = 5000,
-  SENSOR_CONFIGURATION_SERVER_URL = 'http://localhost:4001',
-} = process.env;
-
-const configFilePath = path.join(__dirname, '..', '..', '..', 'config.json');
+const { PORT, SYSTEM_IO_PORT, SYSTEM_IO_HOST } = process.env;
 
 const logger = createLogger();
 
-let config = {};
-
-try {
-  config = JSON.parse(readFileSync(configFilePath));
-} catch (e) {
-  logger.warn('No config file found');
-}
-
-const updateConfig = (newConfig = {}) => {
-  return writeFileAsync(
-    configFilePath,
-    JSON.stringify(
-      { ...newConfig, updatedAt: new Date().toISOString() },
-      null,
-      2,
-    ),
-  );
-};
-
-config = merge(
-  {
-    sensors: {},
-    pumps: {},
-    visualization: {
-      tabs: {},
-      tabOrder: [],
-    },
-    reactor: {},
-  },
-  config,
-);
-
-const sensorIoInput = createHttpInput({
-  url: SENSOR_CONFIGURATION_SERVER_URL,
+const systemClient = new SystemClient({
+  port: SYSTEM_IO_PORT,
+  host: SYSTEM_IO_HOST,
 });
 
-const db = knex(knexFile);
+const systemInput = new SystemInput({ client: systemClient });
+
+const db = knex({
+  ...knexFile,
+  ...knexSnakeCaseMappers(),
+});
+
+const models = bindModels(db);
 
 const context = {
   logger,
   db,
-  sensorIoInput,
-  config,
-  updateConfig,
+  systemInput,
+  models,
 };
 
 const logStream = through(chunk => {

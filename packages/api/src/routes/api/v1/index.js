@@ -1,19 +1,11 @@
 import Router from 'koa-router';
 
 import ping from './ping';
-import charts from './charts';
-import sensors from './sensors';
-import pumps from './pumps';
-import config from './config';
-import reports from './reports';
+import systems from './systems';
 
 const router = new Router();
 
 router.use('/ping', ping.routes());
-router.use('/charts', charts.routes());
-router.use('/sensors', sensors.routes());
-router.use('/pumps', pumps.routes());
-router.use('/config', config.routes());
-router.use('/reports', reports.routes());
+router.use('/systems', systems.routes());
 
 export default router;

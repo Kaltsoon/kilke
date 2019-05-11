@@ -1,4 +1,10 @@
-export const getSensorChart = async ({ apiClient, type, from, to }) => {
+export const getSensorChart = async ({
+  apiClient,
+  type,
+  from,
+  to,
+  systemId,
+}) => {
   const params = {};
 
   if (from) {
@@ -9,27 +15,30 @@ export const getSensorChart = async ({ apiClient, type, from, to }) => {
     params.to = to;
   }
 
-  const { data } = await apiClient.get(`/v1/charts/${type}`, { params });
+  const { data } = await apiClient.get(
+    `/v1/systems/${systemId}/charts/${type}`,
+    { params },
+  );
 
   return data;
 };
 
-export const getLatestSensorMeasurement = async ({ apiClient, type }) => {
+export const getLatestSensorMeasurement = async ({
+  apiClient,
+  type,
+  systemId,
+}) => {
   const { data } = await apiClient.get(
-    `/v1/sensors/${type}/measurements?limit=1`,
+    `/v1/systems/${systemId}/sensor-measurements/${type}?limit=1`,
   );
 
   return data ? data[0] : null;
 };
 
-export const getPumpConfiguration = async ({ apiClient, type }) => {
-  const { data } = await apiClient.get(`/v1/pumps/${type}`);
+export const getPumpConfiguration = async ({ apiClient, type, systemId }) => {
+  const { data } = await apiClient.get(`/v1/systems/${systemId}/pumps/${type}`);
 
   return data;
-};
-
-export const updateConfig = ({ apiClient, config = {} }) => {
-  return apiClient.put('/v1/config', config);
 };
 
 export const getSensorMeasurementLog = async ({
@@ -38,6 +47,7 @@ export const getSensorMeasurementLog = async ({
   to,
   limit,
   types,
+  systemId,
 }) => {
   const params = {
     ...(from && { from }),
@@ -46,7 +56,22 @@ export const getSensorMeasurementLog = async ({
     ...(types && { types: types.join(',') }),
   };
 
-  const { data } = await apiClient.get('/v1/sensors/log', { params });
+  const { data } = await apiClient.get(
+    `/v1/systems/${systemId}/sensor-measurements/log`,
+    { params },
+  );
+
+  return data;
+};
+
+export const getSystem = async ({ apiClient, id }) => {
+  const { data } = await apiClient.get(`/v1/systems/${id}`);
+
+  return data;
+};
+
+export const updateSystem = async ({ apiClient, systemId, update }) => {
+  const { data } = await apiClient.put(`/v1/systems/${systemId}`, update);
 
   return data;
 };

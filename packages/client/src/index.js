@@ -9,14 +9,20 @@ import { createApiClient } from './api';
 import App from './components/App';
 import createStore from './state';
 import createTheme from './theme';
-import { update as updateConfig } from './state/config';
+import createApolloClient from './apolloClient';
 
 import * as serviceWorker from './serviceWorker';
 
 serviceWorker.unregister();
 
+const {
+  REACT_APP_API_URL: apiUrl,
+  REACT_APP_GRAPHQL_URI: graphqlUri,
+} = process.env;
+
 const history = createBrowserHistory();
-const apiClient = createApiClient({ url: process.env.REACT_APP_API_URL });
+const apiClient = createApiClient({ url: apiUrl });
+const apolloClient = createApolloClient({ uri: graphqlUri });
 
 const store = createStore({
   httpClient: axios,
@@ -26,13 +32,13 @@ const store = createStore({
 
 const theme = createTheme();
 
-(async () => {
-  const { data: config } = await apiClient.get('/v1/config');
-
-  store.dispatch(updateConfig(config));
-
-  render(
-    <App store={store} theme={theme} history={history} apiClient={apiClient} />,
-    document.getElementById('root'),
-  );
-})();
+render(
+  <App
+    store={store}
+    theme={theme}
+    history={history}
+    apiClient={apiClient}
+    apolloClient={apolloClient}
+  />,
+  document.getElementById('root'),
+);

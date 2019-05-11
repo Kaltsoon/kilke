@@ -1,36 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
-import get from 'lodash/get';
 
 import ApiSensorReactorComponent from '../ApiSensorReactorComponent';
 import ApiPumpReactorComponent from '../ApiPumpReactorComponent';
-import useConfig from '../useConfig';
+import useSystem from '../useSystem';
 
 const Container = styled.div`
   padding: ${({ theme }) => theme.spacing.unit * 0.5}px;
 `;
 
-const getPumps = config =>
-  Object.entries(get(config, 'reactor.pumps') || {}).map(([key, value]) => ({
-    type: key,
-    ...(value || {}),
-  }));
-
-const getSensors = config =>
-  Object.entries(get(config, 'reactor.sensors') || {}).map(([key, value]) => ({
-    type: key,
-    ...(value || {}),
-  }));
-
 const ProcessPage = () => {
-  const config = useConfig();
-  const pumps = getPumps(config);
-  const sensors = getSensors(config);
+  const { system } = useSystem({ includeReactor: true });
+
+  const pumps = system && system.reactor ? system.reactor.pumps : [];
+  const sensors = system && system.reactor ? system.reactor.sensors : [];
+
+  console.log(system);
 
   return (
     <Container>
-      {pumps.map(({ type }) => <ApiPumpReactorComponent type={type} key={type} />)}
-      {sensors.map(({ type }) => <ApiSensorReactorComponent type={type} key={type} />)}
+      {pumps.map(pump => (
+        <ApiPumpReactorComponent pump={pump} key={pump.id} />
+      ))}
+      {sensors.map(sensor => (
+        <ApiSensorReactorComponent sensor={sensor} key={sensor.id} />
+      ))}
     </Container>
   );
 };

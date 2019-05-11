@@ -7,6 +7,7 @@ import TabPage from '../TabPage';
 import MainNavigation from '../MainNavigation';
 import ReactorPage from '../ReactorPage';
 import ConfigPage from '../ConfigPage';
+import SystemIdContext from '../SystemIdContext';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -23,20 +24,29 @@ const NavigationContainer = styled.div`
   background-color: white;
 `;
 
-const MainPage = () => {
-  return (
+const SystemPage = ({
+  match: {
+    url,
+    params: { systemId },
+  },
+}) => (
+  <SystemIdContext.Provider value={systemId}>
     <Container>
       <NavigationContainer>
         <MainNavigation />
       </NavigationContainer>
       <Switch>
-        <Route path="/tabs/:tab" component={TabPage} />
-        <Route path="/reactor" component={ReactorPage} />
-        <Route path="/config" component={ConfigPage} />
-        <Redirect to="/config" />
+        <Route path={`${url}/tabs/:tab`} component={TabPage} />
+        <Route path={`${url}/reactor`} component={ReactorPage} />
+        <Route path={`${url}/config`} component={ConfigPage} />
+        <Redirect to={`${url}/config`} />
       </Switch>
     </Container>
-  );
+  </SystemIdContext.Provider>
+);
+
+const MainPage = () => {
+  return <Route path={'/:systemId'} component={SystemPage} />;
 };
 
 export default MainPage;

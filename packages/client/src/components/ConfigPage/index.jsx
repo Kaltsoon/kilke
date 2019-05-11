@@ -1,21 +1,21 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { reduxForm } from 'redux-form';
-import { connect } from 'react-redux';
-import { compose } from 'recompose';
 import Card from '@material-ui/core/Card';
 import TextField from '@material-ui/core/TextField';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 
-import ConfigForm from '../ConfigForm';
 import LogTable from './LogTable';
-import {
-  getValuesByConfig,
-  submit as submitConfig,
-} from '../../state/updateConfigForm';
 import Spacing from '../Spacing';
+import useSystem from '../useSystem';
+import CodeEditor from '../CodeEditor';
+import { updateSystem } from '../../apiUtils';
+import useApiAsync from '../useApiAsync';
+
+const updateConfig = ([config], { systemId, apiClient }) => {
+  return updateSystem({ update: { config }, systemId, apiClient });
+};
 
 const Wrapper = styled.div`
   padding: ${({ theme }) => theme.spacing.unit * 3}px;
@@ -32,27 +32,78 @@ const FormContainer = styled.div`
   padding-left: ${({ theme }) => theme.spacing.unit * 1.5}px;
 `;
 
-const UpdateConfigForm = compose(
-  connect(state => ({
-    initialValues: getValuesByConfig(state.config),
-  })),
-  reduxForm({
-    form: 'updateConfigForm',
-  }),
-)(ConfigForm);
+const UpdateConfigForm = ({ initialConfig, onSubmit: onSubmitProp }) => {
+  const [config, setConfig] = useState(initialConfig);
 
-const ConfigPage = ({ onSubmit: onSubmitForm }) => {
+  const isValidConfig = useMemo(
+    () => {
+      try {
+        JSON.parse(config);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+    [config],
+  );
+
+  const onSubmit = useCallback(
+    () => {
+      onSubmitProp(JSON.parse(config));
+    },
+    [config],
+  );
+
+  return (
+    <>
+      <CodeEditor value={config} onChange={setConfig} />
+      <Spacing marginTop={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={!isValidConfig}
+          onClick={onSubmit}
+        >
+          Save
+        </Button>
+      </Spacing>
+    </>
+  );
+};
+
+const getPrettyConfig = rawConfig => {
+  try {
+    return JSON.stringify(JSON.parse(rawConfig), null, 2);
+  } catch (e) {
+    return '{}';
+  }
+};
+
+const ConfigPage = () => {
   const [typeFilter, setTypeFilter] = useState('');
   const [snackIsOpen, setSnackIsOpen] = useState(false);
+  const { system, refetch: refetchSystem } = useSystem();
+  const { run: runUpdate } = useApiAsync({ deferFn: updateConfig });
 
   const onTypeFilterChange = useCallback(e => {
     setTypeFilter(e.target.value);
   });
 
-  const onSubmit = useCallback(async () => {
-    await onSubmitForm();
-    setSnackIsOpen(true);
-  }, [onSubmitForm]);
+  const prettyConfig = useMemo(
+    () => {
+      return system ? getPrettyConfig(system.rawConfig) : null;
+    },
+    [system],
+  );
+
+  const onSubmit = useCallback(
+    async configUpdate => {
+      await runUpdate(configUpdate);
+      setSnackIsOpen(true);
+      refetchSystem();
+    },
+    [setSnackIsOpen, runUpdate],
+  );
 
   const onCloseSnack = useCallback(() => {
     setSnackIsOpen(false);
@@ -68,7 +119,7 @@ const ConfigPage = ({ onSubmit: onSubmitForm }) => {
         open={snackIsOpen}
         autoHideDuration={6000}
         onClose={onCloseSnack}
-        message={`Configuration has been saved. Run "yarn pm2 restart all" to apply changes`}
+        message={`Configuration has been saved`}
       />
       <Wrapper>
         <LogContainer>
@@ -88,12 +139,12 @@ const ConfigPage = ({ onSubmit: onSubmitForm }) => {
         <FormContainer>
           <Card>
             <CardContent>
-              <UpdateConfigForm />
-              <Spacing marginTop={2}>
-                <Button variant="contained" color="primary" onClick={onSubmit}>
-                  Save
-                </Button>
-              </Spacing>
+              {system ? (
+                <UpdateConfigForm
+                  initialConfig={prettyConfig}
+                  onSubmit={onSubmit}
+                />
+              ) : null}
             </CardContent>
           </Card>
         </FormContainer>
@@ -102,11 +153,4 @@ const ConfigPage = ({ onSubmit: onSubmitForm }) => {
   );
 };
 
-export default connect(
-  null,
-  dispatch => ({
-    onSubmit: () => {
-      return dispatch(submitConfig());
-    },
-  }),
-)(ConfigPage);
+export default ConfigPage;

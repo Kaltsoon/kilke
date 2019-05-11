@@ -1,0 +1,19 @@
+{
+  "name": "@kilke/sensor-reader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./src"
+  },
+  "dependencies": {
+    "@kilke/core": "2.0.0",
+    "any-observable": "^0.3.0",
+    "axios": "^0.18.0",
+    "dotenv": "^8.0.0",
+    "esm": "^3.0.84",
+    "lodash": "^4.17.11",
+    "uuid": "^3.3.2",
+    "zen-observable": "^0.8.13"
+  }
+}

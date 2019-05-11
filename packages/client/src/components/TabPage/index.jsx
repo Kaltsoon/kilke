@@ -1,24 +1,43 @@
-import React, { Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, { Fragment, useMemo } from 'react';
 
 import ChartGrid, { ChartGridItem } from '../ChartGrid';
-import { selectTabSensorsArray } from '../../state/config';
-
 import ApiChartContainer from '../ApiChartContainer';
+import useSystem from '../useSystem';
 
-const TabPage = ({ sensors }) => {
+const getSensors = ({ system, tabKey }) => {
+  if (!system) {
+    return [];
+  }
+
+  const targetTab = system.systemViews.find(({ id }) => id === tabKey);
+
+  return targetTab ? targetTab.sensors : [];
+};
+
+const TabPage = ({
+  match: {
+    params: { tab: tabKey },
+  },
+}) => {
+  const { system } = useSystem();
+
+  const sensors = useMemo(() => getSensors({ system, tabKey }), [
+    system,
+    tabKey,
+  ]);
+
   return (
     <ChartGrid>
-      {sensors.map(({ key, title, subtitle }) => (
-        <ChartGridItem key={key}>
+      {sensors.map(sensor => (
+        <ChartGridItem key={sensor.id}>
           <ApiChartContainer
             title={
               <Fragment>
-                {title}
-                {subtitle ? <sub>{subtitle}</sub> : null}
+                {sensor.title}
+                {sensor.subtitle ? <sub>{sensor.subtitle}</sub> : null}
               </Fragment>
             }
-            type={key}
+            sensor={sensor}
           />
         </ChartGridItem>
       ))}
@@ -26,8 +45,4 @@ const TabPage = ({ sensors }) => {
   );
 };
 
-export default connect((state, { match }) => {
-  return {
-    sensors: selectTabSensorsArray(state, match.params.tab),
-  };
-})(TabPage);
+export default TabPage;

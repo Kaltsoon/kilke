@@ -18,7 +18,7 @@ const getMeasurements = async ({ db, from, to, interval, types }) => {
   const results = await db('sensor_measurements')
     .select(
       'created_at',
-      'value_1',
+      'value',
       'type',
       selectAsTimeslot({
         db,
@@ -26,7 +26,7 @@ const getMeasurements = async ({ db, from, to, interval, types }) => {
         columnAlias: 'created_at_fixed',
         interval: interval * 1000,
       }),
-      db.raw('avg(value_1) as avg_value'),
+      db.raw('avg(value) as avg_value'),
     )
     .whereIn('type', types)
     .andWhere('created_at', '>=', from)

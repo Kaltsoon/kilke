@@ -1,44 +1,60 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Route, Link } from 'react-router-dom';
 import get from 'lodash/get';
 
-import { selectTabsArray } from '../../state/config';
+import useSystem from '../useSystem';
+import useSystemId from '../useSystemId';
 
-const TabsContainerBase = ({
-  activeTab,
-  isReactorPath,
-  isConfigPath,
-  tabs,
-  reactor,
-}) => {
-  let activeIndex = activeTab
-    ? tabs.map(({ key }) => key).indexOf(activeTab)
-    : null;
+const TabsContainer = ({ activeTab, isReactorPath, isConfigPath }) => {
+  const { system } = useSystem();
+  const systemId = useSystemId();
 
-  let children = tabs.map(({ key, title }) => (
-    <Tab key={key} label={title} component={Link} to={`/tabs/${key}`} />
+  const tabs = system ? system.systemViews : [];
+  const hasReactor = system ? system.hasReactor : false;
+  const activeTabIndex = activeTab ? tabs.map(({ id }) => id).indexOf(activeTab) : -1;
+
+  let activeIndex = activeTabIndex >= 0
+    ? activeTabIndex
+    : 0;
+
+  let children = tabs.map(({ id, title }) => (
+    <Tab
+      key={id}
+      label={title}
+      component={Link}
+      to={`/${systemId}/tabs/${id}`}
+    />
   ));
 
-  if (reactor) {
+  if (hasReactor) {
     children = [
       ...children,
-      <Tab key="reactor" label="Reactor" component={Link} to="/reactor" />,
+      <Tab
+        key="reactor"
+        label="Reactor"
+        component={Link}
+        to={`/${systemId}/reactor`}
+      />,
     ];
   }
 
   children = [
     ...children,
-    <Tab key="config" label="Configuration" component={Link} to="/config" />,
+    <Tab
+      key="config"
+      label="Configuration"
+      component={Link}
+      to={`/${systemId}/config`}
+    />,
   ];
 
   if (isConfigPath) {
     activeIndex = children.length - 1;
   }
 
-  if (reactor && isReactorPath) {
+  if (hasReactor && isReactorPath) {
     activeIndex = children.length - 2;
   }
 
@@ -52,21 +68,16 @@ const TabsContainerBase = ({
   );
 };
 
-const TabsContainer = connect(state => ({
-  tabs: selectTabsArray(state),
-  reactor: get(state, 'config.reactor'),
-}))(TabsContainerBase);
-
 const MainNavigation = () => {
   return (
     <Route
-      path="/config"
+      path="/:systemId/config"
       children={({ match: configMatch }) => (
         <Route
-          path="/reactor"
+          path="/:systemId/reactor"
           children={({ match: reactorMatch }) => (
             <Route
-              path="/tabs/:tab"
+              path="/:systemId/tabs/:tab"
               children={({ match: tabMatch }) => (
                 <TabsContainer
                   isReactorPath={!!reactorMatch}

@@ -27,12 +27,12 @@ export class NotFoundError extends ApplicationError {
   }
 }
 
-export class BadInputError extends ApplicationError {
+export class BadRequestError extends ApplicationError {
   constructor(message, properties = {}) {
     super(message, properties);
 
     this.statusCode = 400;
-    this.type = 'badInputError';
+    this.type = 'BadRequestError';
   }
 }
 
