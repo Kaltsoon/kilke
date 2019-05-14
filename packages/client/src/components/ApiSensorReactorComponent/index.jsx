@@ -1,11 +1,8 @@
 import React from 'react';
 
 import ReactorComponent from '../ReactorComponent';
-import { getLatestSensorMeasurement } from '../../apiUtils';
-import { usePollingApiAsync } from '../useApiAsync';
-
-const getLatestSensorMeasurementPromiseFn = args =>
-  getLatestSensorMeasurement(args);
+import { getLatestSensorMeasurement } from '@/apiUtils';
+import { usePollingApiAsync } from '@/hooks/useApiAsync';
 
 const renderValue = ({ unit, value }) => {
   return unit ? `${value} ${unit}` : value;
@@ -20,14 +17,14 @@ const renderName = ({ title, subtitle }) => {
   );
 };
 
-const ApiSensorReactorComponent = ({ sensor }) => {
+const ApiSensorReactorComponent = ({ sensor, ...props }) => {
   const unit = sensor ? sensor.unitShortName : '';
   const title = sensor ? sensor.title : '';
   const subtitle = sensor ? sensor.subtitle : '';
   const label = sensor ? sensor.reactorTitle : '';
 
   const { data } = usePollingApiAsync({
-    promiseFn: getLatestSensorMeasurementPromiseFn,
+    promiseFn: getLatestSensorMeasurement,
     watch: sensor.type,
     pollInterval: 5000,
     type: sensor.type,
@@ -39,6 +36,7 @@ const ApiSensorReactorComponent = ({ sensor }) => {
       value={data ? renderValue({ value: data.value, unit }) : null}
       name={renderName({ title, subtitle })}
       label={label}
+      {...props}
     />
   );
 };

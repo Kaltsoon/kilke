@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import Select from '@material-ui/core/Select';
@@ -6,13 +6,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 
-import { getSensorChart } from '../../apiUtils';
 import { updateFilterPreset } from '../../state/charts';
 import ChartContainer from '../ChartContainer';
 import ChartAverage from '../ChartAverage';
 import Chart from '../Chart';
-import { usePollingApiAsync } from '../useApiAsync';
-import useSensorChartConfig from './useSensorChartConfig';
+import useSensorChart from '@/hooks/useSensorChart';
 
 const oneHour = 3600000;
 const oneDay = 86400000;
@@ -31,14 +29,6 @@ const getQueryByFilterPreset = preset => {
   }
 
   return {};
-};
-
-const getSensorChartPromiseFn = ({ apiClient, type, filterPreset }) => {
-  return getSensorChart({
-    apiClient,
-    type,
-    ...getQueryByFilterPreset(filterPreset),
-  });
 };
 
 const getRefreshIntervalByFilterPreset = filterPreset => {
@@ -102,14 +92,18 @@ const ApiChartContainer = ({
 }) => {
   const filters = renderFilters({ filterPreset, onFilterPresetChange });
   const refreshInterval = getRefreshIntervalByFilterPreset(filterPreset);
-  const chartConfig = useSensorChartConfig(sensor);
 
-  const { data } = usePollingApiAsync({
-    promiseFn: getSensorChartPromiseFn,
+  const getQuery = useMemo(
+    () => {
+      return () => getQueryByFilterPreset(filterPreset);
+    },
+    [filterPreset],
+  );
+
+  const { data, config: chartConfig } = useSensorChart({
     type: sensor.type,
-    filterPreset,
-    watch: JSON.stringify([sensor.type, filterPreset]),
     pollInterval: refreshInterval,
+    getQuery,
   });
 
   const unit = sensor ? sensor.unitShortName : null;

@@ -3,23 +3,10 @@ import Icon from '@material-ui/core/Icon';
 
 import ReactorComponent from '../ReactorComponent';
 
-import {
-  getLatestSensorMeasurement,
-  getPumpConfiguration,
-} from '../../apiUtils';
-
+import { getLatestPumpMeasurement } from '@/apiUtils';
 import PumpConfigurationModal from '../PumpConfigurationModal';
-import { usePollingApiAsync } from '../useApiAsync';
-
-const getLatestSensorMeasurementPromiseFn = args => {
-  return Promise.all([
-    getLatestSensorMeasurement(args),
-    getPumpConfiguration(args),
-  ]).then(([measurement, config]) => ({
-    measurement,
-    config,
-  }));
-};
+import { usePollingApiAsync } from '@/hooks/useApiAsync';
+import useModal from '@/hooks/useModal';
 
 const renderValue = ({ unit, value }) => {
   return unit ? `${value} ${unit}` : value;
@@ -34,38 +21,36 @@ const renderName = ({ title, subtitle }) => {
   );
 };
 
-const getStatus = ({ config }) => {
-  return config ? config.status : 'off';
+const getStatus = data => {
+  return data ? data.status : 'off';
 };
 
-const ApiPumpReactorComponent = ({ pump }) => {
+const ApiPumpReactorComponent = ({ pump, ...props }) => {
   const unit = pump ? pump.unitShortName : '';
   const title = pump ? pump.title : '';
   const subtitle = pump ? pump.subtitle : '';
 
   const { data } = usePollingApiAsync({
-    promiseFn: getLatestSensorMeasurementPromiseFn,
+    promiseFn: getLatestPumpMeasurement,
     watch: pump.type,
     pollInterval: 5000,
     type: pump.type,
   });
 
+  const { open, onClose, onToggle } = useModal();
+
   return (
-    <PumpConfigurationModal type={pump.type}>
-      {({ onToggle }) => (
-        <ReactorComponent
-          status={getStatus({ config: data ? data.config : null })}
-          value={
-            data && data.measurement
-              ? renderValue({ value: data.measurement.value, unit })
-              : null
-          }
-          name={renderName({ title, subtitle })}
-          onStatusClick={onToggle}
-          label={<Icon>play_arrow</Icon>}
-        />
-      )}
-    </PumpConfigurationModal>
+    <>
+      <PumpConfigurationModal open={open} onClose={onClose} />
+      <ReactorComponent
+        status={getStatus(data)}
+        value={data ? renderValue({ value: data.rpm, unit }) : null}
+        name={renderName({ title, subtitle })}
+        onStatusClick={onToggle}
+        label={<Icon>play_arrow</Icon>}
+        {...props}
+      />
+    </>
   );
 };
 

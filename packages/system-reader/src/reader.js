@@ -1,43 +1,94 @@
 import Observable from 'zen-observable';
-import { isNumber } from 'lodash';
+import { isNumber, get, isObject, isBoolean } from 'lodash';
 
-const createMeasurementSubscribe = ({ apiClient, logger }) => async ({
-  payload: data,
-  systemId,
-}) => {
-  if (!systemId) {
-    return logger.error('systemId is not defined in the message');
-  }
-
-  logger.info('New measurement', { measurement: data });
-
-  const { time, ...sensors } = data;
-  const measurementTime = isNumber(time) ? new Date(time * 1000) : new Date();
-
-  const nonNumberSensors = Object.entries(sensors)
-    .filter(([, value]) => !isNumber(value))
-    .map(([type]) => type);
-
-  if (nonNumberSensors.length > 0) {
-    logger.warn(
-      `Sensors "${nonNumberSensors.join(
-        ', ',
-      )}" did not provide a numeric measurement`,
-    );
-  }
-
-  const rows = Object.entries(sensors)
+const createSensorMeasurements = ({ apiClient, data, systemId, time }) => {
+  const rows = Object.entries(data)
     .filter(([, value]) => isNumber(value))
     .map(([type, value]) => {
       return {
         type,
-        createdAt: measurementTime,
+        createdAt: time,
         rawValue: value,
       };
     });
 
+  return apiClient.createSensorMeasurements({ measurements: rows, systemId });
+};
+
+const createPumpMeasurements = ({ apiClient, data, systemId, time }) => {
+  const rows = Object.entries(data)
+    .filter(([, value]) => isNumber(get(value, 'rpm')) && get(value, 'status'))
+    .map(([type, value]) => {
+      return {
+        type,
+        createdAt: time,
+        rpm: value.rpm,
+        status: value.status,
+      };
+    });
+
+  return apiClient.createPumpMeasurements({ measurements: rows, systemId });
+};
+
+const createBinarySensorMeasurements = ({
+  apiClient,
+  data,
+  systemId,
+  time,
+}) => {
+  const rows = Object.entries(data)
+    .filter(([, value]) => isBoolean(value))
+    .map(([type, value]) => {
+      return {
+        type,
+        createdAt: time,
+        value,
+      };
+    });
+
+  return apiClient.createBinarySensorMeasurements({
+    measurements: rows,
+    systemId,
+  });
+};
+
+const createMeasurementSubscribe = ({ apiClient, logger }) => async ({
+  payload,
+  systemId,
+}) => {
+  if (!systemId) {
+    return logger.error('Measurement systemId is not defined in the message');
+  }
+
+  const measurementType = get(payload, 'type');
+  const data = get(payload, 'data');
+  const time = get(payload, 'time');
+
+  if (!isObject(data)) {
+    return logger.error('Measurement data is not defined in the message', {
+      payload,
+    });
+  }
+
+  logger.info('New measurement', { payload, systemId });
+
+  const measurementTime = isNumber(time) ? new Date(time * 1000) : new Date();
+
+  const measurementArgs = {
+    apiClient,
+    data,
+    time: measurementTime,
+    systemId,
+  };
+
   try {
-    await apiClient.createSensorMeasurements({ measurements: rows, systemId });
+    if (measurementType === 'sensor') {
+      await createSensorMeasurements(measurementArgs);
+    } else if (measurementType === 'pump') {
+      await createPumpMeasurements(measurementArgs);
+    } else if (measurementType === 'binary') {
+      await createBinarySensorMeasurements(measurementArgs);
+    }
   } catch (e) {
     logger.error(e);
   }

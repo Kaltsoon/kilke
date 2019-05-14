@@ -35,6 +35,30 @@ export const getLatestSensorMeasurement = async ({
   return data ? data[0] : null;
 };
 
+export const getLatestPumpMeasurement = async ({
+  apiClient,
+  type,
+  systemId,
+}) => {
+  const { data } = await apiClient.get(
+    `/v1/systems/${systemId}/pump-measurements/${type}?limit=1`,
+  );
+
+  return data ? data[0] : null;
+};
+
+export const getLatestBinarySensorMeasurement = async ({
+  apiClient,
+  type,
+  systemId,
+}) => {
+  const { data } = await apiClient.get(
+    `/v1/systems/${systemId}/binary-sensor-measurements/${type}?limit=1`,
+  );
+
+  return data ? data[0] : null;
+};
+
 export const getPumpConfiguration = async ({ apiClient, type, systemId }) => {
   const { data } = await apiClient.get(`/v1/systems/${systemId}/pumps/${type}`);
 

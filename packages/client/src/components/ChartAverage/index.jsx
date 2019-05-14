@@ -4,7 +4,7 @@ import humanize from 'humanize-duration';
 import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography';
 
-import { themeProp } from '../../theme';
+import { themeProp } from '@/theme';
 
 const Container = styled.div``;
 

@@ -2,12 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { Route, Redirect, Switch } from 'react-router-dom';
 
-import { themeProp } from '../../theme';
+import { themeProp } from '@/theme';
 import TabPage from '../TabPage';
-import MainNavigation from '../MainNavigation';
+import SystemTabs from '../SystemTabs';
 import ReactorPage from '../ReactorPage';
 import ConfigPage from '../ConfigPage';
 import SystemIdContext from '../SystemIdContext';
+import SystemSelectionPage from '../SystemSelectionPage';
+import AppBar from '../AppBar';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -31,22 +33,29 @@ const SystemPage = ({
   },
 }) => (
   <SystemIdContext.Provider value={systemId}>
-    <Container>
-      <NavigationContainer>
-        <MainNavigation />
-      </NavigationContainer>
-      <Switch>
-        <Route path={`${url}/tabs/:tab`} component={TabPage} />
-        <Route path={`${url}/reactor`} component={ReactorPage} />
-        <Route path={`${url}/config`} component={ConfigPage} />
-        <Redirect to={`${url}/config`} />
-      </Switch>
-    </Container>
+    <NavigationContainer>
+      <SystemTabs />
+    </NavigationContainer>
+    <Switch>
+      <Route path={`${url}/tabs/:tab`} component={TabPage} />
+      <Route path={`${url}/reactor`} component={ReactorPage} />
+      <Route path={`${url}/config`} component={ConfigPage} />
+      <Redirect to={`${url}/config`} />
+    </Switch>
   </SystemIdContext.Provider>
 );
 
 const MainPage = () => {
-  return <Route path={'/:systemId'} component={SystemPage} />;
+  return (
+    <Container>
+      <AppBar />
+      <Switch>
+        <Route path="/system-select" exatct component={SystemSelectionPage} />
+        <Route path={'/:systemId'} component={SystemPage} />
+        <Redirect to="/system-select" />
+      </Switch>
+    </Container>
+  );
 };
 
 export default MainPage;

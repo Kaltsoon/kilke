@@ -9,6 +9,7 @@ import { get, isObject } from 'lodash';
 
 import Sensor from './Sensor';
 import Pump from './Pump';
+import BinarySensor from './BinarySensor';
 
 const Reactor = new GraphQLObjectType({
   name: 'Reactor',
@@ -49,6 +50,26 @@ const Reactor = new GraphQLObjectType({
           ...(systemPumps.find(({ type: pumpType }) => pumpType === type) ||
             {}),
         }));
+      },
+    },
+    binarySensors: {
+      type: new GraphQLList(BinarySensor),
+      resolve: ({ config, systemId }) => {
+        const reactorSensors = Object.keys(
+          get(config, 'reactor.binarySensors') || {},
+        );
+
+        return reactorSensors
+          .map(sensor =>
+            isObject(get(config, ['binarySensors', sensor]))
+              ? {
+                  ...config.sensors[sensor],
+                  type: sensor,
+                  systemId,
+                }
+              : null,
+          )
+          .filter(Boolean);
       },
     },
   }),

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { setLightness, darken } from 'polished';
 
-import { themeProp } from '../../theme';
+import { themeProp } from '@/theme';
 
 const getColorCss = ({ status, theme }) => {
   let palette = {

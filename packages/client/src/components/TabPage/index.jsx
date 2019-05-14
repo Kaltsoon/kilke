@@ -2,7 +2,7 @@ import React, { Fragment, useMemo } from 'react';
 
 import ChartGrid, { ChartGridItem } from '../ChartGrid';
 import ApiChartContainer from '../ApiChartContainer';
-import useSystem from '../useSystem';
+import useSystem from '@/hooks/useSystem';
 
 const getSensors = ({ system, tabKey }) => {
   if (!system) {

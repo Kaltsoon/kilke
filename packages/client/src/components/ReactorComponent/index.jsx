@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import isFunction from 'lodash/isFunction';
 
-import { themeProp } from '../../theme';
+import { themeProp } from '@/theme';
 import ReactorComponentStatus from '../ReactorComponentStatus';
 
 const Status = styled(ReactorComponentStatus)`
@@ -70,12 +70,19 @@ const ReactorComponent = ({
   onNameClick,
   onValueClick,
   onStatusClick,
+  nameClassName,
+  nameStyle = {},
   ...props
 }) => {
   return (
     <Container {...props}>
       <LabelContainer>
-        <Label onClick={onNameClick} clickable={isFunction(onNameClick)}>
+        <Label
+          className={nameClassName}
+          style={nameStyle}
+          onClick={onNameClick}
+          clickable={isFunction(onNameClick)}
+        >
           {name}
         </Label>
       </LabelContainer>

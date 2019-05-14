@@ -24,7 +24,7 @@ const history = createBrowserHistory();
 const apiClient = createApiClient({ url: apiUrl });
 const apolloClient = createApolloClient({ uri: graphqlUri });
 
-const store = createStore({
+const { store, persistor } = createStore({
   httpClient: axios,
   apiClient,
   history,
@@ -39,6 +39,7 @@ render(
     history={history}
     apiClient={apiClient}
     apolloClient={apolloClient}
+    persistor={persistor}
   />,
   document.getElementById('root'),
 );

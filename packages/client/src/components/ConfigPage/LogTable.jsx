@@ -8,8 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 import formatDate from 'date-fns/format';
 import isValidDate from 'date-fns/is_valid';
 
-import { usePollingApiAsync } from '../useApiAsync';
-import { getSensorMeasurementLog } from '../../apiUtils';
+import { usePollingApiAsync } from '@/hooks/useApiAsync';
+import { getSensorMeasurementLog } from '@/apiUtils';
 
 const LogTableWrapper = styled.div`
   max-height: 600px;
@@ -50,7 +50,8 @@ const LogTable = ({ types = null }) => {
     promiseFn: getSensorMeasurementLog,
     types,
     watch: JSON.stringify(types),
-    pollInterval: 4000,
+    pollInterval: 5000,
+    limit: 50,
   });
 
   return <LogTableContent measurements={data || []} />;

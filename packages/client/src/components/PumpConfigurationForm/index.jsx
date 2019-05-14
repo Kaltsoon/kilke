@@ -1,64 +1,29 @@
 import React from 'react';
-import styled from 'styled-components';
-import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import { Field } from 'redux-form';
-import Select from '@material-ui/core/Select';
+import { Field } from 'react-final-form';
 import MenuItem from '@material-ui/core/MenuItem';
 
-const Item = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing.unit * 2}px;
-`;
+import { FormFieldInput, FormFieldSelect } from '../FormFields';
+import Spacing from '../Spacing';
 
-const renderInputField = props => {
-  const { input, meta, ...rest } = props;
-
-  return <Input {...input} {...rest} />;
-};
-
-const renderSelectField = props => {
-  const { input, meta, ...rest } = props;
-
-  return <Select {...input} {...rest} />;
-};
-
-const renderStatusSelectField = props => {
-  return renderSelectField({
-    children: [
-      <MenuItem value="off">Off</MenuItem>,
-      <MenuItem value="automatic">Automatic</MenuItem>,
-      <MenuItem value="manual">Manual</MenuItem>,
-      <MenuItem value="fault">Fault</MenuItem>,
-    ],
-    ...props,
-  });
-};
-
-const PumpConfigurationForm = ({ handleSubmit }) => {
+const PumpConfigurationForm = () => {
   return (
-    <form onSubmit={handleSubmit}>
-      <Item>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="configurationStatus">Status</InputLabel>
-          <Field
-            name="status"
-            component={renderStatusSelectField}
-            props={{ id: 'configurationStatus' }}
-          />
-        </FormControl>
-      </Item>
-      <Item>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="configurationManualRpm">Manual RPM</InputLabel>
-          <Field
-            name="manualRpm"
-            component={renderInputField}
-            props={{ id: 'configurationManualRpm', type: 'number' }}
-          />
-        </FormControl>
-      </Item>
-    </form>
+    <>
+      <Spacing marginBottom={2}>
+        <Field name="status" component={FormFieldSelect} inputLabel="Status">
+          <MenuItem value="off">Off</MenuItem>
+          <MenuItem value="automatic">Automatic</MenuItem>
+          <MenuItem value="manual">Manual</MenuItem>
+          <MenuItem value="fault">Fault</MenuItem>
+        </Field>
+      </Spacing>
+      <Spacing>
+        <Field
+          name="manualRpm"
+          component={FormFieldInput}
+          inputLabel="Manual RPM"
+        />
+      </Spacing>
+    </>
   );
 };
 

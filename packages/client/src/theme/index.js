@@ -75,4 +75,7 @@ export const getSpacingStyles = props => {
   });
 };
 
+export const spacing = amount => ({ theme }) =>
+  `${theme.spacing.unit * amount}px`;
+
 export default createTheme;

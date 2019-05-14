@@ -86,6 +86,9 @@ const System = new GraphQLObjectType({
       type: Reactor,
       resolve: ({ id, config }) => ({ systemId: id, config }),
     },
+    name: {
+      type: GraphQLString,
+    },
   }),
 });
 

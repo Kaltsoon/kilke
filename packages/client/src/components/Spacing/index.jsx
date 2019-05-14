@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { getSpacingStyles } from '../../theme';
+import { getSpacingStyles } from '@/theme';
 
 const Spacing = styled.div`
   ${getSpacingStyles}

@@ -8,10 +8,10 @@ import Snackbar from '@material-ui/core/Snackbar';
 
 import LogTable from './LogTable';
 import Spacing from '../Spacing';
-import useSystem from '../useSystem';
+import useSystem from '@/hooks/useSystem';
 import CodeEditor from '../CodeEditor';
-import { updateSystem } from '../../apiUtils';
-import useApiAsync from '../useApiAsync';
+import { updateSystem } from '@/apiUtils';
+import useApiAsync from '@/hooks/useApiAsync';
 
 const updateConfig = ([config], { systemId, apiClient }) => {
   return updateSystem({ update: { config }, systemId, apiClient });

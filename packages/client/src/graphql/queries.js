@@ -1,5 +1,14 @@
 import gql from 'graphql-tag';
 
+const SystemBaseFields = gql`
+  fragment SystemBaseFields on System {
+    id
+    hasReactor
+    rawConfig
+    name
+  }
+`;
+
 const SensorBaseFields = gql`
   fragment SensorBaseFields on Sensor {
     id
@@ -27,9 +36,7 @@ const PumpBaseFields = gql`
 export const GET_SYSTEM = gql`
   query getSystem($id: ID!, $includeReactor: Boolean = false) {
     system(id: $id) {
-      id
-      hasReactor
-      rawConfig
+      ...SystemBaseFields
       sensors {
         ...SensorBaseFields
       }
@@ -53,4 +60,15 @@ export const GET_SYSTEM = gql`
 
   ${SensorBaseFields}
   ${PumpBaseFields}
+  ${SystemBaseFields}
+`;
+
+export const GET_SYSTEMS = gql`
+  query getSystems {
+    systems {
+      ...SystemBaseFields
+    }
+  }
+
+  ${SystemBaseFields}
 `;
