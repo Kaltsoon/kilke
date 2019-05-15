@@ -1,7 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { reducer as formReducer } from 'redux-form';
 import createRootReducer from './rootReducer';
 import { persistStore } from 'redux-persist';
 
@@ -12,9 +11,7 @@ export default ({ httpClient, apiClient, preloadedState, history }) => {
     history,
   };
 
-  const rootReducer = createRootReducer({
-    form: formReducer,
-  });
+  const rootReducer = createRootReducer({});
 
   const middleware = applyMiddleware(thunk.withExtraArgument(context));
 

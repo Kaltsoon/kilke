@@ -18,6 +18,7 @@ export const getChartData = async ({
   to,
   points,
   type,
+  systemId,
 }) => {
   const interval = Math.round((to.getTime() - from.getTime()) / points / 1000);
 
@@ -31,7 +32,7 @@ export const getChartData = async ({
       }),
       db.raw('avg(:value:) as avg_value', { value: valueColumn }),
     )
-    .where({ type })
+    .where({ type, systemId })
     .andWhere(createdAtColumn, '>=', from)
     .andWhere(createdAtColumn, '<=', to)
     .groupBy('created_at_fixed')

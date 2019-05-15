@@ -50,9 +50,13 @@ const MainPage = () => {
     <Container>
       <AppBar />
       <Switch>
-        <Route path="/system-select" exatct component={SystemSelectionPage} />
+        <Route
+          path="/system-selection"
+          exatct
+          component={SystemSelectionPage}
+        />
         <Route path={'/:systemId'} component={SystemPage} />
-        <Redirect to="/system-select" />
+        <Redirect to="/system-selection" />
       </Switch>
     </Container>
   );

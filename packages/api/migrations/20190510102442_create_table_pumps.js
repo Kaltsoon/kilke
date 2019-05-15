@@ -5,11 +5,8 @@ exports.up = function(knex, Promise) {
     table.foreign('system_id').references('systems.id');
     table.timestamp('created_at');
     table.timestamp('updated_at');
-    table.text('status');
     table.primary(['system_id', 'type']);
 
-    table.index(['system_id', 'status']);
-    table.index(['system_id', 'type']);
     table.index('system_id');
   });
 };

@@ -4,9 +4,10 @@ import morgan from 'koa-morgan';
 import bodyParser from 'koa-bodyparser';
 import { ApolloServer } from 'apollo-server-koa';
 import schema from './graphql/rootSchema';
+import { ValidationError } from 'yup';
 
 import routes from './routes';
-import { ApplicationError, NotFoundError } from './errors';
+import { ApplicationError, NotFoundError, BadRequestError } from './errors';
 import createDataLoaders from './graphql/dataLoaders';
 
 const errorHandler = () => async (ctx, next) => {
@@ -16,6 +17,13 @@ const errorHandler = () => async (ctx, next) => {
     if (e instanceof ApplicationError) {
       ctx.status = e.statusCode || 500;
       ctx.body = e.toJson();
+    } else if (e instanceof ValidationError) {
+      ctx.status = 400;
+
+      ctx.body = new BadRequestError('Bad request', {
+        path: e.path,
+        errors: e.errors,
+      }).toJson();
     } else {
       ctx.status = 500;
       ctx.body = new ApplicationError('Something went wrong').toJson();

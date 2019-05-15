@@ -34,7 +34,7 @@ const MenuDrawer = props => {
   return (
     <Drawer {...props}>
       <List>
-        <ListItem {...itemProps} to="/system-select">
+        <ListItem {...itemProps} to="/system-selection">
           <ListItemIcon>
             <Icon>compare_arrows</Icon>
           </ListItemIcon>

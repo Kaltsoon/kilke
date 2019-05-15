@@ -7,7 +7,11 @@ import { getChartData, getAverages } from '@/utils';
 const fiveMinutes = 300000;
 
 router.get('/:type', async ctx => {
-  const { db, query } = ctx;
+  const {
+    db,
+    params: { systemId },
+    query,
+  } = ctx;
 
   const now = new Date();
 
@@ -17,8 +21,16 @@ router.get('/:type', async ctx => {
   const { type } = ctx.params;
 
   const [data, averages] = await Promise.all([
-    getChartData({ db, table: 'sensor_measurements', from, to, points, type }),
-    getAverages({ db, table: 'sensor_measurements', from, to, type }),
+    getChartData({
+      db,
+      table: 'sensor_measurements',
+      from,
+      to,
+      points,
+      type,
+      systemId,
+    }),
+    getAverages({ db, table: 'sensor_measurements', from, to, type, systemId }),
   ]);
 
   ctx.body = {

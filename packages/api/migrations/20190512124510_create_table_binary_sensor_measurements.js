@@ -12,7 +12,6 @@ exports.up = function(knex, Promise) {
     table.boolean('value');
 
     table.index(['system_id', 'type', 'created_at']);
-    table.index(['system_id', 'created_at']);
   });
 };
 

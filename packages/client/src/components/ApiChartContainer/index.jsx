@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import get from 'lodash/get';
@@ -117,22 +116,20 @@ const ApiChartContainer = ({
   );
 };
 
-export default compose(
-  connect(
-    (state, { sensor }) => ({
-      filterPreset:
-        get(state, ['charts', 'types', sensor.type, 'filterPreset']) ||
-        'realTime',
-    }),
-    (dispatch, { sensor }) => ({
-      onFilterPresetChange: e => {
-        dispatch(
-          updateFilterPreset({
-            type: sensor.type,
-            filterPreset: e.target.value,
-          }),
-        );
-      },
-    }),
-  ),
+export default connect(
+  (state, { sensor }) => ({
+    filterPreset:
+      get(state, ['charts', 'types', sensor.type, 'filterPreset']) ||
+      'realTime',
+  }),
+  (dispatch, { sensor }) => ({
+    onFilterPresetChange: e => {
+      dispatch(
+        updateFilterPreset({
+          type: sensor.type,
+          filterPreset: e.target.value,
+        }),
+      );
+    },
+  }),
 )(ApiChartContainer);

@@ -7,6 +7,7 @@ exports.up = function(knex, Promise) {
     table.timestamp('created_at');
     table.timestamp('updated_at');
     table.jsonb('config');
+    table.text('name');
   });
 };
 

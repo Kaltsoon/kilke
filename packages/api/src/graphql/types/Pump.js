@@ -3,20 +3,13 @@ import {
   GraphQLNonNull,
   GraphQLID,
   GraphQLString,
-  GraphQLEnumType,
+  GraphQLList,
+  GraphQLInt,
 } from 'graphql';
 
 import { get } from 'lodash';
 
-const PumpStatus = new GraphQLEnumType({
-  name: 'PumpStatus',
-  values: {
-    FAULT: { value: 'fault' },
-    MANUAL: { value: 'manual' },
-    AUTOMATIC: { value: 'automatic' },
-    OFF: { value: 'off' },
-  },
-});
+import PumpMeasurement from './PumpMeasurement';
 
 const Pump = new GraphQLObjectType({
   name: 'Pump',
@@ -24,6 +17,9 @@ const Pump = new GraphQLObjectType({
     id: {
       type: new GraphQLNonNull(GraphQLID),
       resolve: ({ type, systemId }) => `${systemId}.${type}`,
+    },
+    systemId: {
+      type: GraphQLString,
     },
     title: {
       type: GraphQLString,
@@ -42,9 +38,27 @@ const Pump = new GraphQLObjectType({
     type: {
       type: GraphQLString,
     },
-    status: {
-      type: PumpStatus,
-      resolve: ({ status }) => status || 'off',
+    measurements: {
+      args: {
+        limit: {
+          type: GraphQLInt,
+          defaultValue: 50,
+        },
+      },
+      type: GraphQLList(PumpMeasurement),
+      resolve: ({ systemId, type }, { limit }, { models }) => {
+        if (!systemId || !type) {
+          return [];
+        }
+
+        return models.PumpMeasurement.query()
+          .where({
+            systemId,
+            type,
+          })
+          .limit(limit)
+          .orderBy('createdAt');
+      },
     },
   }),
 });

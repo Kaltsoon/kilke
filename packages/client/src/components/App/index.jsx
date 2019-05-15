@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { Router } from 'react-router-dom';
-import { StoreContext } from 'redux-react-hook';
 import { ApolloProvider } from 'react-apollo-hooks';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -16,21 +15,19 @@ const App = ({ store, theme, history, apiClient, apolloClient, persistor }) => (
   <ApolloProvider client={apolloClient}>
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>
-        <StoreContext.Provider value={store}>
-          <ApiContext.Provider value={apiClient}>
-            <MuiThemeProvider theme={theme}>
-              <ThemeProvider theme={theme}>
-                <Fragment>
-                  <HttpErrorNotifications httpClient={apiClient} />
-                  <GlobalStyle />
-                  <Router history={history}>
-                    <MainPage />
-                  </Router>
-                </Fragment>
-              </ThemeProvider>
-            </MuiThemeProvider>
-          </ApiContext.Provider>
-        </StoreContext.Provider>
+        <ApiContext.Provider value={apiClient}>
+          <MuiThemeProvider theme={theme}>
+            <ThemeProvider theme={theme}>
+              <Fragment>
+                <HttpErrorNotifications httpClient={apiClient} />
+                <GlobalStyle />
+                <Router history={history}>
+                  <MainPage />
+                </Router>
+              </Fragment>
+            </ThemeProvider>
+          </MuiThemeProvider>
+        </ApiContext.Provider>
       </PersistGate>
     </Provider>
   </ApolloProvider>

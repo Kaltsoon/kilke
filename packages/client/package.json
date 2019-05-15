@@ -27,7 +27,6 @@
     "polished": "^2.2.0",
     "prismjs": "^1.16.0",
     "query-string": "^6.2.0",
-    "re-reselect": "^2.3.0",
     "react": "16.8.0",
     "react-apollo-hooks": "^0.4.5",
     "react-app-rewired": "^2.1.3",
@@ -41,14 +40,11 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.0.5",
     "react-simple-code-editor": "^0.9.10",
-    "recompose": "^0.30.0",
     "redux": "^4.0.1",
     "redux-actions": "^2.6.3",
     "redux-create-reducer": "^1.1.3",
     "redux-devtools-extension": "^2.13.5",
-    "redux-form": "^7.4.2",
     "redux-persist": "^5.10.0",
-    "redux-react-hook": "^3.1.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "styled-components": "^4.0.2",
@@ -56,7 +52,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "react-app-rewired build && yarn workbox generateSW",
     "test": "react-app-rewired test",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
@@ -78,6 +74,7 @@
     "@storybook/react": "^3.4.11",
     "babel-core": "^6.26.3",
     "babel-plugin-module-resolver": "^3.2.0",
-    "babel-runtime": "^6.26.0"
+    "babel-runtime": "^6.26.0",
+    "workbox-cli": "^4.3.1"
   }
 }

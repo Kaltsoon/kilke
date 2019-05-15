@@ -1,12 +1,13 @@
 import React from 'react';
 import Icon from '@material-ui/core/Icon';
+import { useQuery } from 'react-apollo-hooks';
+import get from 'lodash/get';
+import isNumber from 'lodash/isNumber';
 
 import ReactorComponent from '../ReactorComponent';
-
-import { getLatestPumpMeasurement } from '@/apiUtils';
 import PumpConfigurationModal from '../PumpConfigurationModal';
-import { usePollingApiAsync } from '@/hooks/useApiAsync';
 import useModal from '@/hooks/useModal';
+import { GET_PUMP_WITH_LATEST_MEASUREMENT } from '@/graphql/queries';
 
 const renderValue = ({ unit, value }) => {
   return unit ? `${value} ${unit}` : value;
@@ -21,21 +22,23 @@ const renderName = ({ title, subtitle }) => {
   );
 };
 
-const getStatus = data => {
-  return data ? data.status : 'off';
+const getStatus = status => {
+  return status ? status : 'off';
 };
 
 const ApiPumpReactorComponent = ({ pump, ...props }) => {
-  const unit = pump ? pump.unitShortName : '';
-  const title = pump ? pump.title : '';
-  const subtitle = pump ? pump.subtitle : '';
+  const { unitShortName: unit, title, subtitle } = pump;
 
-  const { data } = usePollingApiAsync({
-    promiseFn: getLatestPumpMeasurement,
-    watch: pump.type,
+  const { data } = useQuery(GET_PUMP_WITH_LATEST_MEASUREMENT, {
     pollInterval: 5000,
-    type: pump.type,
+    variables: {
+      type: pump.type,
+      systemId: pump.systemId,
+    },
   });
+
+  const measurement = get(data, 'pump.measurements[0]') || {};
+  const { rpm, status } = measurement;
 
   const { open, onClose, onToggle } = useModal();
 
@@ -43,8 +46,8 @@ const ApiPumpReactorComponent = ({ pump, ...props }) => {
     <>
       <PumpConfigurationModal open={open} onClose={onClose} />
       <ReactorComponent
-        status={getStatus(data)}
-        value={data ? renderValue({ value: data.rpm, unit }) : null}
+        status={getStatus(status)}
+        value={isNumber(rpm) ? renderValue({ value: rpm, unit }) : null}
         name={renderName({ title, subtitle })}
         onStatusClick={onToggle}
         label={<Icon>play_arrow</Icon>}

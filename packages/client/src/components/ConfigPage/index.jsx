@@ -82,6 +82,7 @@ const getPrettyConfig = rawConfig => {
 const ConfigPage = () => {
   const [typeFilter, setTypeFilter] = useState('');
   const [snackIsOpen, setSnackIsOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState('');
   const { system, refetch: refetchSystem } = useSystem();
   const { run: runUpdate } = useApiAsync({ deferFn: updateConfig });
 
@@ -98,7 +99,18 @@ const ConfigPage = () => {
 
   const onSubmit = useCallback(
     async configUpdate => {
-      await runUpdate(configUpdate);
+      try {
+        const response = await runUpdate(configUpdate);
+
+        if (response instanceof Error) {
+          throw response;
+        }
+
+        setSnackMessage('Configuration has been saved');
+      } catch (e) {
+        setSnackMessage('Could not save the configuration. Check the logs');
+      }
+
       setSnackIsOpen(true);
       refetchSystem();
     },
@@ -119,7 +131,7 @@ const ConfigPage = () => {
         open={snackIsOpen}
         autoHideDuration={6000}
         onClose={onCloseSnack}
-        message={`Configuration has been saved`}
+        message={snackMessage}
       />
       <Wrapper>
         <LogContainer>

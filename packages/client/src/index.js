@@ -13,7 +13,7 @@ import createApolloClient from './apolloClient';
 
 import * as serviceWorker from './serviceWorker';
 
-serviceWorker.unregister();
+serviceWorker.register();
 
 const {
   REACT_APP_API_URL: apiUrl,
