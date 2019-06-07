@@ -10,7 +10,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import LogTable from './LogTable';
 import useSystem from '@/hooks/useSystem';
 import CodeEditor from '../CodeEditor';
-import { updateSystem } from '@/apiUtils';
+import updateSystem from '@/apiUtils/updateSystem';
 import useApiAsync from '@/hooks/useApiAsync';
 
 const updateConfig = ([config], { systemId, apiClient }) => {

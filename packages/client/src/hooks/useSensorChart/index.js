@@ -1,11 +1,11 @@
 import { useMemo, useCallback } from 'react';
 
-import { createConfig } from '../../chart';
+import createChartConfig from '@/utils/createChartConfig';
 import useSensor from '../useSensor';
-import { getSensorChart } from '@/apiUtils';
+import getSensorChart from '@/apiUtils/getSensorChart';
 import { usePollingApiAsync } from '../useApiAsync';
 
-const defaultChartConfig = createConfig()
+const defaultChartConfig = createChartConfig()
   .type('areaspline')
   .xAxisType('datetime')
   .xAxisTitle('Time')

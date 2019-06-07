@@ -1,12 +1,12 @@
 import merge from 'lodash/merge';
 
-export const createConfig = (config = {}) => {
+const createChartConfig = (config = {}) => {
   return {
     type(type) {
-      return createConfig(merge({}, config, { chart: { type } }));
+      return createChartConfig(merge({}, config, { chart: { type } }));
     },
     unit(unit) {
-      return createConfig(
+      return createChartConfig(
         merge({}, config, {
           tooltip: {
             valueSuffix: ` ${unit}`,
@@ -15,18 +15,18 @@ export const createConfig = (config = {}) => {
       );
     },
     xAxisType(type) {
-      return createConfig(merge({}, config, { xAxis: { type } }));
+      return createChartConfig(merge({}, config, { xAxis: { type } }));
     },
     xAxisTitle(title) {
-      return createConfig(
+      return createChartConfig(
         merge({}, config, { xAxis: { title: { text: title } } }),
       );
     },
     yAxisType(type) {
-      return createConfig(merge({}, config, { yAxis: { type } }));
+      return createChartConfig(merge({}, config, { yAxis: { type } }));
     },
     yAxisTitle(title) {
-      return createConfig(
+      return createChartConfig(
         merge({}, config, { yAxis: { title: { text: title } } }),
       );
     },
@@ -35,3 +35,5 @@ export const createConfig = (config = {}) => {
     },
   };
 };
+
+export default createChartConfig;

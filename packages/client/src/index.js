@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import axios from 'axios';
 import createBrowserHistory from 'history/createBrowserHistory';
 
-import { createApiClient } from './api';
+import createApiClient from './utils/createApiClient';
 import App from './components/App';
 import createStore from './state';
 import createTheme from './theme';

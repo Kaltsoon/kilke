@@ -9,7 +9,7 @@ import formatDate from 'date-fns/format';
 import isValidDate from 'date-fns/is_valid';
 
 import { usePollingApiAsync } from '@/hooks/useApiAsync';
-import { getSensorMeasurementLog } from '@/apiUtils';
+import getSensorMeasurementLog from '@/apiUtils/getSensorMeasurementLog';
 
 const LogTableWrapper = styled.div`
   max-height: 600px;
