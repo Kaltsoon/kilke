@@ -8,9 +8,13 @@ import { Form } from 'react-final-form';
 
 import PumpConfigurationForm from '../PumpConfigurationForm';
 
-export const PumpConfigurationModal = ({ open, onClose }) => (
+export const PumpConfigurationModal = ({
+  open,
+  onClose,
+  onSubmit = () => {},
+}) => (
   <Dialog open={open} onClose={onClose} fullWidth>
-    <Form onSubmit={console.log}>
+    <Form onSubmit={onSubmit}>
       {({ handleSubmit }) => (
         <>
           <DialogTitle>Send pump configuration</DialogTitle>
@@ -18,8 +22,10 @@ export const PumpConfigurationModal = ({ open, onClose }) => (
             <PumpConfigurationForm />
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={onClose}>Cancel</Button>
-            <Button color="primary" onClick={handleSubmit}>Submit</Button>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button color="primary" variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
           </DialogActions>
         </>
       )}

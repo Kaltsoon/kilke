@@ -4,10 +4,10 @@ import Card from '@material-ui/core/Card';
 import TextField from '@material-ui/core/TextField';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
+import CardActions from '@material-ui/core/CardActions';
 import Snackbar from '@material-ui/core/Snackbar';
 
 import LogTable from './LogTable';
-import Spacing from '../Spacing';
 import useSystem from '@/hooks/useSystem';
 import CodeEditor from '../CodeEditor';
 import { updateSystem } from '@/apiUtils';
@@ -56,8 +56,10 @@ const UpdateConfigForm = ({ initialConfig, onSubmit: onSubmitProp }) => {
 
   return (
     <>
-      <CodeEditor value={config} onChange={setConfig} />
-      <Spacing marginTop={2}>
+      <CardContent>
+        <CodeEditor value={config} onChange={setConfig} />
+      </CardContent>
+      <CardActions>
         <Button
           variant="contained"
           color="primary"
@@ -66,7 +68,7 @@ const UpdateConfigForm = ({ initialConfig, onSubmit: onSubmitProp }) => {
         >
           Save
         </Button>
-      </Spacing>
+      </CardActions>
     </>
   );
 };
@@ -150,14 +152,12 @@ const ConfigPage = () => {
         </LogContainer>
         <FormContainer>
           <Card>
-            <CardContent>
-              {system ? (
-                <UpdateConfigForm
-                  initialConfig={prettyConfig}
-                  onSubmit={onSubmit}
-                />
-              ) : null}
-            </CardContent>
+            {system ? (
+              <UpdateConfigForm
+                initialConfig={prettyConfig}
+                onSubmit={onSubmit}
+              />
+            ) : null}
           </Card>
         </FormContainer>
       </Wrapper>

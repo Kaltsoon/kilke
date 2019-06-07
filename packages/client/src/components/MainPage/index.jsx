@@ -14,7 +14,6 @@ import AppBar from '../AppBar';
 const Container = styled.div`
   min-height: 100vh;
   width: 100%;
-  background-color: #eeeeee;
 `;
 
 const NavigationContainer = styled.div`

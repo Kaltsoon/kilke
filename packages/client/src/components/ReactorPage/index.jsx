@@ -7,7 +7,8 @@ import useSystem from '@/hooks/useSystem';
 import ReactorLayout from './ReactorLayout';
 
 const Container = styled.div`
-  padding: ${({ theme }) => theme.spacing.unit * 0.5}px;
+  width: 100%;
+  height: 100vh;
 `;
 
 const ReactorPage = () => {

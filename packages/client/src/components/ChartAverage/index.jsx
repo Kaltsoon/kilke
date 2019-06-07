@@ -53,7 +53,7 @@ const ChartAverage = ({ current, previous, timespan, unit = '', ...props }) => {
           <TrendIcon>{delta < 0 ? 'trending_down' : 'trending_up'}</TrendIcon>
         </Trend>
       </ValuesWrapper>
-      <Footer>Past {humanize(timespan)} average</Footer>
+      <Footer>Past {humanize(timespan, { largest: 1 })} average</Footer>
     </Container>
   );
 };

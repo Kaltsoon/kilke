@@ -7,6 +7,10 @@ const GlobalStyle = createGlobalStyle`
     font-size: ${themeProp('typography.fontSize')};
   }
 
+  body {
+    background-color: #eeeeee;
+  }
+
   html, body {
     margin: 0px;
     padding: 0px;

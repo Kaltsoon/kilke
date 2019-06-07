@@ -10241,13 +10241,6 @@ react-async@6.2.0:
   optionalDependencies:
     prop-types ">=15.5.7"
 
-react-contextual@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/react-contextual/-/react-contextual-5.0.2.tgz#039c8ac9368af71049bb0433b2bf4cde63393721"
-  integrity sha512-BxlI+lT0BLcNX9mNKaNNrQAWO+MCEbmCrEZxlObBOJdk6PhbY+9ww3AVbO8/K6gDNt1GioNO4I6zKVVKMGePCg==
-  dependencies:
-    tiny-uuid "^1.0.0"
-
 react-dev-utils@^5.0.0:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-5.0.3.tgz#92f97668f03deb09d7fa11ea288832a8c756e35e"
@@ -12131,11 +12124,6 @@ tiny-emitter@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
   integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
-
-tiny-uuid@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/tiny-uuid/-/tiny-uuid-1.0.0.tgz#aea34a2f89c7b71435eb38af3139aa3a025351ca"
-  integrity sha1-rqNKL4nHtxQ16zivMTmqOgJTUco=
 
 tmp@^0.0.33:
   version "0.0.33"

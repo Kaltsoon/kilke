@@ -15,11 +15,10 @@ import { GET_SYSTEMS } from '@/graphql/queries';
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${({ theme }) => theme.spacing.unit * 2}px;
+  padding: ${({ theme }) => theme.spacing.unit * 3}px;
   box-sizing: border-box;
 `;
 
@@ -68,7 +67,7 @@ export const SystemSelectionPage = ({ history }) => {
             </FormControl>
           </CardContent>
           <CardActions>
-            <Button color="primary" disabled={!systemId} onClick={onSelect}>
+            <Button variant="contained" color="primary" disabled={!systemId} onClick={onSelect}>
               Select
             </Button>
           </CardActions>

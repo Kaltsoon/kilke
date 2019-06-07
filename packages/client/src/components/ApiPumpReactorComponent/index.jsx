@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Icon from '@material-ui/core/Icon';
 import { useQuery } from 'react-apollo-hooks';
 import get from 'lodash/get';
@@ -39,12 +39,22 @@ const ApiPumpReactorComponent = ({ pump, ...props }) => {
 
   const measurement = get(data, 'pump.measurements[0]') || {};
   const { rpm, status } = measurement;
-
   const { open, onClose, onToggle } = useModal();
+
+  const onSubmitConfig = useCallback(
+    () => {
+      onClose();
+    },
+    [onClose],
+  );
 
   return (
     <>
-      <PumpConfigurationModal open={open} onClose={onClose} />
+      <PumpConfigurationModal
+        open={open}
+        onClose={onClose}
+        onSubmit={onSubmitConfig}
+      />
       <ReactorComponent
         status={getStatus(status)}
         value={isNumber(rpm) ? renderValue({ value: rpm, unit }) : null}

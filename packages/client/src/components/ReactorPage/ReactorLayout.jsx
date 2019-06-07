@@ -6,7 +6,7 @@ import DraggableReactorComponent from './DraggableReactorComponent';
 const Bounds = styled.div`
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100%;
 `;
 
 export const ReactorLayout = ({ children }) => {
