@@ -1,6 +1,5 @@
 node_modules
 .DS_Store
-db.sqlite
 packages/**/build
 packages/**/build
 .env.local
@@ -9,10 +8,10 @@ packages/**/build
 .env.production.local
 *.pyc
 .vscode
-/config.json
-
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 packages/cli/data/*
 !packages/cli/data/.gitkeep
+.env
+packages/api/knexfile.js
