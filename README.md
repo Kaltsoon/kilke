@@ -48,10 +48,11 @@ yarn pm2 start
     [string]: { // key for the sensor
       title: string,
       subtitle: string,
-      decimals: number,
-      reactorTitle: string,
+      decimals: number, // how many decimals are used to display measurements
+      reactorTitle: string, // title showed in the reactor view
       unit: {
-        title: string,
+        unit: string // unit short name, such as "RPM"
+        title: string, // unit long name, such as "Temperature"
       },
       calibration: {
         x1: number,
@@ -62,13 +63,10 @@ yarn pm2 start
     },
   },
   visualization: {
-    tabs: {
-      [string]: { // key for the tab
-        title: string,
-        sensors: string[], // array of sensor keys
-      },
-    },
-    tabOrder: string[] // array of tab keys
+    tabs: Array<{
+      title: string,
+      sensors: string[], // array of sensor keys
+    }>,
   },
   pumps: {
     [string]: { // key for the pump
