@@ -9,7 +9,7 @@ import formatDate from 'date-fns/format';
 import isValidDate from 'date-fns/is_valid';
 
 import { usePollingApiAsync } from '@/hooks/useApiAsync';
-import getSensorMeasurementLog from '@/apiUtils/getSensorMeasurementLog';
+import getSensorMeasurements from '@/apiUtils/getSensorMeasurements';
 
 const LogTableWrapper = styled.div`
   max-height: 600px;
@@ -47,7 +47,7 @@ const LogTableContent = memo(({ measurements }) => (
 
 const LogTable = ({ types = null }) => {
   const { data } = usePollingApiAsync({
-    promiseFn: getSensorMeasurementLog,
+    promiseFn: getSensorMeasurements,
     types,
     watch: JSON.stringify(types),
     pollInterval: 5000,

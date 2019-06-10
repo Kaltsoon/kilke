@@ -4,6 +4,7 @@ import { get } from 'lodash';
 
 import { NotFoundError } from '@/errors';
 import { isArray, isNumber } from '@/utils';
+import csv from './csv';
 
 const router = new Router();
 
@@ -17,7 +18,7 @@ export const calibrate = ({ config, value, type }) => {
   return k * value + b;
 };
 
-router.get('/log', async ctx => {
+router.get('/', async ctx => {
   const {
     models: { SensorMeasurement },
     params,
@@ -27,6 +28,7 @@ router.get('/log', async ctx => {
     from: fromParam,
     to: toParam,
     limit: limitParam,
+    offset: offsetParam,
     types: typesString,
   } = ctx.query;
 
@@ -36,6 +38,7 @@ router.get('/log', async ctx => {
   const from = fromParam ? new Date(fromParam) : subMinutes(new Date(), 2);
   const types = typesString ? typesString.split(',') : null;
   const limit = limitParam ? parseInt(limitParam) : 100;
+  const offset = offsetParam ? parseInt(offsetParam) : 0;
 
   let query = SensorMeasurement.query()
     .select('*')
@@ -47,10 +50,15 @@ router.get('/log', async ctx => {
     query = query.andWhere(qb => qb.whereIn('type', types));
   }
 
-  const results = await query.orderBy('createdAt', 'desc').limit(limit);
+  const results = await query
+    .orderBy('createdAt', 'desc')
+    .limit(limit)
+    .offset(offset);
 
   ctx.body = results;
 });
+
+router.use('/csv', csv.routes());
 
 router.get('/:type', async ctx => {
   const {

@@ -14,7 +14,7 @@ const getSensorMeasurementLog = async ({
   };
 
   const { data } = await apiClient.get(
-    `/v1/systems/${systemId}/sensor-measurements/log`,
+    `/v1/systems/${systemId}/sensor-measurements`,
     { params },
   );
 
