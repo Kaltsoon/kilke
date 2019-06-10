@@ -12,7 +12,7 @@ const periodsToCommas = value => value.toString().replace(/\./g, ',');
 const getMeasurements = ({
   measurements,
   getValue = ({ value }) => value,
-  getCreatedAt,
+  getCreatedAt = ({ createdAt }) => createdAt,
   getType = ({ type }) => type,
   roundValues = true,
   types = [],

@@ -21,9 +21,7 @@ const Reactor = new GraphQLObjectType({
     sensors: {
       type: new GraphQLList(Sensor),
       resolve: ({ config, systemId }) => {
-        const reactorSensors = Object.keys(
-          get(config, 'reactor.sensors') || {},
-        );
+        const reactorSensors = get(config, 'reactor.sensors') || [];
 
         return reactorSensors
           .map(sensor =>
@@ -43,7 +41,7 @@ const Reactor = new GraphQLObjectType({
       resolve: async ({ config, systemId }, args, { models: { Pump } }) => {
         const systemPumps = await Pump.query().where({ systemId });
 
-        return Object.keys(get(config, 'reactor.pumps') || {}).map(type => ({
+        return (get(config, 'reactor.pumps') || []).map(type => ({
           ...(isObject(get(config, ['pumps', type])) && config.pumps[type]),
           type,
           systemId,
@@ -55,9 +53,7 @@ const Reactor = new GraphQLObjectType({
     binarySensors: {
       type: new GraphQLList(BinarySensor),
       resolve: ({ config, systemId }) => {
-        const reactorSensors = Object.keys(
-          get(config, 'reactor.binarySensors') || {},
-        );
+        const reactorSensors = get(config, 'reactor.binarySensors') || [];
 
         return reactorSensors
           .map(sensor =>

@@ -21,6 +21,12 @@ const configSchema = yup.object().shape({
       maxRpm: yup.number(),
     }),
   ),
+  binarySensors: keySchema(
+    yup.object().shape({
+      title: yup.string().required(),
+      subtitle: yup.string(),
+    }),
+  ),
   sensors: keySchema(
     yup.object().shape({
       unit: yup.object().shape({
@@ -39,8 +45,9 @@ const configSchema = yup.object().shape({
     }),
   ),
   reactor: yup.object().shape({
-    sensors: keySchema(yup.object()),
-    pumps: keySchema(yup.object()),
+    sensors: yup.array().of(yup.string()),
+    pumps: yup.array().of(yup.string()),
+    binarySensors: yup.array().of(yup.string()),
   }),
   visualization: yup.object().shape({
     tabs: yup.array().of(

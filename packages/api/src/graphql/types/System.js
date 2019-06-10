@@ -7,7 +7,7 @@ import {
   GraphQLString,
 } from 'graphql';
 
-import { get, isObject } from 'lodash';
+import { get, isObject, isEmpty } from 'lodash';
 
 import SystemView from './SystemView';
 import Sensor from './Sensor';
@@ -30,7 +30,7 @@ const System = new GraphQLObjectType({
     },
     hasReactor: {
       type: GraphQLBoolean,
-      resolve: ({ config }) => Boolean(get(config, 'reactor')),
+      resolve: ({ config }) => !isEmpty(get(config, 'reactor')),
     },
     sensors: {
       type: new GraphQLList(Sensor),
