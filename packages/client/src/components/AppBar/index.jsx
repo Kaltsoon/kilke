@@ -46,14 +46,14 @@ const MenuDrawer = props => {
 };
 
 export const AppBar = () => {
-  const { open, onClose, onOpen } = useModal();
+  const { isOpen, close, open } = useModal();
 
   return (
     <>
-      <MenuDrawer open={open} onClose={onClose} />
+      <MenuDrawer open={isOpen} onClose={close} />
       <MuiAppBar position="static">
         <Toolbar>
-          <MenuButton onClick={onOpen}>
+          <MenuButton onClick={open}>
             <Icon>menu</Icon>
           </MenuButton>
           <Typography variant="h6" color="inherit">

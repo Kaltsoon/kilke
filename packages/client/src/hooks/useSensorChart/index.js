@@ -48,7 +48,7 @@ export const useSensorChart = ({
         ...getQuery(),
       });
     },
-    [getQuery],
+    [getQuery, type],
   );
 
   const { data } = usePollingApiAsync({

@@ -27,7 +27,7 @@ export const HttpErrorNotifications = ({ httpClient }) => {
 
       return () => httpClient.interceptor.response.eject(interceptor);
     },
-    [setSnackIsOpen],
+    [setSnackIsOpen, httpClient],
   );
 
   return (

@@ -52,7 +52,7 @@ const UpdateConfigForm = ({ initialConfig, onSubmit: onSubmitProp }) => {
     () => {
       onSubmitProp(JSON.parse(config));
     },
-    [config],
+    [config], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return (
@@ -89,9 +89,12 @@ const ConfigPage = () => {
   const { system, refetch: refetchSystem } = useSystem();
   const { run: runUpdate } = useApiAsync({ deferFn: updateConfig });
 
-  const onTypeFilterChange = useCallback(e => {
-    setTypeFilter(e.target.value);
-  });
+  const onTypeFilterChange = useCallback(
+    e => {
+      setTypeFilter(e.target.value);
+    },
+    [setTypeFilter],
+  );
 
   const prettyConfig = useMemo(
     () => {
@@ -117,12 +120,15 @@ const ConfigPage = () => {
       setSnackIsOpen(true);
       refetchSystem();
     },
-    [setSnackIsOpen, runUpdate],
+    [setSnackIsOpen, runUpdate, refetchSystem],
   );
 
-  const onCloseSnack = useCallback(() => {
-    setSnackIsOpen(false);
-  });
+  const onCloseSnack = useCallback(
+    () => {
+      setSnackIsOpen(false);
+    },
+    [setSnackIsOpen],
+  );
 
   return (
     <>

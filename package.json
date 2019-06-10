@@ -15,12 +15,12 @@
     }
   },
   "lint-staged": {
-    "**/{api/src,system-reader/src,pump-controller/src,core/src,system-io/src,client/src}/**/*.js": [
+    "**/{api/src,system-reader/src,pump-controller/src,core/src,system-io/src}/**/*.js": [
       "yarn lint",
       "git add"
     ],
     "*.{js,json,css,md}": [
-      "yarn prettier --write ",
+      "yarn prettier --write",
       "git add"
     ]
   },

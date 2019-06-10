@@ -39,27 +39,27 @@ const ApiPumpReactorComponent = ({ pump, ...props }) => {
 
   const measurement = get(data, 'pump.measurements[0]') || {};
   const { rpm, status } = measurement;
-  const { open, onClose, onToggle } = useModal();
+  const { isOpen, close, toggle } = useModal();
 
   const onSubmitConfig = useCallback(
     () => {
-      onClose();
+      close();
     },
-    [onClose],
+    [close],
   );
 
   return (
     <>
       <PumpConfigurationModal
-        open={open}
-        onClose={onClose}
+        open={isOpen}
+        onClose={close}
         onSubmit={onSubmitConfig}
       />
       <ReactorComponent
         status={getStatus(status)}
         value={isNumber(rpm) ? renderValue({ value: rpm, unit }) : null}
         name={renderName({ title, subtitle })}
-        onStatusClick={onToggle}
+        onStatusClick={toggle}
         label={<Icon>play_arrow</Icon>}
         {...props}
       />
