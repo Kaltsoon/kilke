@@ -21,11 +21,11 @@ class Refresher extends Component {
         token: Date.now(),
       });
     }, this.props.interval);
-  }
+  };
 
   clearInterval = () => {
     clearInterval(this.interval);
-  }
+  };
 
   componentDidUpdate(prevProps) {
     if (!this.props.interval) {

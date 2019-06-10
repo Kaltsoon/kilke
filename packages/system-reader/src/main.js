@@ -24,7 +24,6 @@ const systemClient = new SystemClient({
   },
 });
 
-
 const systemOutput = new SystemOutput({
   client: systemClient,
 });

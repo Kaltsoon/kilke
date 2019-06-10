@@ -6,7 +6,7 @@
   "author": "Kalle Ilves <kalleilv@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "format": "yarn prettier --write \"./packages/{api/src,client/src,client/server,system-reader/src}/**/*.{js,jsx}\"",
+    "format": "yarn prettier --write \"./packages/{api/src,client/src,client/server,system-reader/src,system-io/src}/**/*.{js,jsx}\"",
     "lint": "yarn eslint"
   },
   "husky": {
@@ -20,7 +20,7 @@
       "git add"
     ],
     "*.{js,json,css,md}": [
-      "yarn prettier --write ",
+      "yarn prettier --write",
       "git add"
     ]
   },

@@ -67,7 +67,12 @@ export const SystemSelectionPage = ({ history }) => {
             </FormControl>
           </CardContent>
           <CardActions>
-            <Button variant="contained" color="primary" disabled={!systemId} onClick={onSelect}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!systemId}
+              onClick={onSelect}
+            >
               Select
             </Button>
           </CardActions>

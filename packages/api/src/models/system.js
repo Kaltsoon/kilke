@@ -2,7 +2,7 @@ import BaseModel from './baseModel';
 
 class System extends BaseModel {
   static get idColumn() {
-    return 'id'
+    return 'id';
   }
 
   static get tableName() {

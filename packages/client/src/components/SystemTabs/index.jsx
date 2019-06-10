@@ -13,11 +13,11 @@ const TabsContainer = ({ activeTab, isReactorPath, isConfigPath }) => {
 
   const tabs = system ? system.systemViews : [];
   const hasReactor = system ? system.hasReactor : false;
-  const activeTabIndex = activeTab ? tabs.map(({ id }) => id).indexOf(activeTab) : -1;
+  const activeTabIndex = activeTab
+    ? tabs.map(({ id }) => id).indexOf(activeTab)
+    : -1;
 
-  let activeIndex = activeTabIndex >= 0
-    ? activeTabIndex
-    : 0;
+  let activeIndex = activeTabIndex >= 0 ? activeTabIndex : 0;
 
   let children = tabs.map(({ id, title }) => (
     <Tab

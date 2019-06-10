@@ -1,8 +1,8 @@
-const SocketCluster = require("socketcluster");
+const SocketCluster = require('socketcluster');
 
-const createServer = ({ port, appName = "system-io" }) => {
+const createServer = ({ port, appName = 'system-io' }) => {
   if (!port) {
-    throw new Error("Port is required");
+    throw new Error('Port is required');
   }
 
   return new SocketCluster({
@@ -10,10 +10,10 @@ const createServer = ({ port, appName = "system-io" }) => {
     brokers: 1,
     port,
     appName,
-    wsEngine: "ws",
-    workerController: __dirname + "/worker.js",
-    brokerController: __dirname + "/broker.js",
-    rebootWorkerOnCrash: true
+    wsEngine: 'ws',
+    workerController: __dirname + '/worker.js',
+    brokerController: __dirname + '/broker.js',
+    rebootWorkerOnCrash: true,
   });
 };
 
