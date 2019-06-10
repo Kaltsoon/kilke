@@ -12,13 +12,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import { useQuery } from 'react-apollo-hooks';
 
 import { GET_SYSTEMS } from '@/graphql/queries';
+import { spacing } from '@/theme';
 
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${({ theme }) => theme.spacing.unit * 3}px;
+  padding: ${spacing(3)};
   box-sizing: border-box;
 `;
 

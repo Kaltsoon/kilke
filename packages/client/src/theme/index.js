@@ -1,8 +1,5 @@
 import merge from 'lodash/merge';
 import get from 'lodash/get';
-import mapValues from 'lodash/mapValues';
-import pick from 'lodash/pick';
-import flatMap from 'lodash/flatMap';
 import { darken, lighten } from 'polished';
 import { createMuiTheme } from '@material-ui/core/styles';
 
@@ -49,33 +46,8 @@ export const px = val => `${val}px`;
 
 export const rem = val => `${val}rem`;
 
-export const getSpacingStyles = props => {
-  if (!props.theme) {
-    return {};
-  }
-
-  const directions = ['Top', 'Bottom', 'Left', 'Right'];
-  const attributes = ['margin', 'padding'];
-
-  const styles = pick(
-    props,
-    flatMap(attributes, attr => [
-      attr,
-      ...directions.map(dir => `${attr}${dir}`),
-    ]),
-  );
-
-  return mapValues(styles, val => {
-    const amount =
-      typeof val === 'number'
-        ? props.theme.spacing.unit * val
-        : props.theme.spacing.unit;
-
-    return `${amount}px`;
-  });
+export const spacing = amount => ({ theme }) => {
+  return px(theme.spacing(amount));
 };
-
-export const spacing = amount => ({ theme }) =>
-  `${theme.spacing.unit * amount}px`;
 
 export default createTheme;

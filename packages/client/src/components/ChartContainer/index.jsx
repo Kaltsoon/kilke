@@ -4,26 +4,26 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
-import { themeProp } from '@/theme';
+import { spacing } from '@/theme';
 
 const Title = styled.div`
-  margin-bottom: ${themeProp('spacing.unit')}px;
+  margin-bottom: ${spacing(1)};
   display: flex;
   justify-content: space-between;
 `;
 
 const AverageWrapper = styled.div`
-  margin-left: ${themeProp('spacing.unit')}px;
+  margin-left: ${spacing(1)};
 `;
 
 const Filters = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-bottom: ${themeProp('spacing.unit')}px;
+  margin-bottom: ${spacing(1)};
 `;
 
 const Actions = styled.div`
-  margin-top: ${themeProp('spacing.unit')}px;
+  margin-top: ${spacing(1)};
 `;
 
 const ChartContainer = ({

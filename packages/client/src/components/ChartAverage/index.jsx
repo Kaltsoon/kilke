@@ -4,7 +4,7 @@ import humanize from 'humanize-duration';
 import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography';
 
-import { themeProp } from '@/theme';
+import { themeProp, spacing } from '@/theme';
 
 const Container = styled.div``;
 
@@ -22,7 +22,7 @@ const Footer = styled(Typography)`
 `;
 
 const Trend = styled(Typography).attrs({ variant: 'body1' })`
-  margin-left: ${themeProp('spacing.unit')}px !important;
+  margin-left: ${spacing(1)} !important;
 
   ${({ theme, delta }) => ({
     color: `${

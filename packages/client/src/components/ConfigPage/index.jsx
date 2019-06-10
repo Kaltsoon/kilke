@@ -12,24 +12,25 @@ import useSystem from '@/hooks/useSystem';
 import CodeEditor from '../CodeEditor';
 import updateSystem from '@/apiUtils/updateSystem';
 import useApiAsync from '@/hooks/useApiAsync';
+import { spacing } from '@/theme';
 
 const updateConfig = ([config], { systemId, apiClient }) => {
   return updateSystem({ update: { config }, systemId, apiClient });
 };
 
 const Wrapper = styled.div`
-  padding: ${({ theme }) => theme.spacing.unit * 3}px;
+  padding: ${spacing(3)}
   display: flex;
 `;
 
 const LogContainer = styled.div`
   flex: 1;
-  padding-right: ${({ theme }) => theme.spacing.unit * 1.5}px;
+  padding-right: ${spacing(1.5)};
 `;
 
 const FormContainer = styled.div`
   flex: 1;
-  padding-left: ${({ theme }) => theme.spacing.unit * 1.5}px;
+  padding-left: ${spacing(1.5)};
 `;
 
 const UpdateConfigForm = ({ initialConfig, onSubmit: onSubmitProp }) => {

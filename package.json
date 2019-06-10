@@ -20,7 +20,7 @@
       "git add"
     ],
     "*.{js,json,css,md}": [
-      "yarn prettier --write",
+      "yarn prettier --write ",
       "git add"
     ]
   },

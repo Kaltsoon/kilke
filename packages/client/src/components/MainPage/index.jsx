@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Route, Redirect, Switch } from 'react-router-dom';
 
-import { themeProp } from '@/theme';
+import { themeProp, spacing } from '@/theme';
 import TabPage from '../TabPage';
 import SystemTabs from '../SystemTabs';
 import ReactorPage from '../ReactorPage';
@@ -20,7 +20,7 @@ const NavigationContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
   background-color: white;
-  padding: 0px ${({ theme }) => theme.spacing.unit * 3}px;
+  padding: 0px ${spacing(3)};
   box-shadow: ${themeProp('shadows[1]')};
   background-color: white;
 `;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import isFunction from 'lodash/isFunction';
 
-import { themeProp } from '@/theme';
+import { spacing, themeProp } from '@/theme';
 import ReactorComponentStatus from '../ReactorComponentStatus';
 
 const Status = styled(ReactorComponentStatus)`
@@ -25,7 +25,7 @@ const Container = styled.div`
 
 const IconContainer = styled.div`
   flex: 0;
-  margin: ${({ theme }) => theme.spacing.unit}px 0px;
+  margin: ${spacing(1)} 0px;
   font-size: 2.5rem;
   line-height: 0;
   display: flex;
