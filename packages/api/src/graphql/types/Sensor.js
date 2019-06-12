@@ -70,7 +70,7 @@ const Sensor = new GraphQLObjectType({
           defaultValue: 50,
         },
       },
-      type: GraphQLList(SensorMeasurement),
+      type: new GraphQLList(SensorMeasurement),
       resolve: ({ systemId, type }, { limit }, { models }) => {
         if (!systemId || !type) {
           return [];
@@ -82,7 +82,7 @@ const Sensor = new GraphQLObjectType({
             type,
           })
           .limit(limit)
-          .orderBy('createdAt');
+          .orderBy('createdAt', 'desc');
       },
     },
   }),

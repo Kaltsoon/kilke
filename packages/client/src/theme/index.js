@@ -15,6 +15,7 @@ const createPalette = (color, contrastText = '#ffffff') => {
 const primaryColor = '#1483fb';
 const successColor = '#66c54b';
 const dangerColor = '#e93f33';
+const secondaryColor = '#eeeeee';
 
 const defaultTheme = {
   palette: {
@@ -22,6 +23,7 @@ const defaultTheme = {
     success: createPalette(successColor),
     danger: createPalette(dangerColor),
     error: createPalette(dangerColor),
+    secondary: createPalette(secondaryColor, '#545454'),
   },
 };
 

@@ -38,6 +38,9 @@ const SensorMeasurementBaseFields = gql`
   fragment SensorMeasurementBaseFields on SensorMeasurement {
     id
     value
+    rawValue
+    type
+    createdAt
   }
 `;
 
@@ -47,6 +50,25 @@ const PumpMeasurementBaseFields = gql`
     rpm
     flowRate
     status
+  }
+`;
+
+const BinarySensorBaseFields = gql`
+  fragment BinarySensorBaseFields on BinarySensor {
+    id
+    systemId
+    title
+    subtitle
+    reactorTitle
+  }
+`;
+
+const BinarySensorMeasurementBaseFields = gql`
+  fragment BinarySensorMeasurementBaseFields on BinarySensorMeasurement {
+    id
+    value
+    type
+    createdAt
   }
 `;
 
@@ -71,6 +93,9 @@ export const GET_SYSTEM = gql`
         pumps {
           ...PumpBaseFields
         }
+        binarySensors {
+          ...BinarySensorBaseFields
+        }
       }
     }
   }
@@ -78,6 +103,7 @@ export const GET_SYSTEM = gql`
   ${SensorBaseFields}
   ${PumpBaseFields}
   ${SystemBaseFields}
+  ${BinarySensorBaseFields}
 `;
 
 export const GET_SYSTEMS = gql`
@@ -116,4 +142,90 @@ export const GET_PUMP_WITH_LATEST_MEASUREMENT = gql`
 
   ${PumpBaseFields}
   ${PumpMeasurementBaseFields}
+`;
+
+export const GET_SENSOR_MEASUREMENTS = gql`
+  query getSensorMeasurements(
+    $systemId: ID!
+    $types: [String]
+    $from: DateTime
+    $to: DateTime
+    $limit: Int
+    $offset: Int
+  ) {
+    sensorMeasurements(
+      systemId: $systemId
+      types: $types
+      from: $from
+      to: $to
+      limit: $limit
+      offset: $offset
+    ) {
+      ...SensorMeasurementBaseFields
+    }
+  }
+
+  ${SensorMeasurementBaseFields}
+`;
+
+export const GET_PUMP_MEASUREMENTS = gql`
+  query getPumpMeasurements(
+    $systemId: ID!
+    $types: [String]
+    $from: DateTime
+    $to: DateTime
+    $limit: Int
+    $offset: Int
+  ) {
+    pumpMeasurements(
+      systemId: $systemId
+      types: $types
+      from: $from
+      to: $to
+      limit: $limit
+      offset: $offset
+    ) {
+      ...PumpMeasurementBaseFields
+    }
+  }
+
+  ${PumpMeasurementBaseFields}
+`;
+
+export const GET_BINARY_SENSOR_WITH_LATEST_MEASUREMENT = gql`
+  query getBinarySensorWithLatestMeasurement($systemId: ID!, $type: String!) {
+    binarySensor(systemId: $systemId, type: $type) {
+      ...BinarySensorBaseFields
+      measurements(limit: 1) {
+        ...BinarySensorMeasurementBaseFields
+      }
+    }
+  }
+
+  ${BinarySensorBaseFields}
+  ${BinarySensorMeasurementBaseFields}
+`;
+
+export const GET_BINARY_SENSOR_MEASUREMENTS = gql`
+  query getBinarySensorMeasurements(
+    $systemId: ID!
+    $types: [String]
+    $from: DateTime
+    $to: DateTime
+    $limit: Int
+    $offset: Int
+  ) {
+    binarySensorMeasurements(
+      systemId: $systemId
+      types: $types
+      from: $from
+      to: $to
+      limit: $limit
+      offset: $offset
+    ) {
+      ...BinarySensorMeasurementBaseFields
+    }
+  }
+
+  ${BinarySensorMeasurementBaseFields}
 `;

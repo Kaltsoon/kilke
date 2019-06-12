@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ApiSensorReactorComponent from '../ApiSensorReactorComponent';
+import ApiBinarySensorReactorComponent from '../ApiBinarySensorReactorComponent';
 import ApiPumpReactorComponent from '../ApiPumpReactorComponent';
 import useSystem from '@/hooks/useSystem';
 import ReactorLayout from './ReactorLayout';
@@ -17,6 +18,9 @@ const ReactorPage = () => {
   const pumps = system && system.reactor ? system.reactor.pumps : [];
   const sensors = system && system.reactor ? system.reactor.sensors : [];
 
+  const binarySensors =
+    system && system.reactor ? system.reactor.binarySensors : [];
+
   return (
     <Container>
       <ReactorLayout>
@@ -30,6 +34,13 @@ const ReactorPage = () => {
         {sensors.map(sensor => (
           <ApiSensorReactorComponent
             sensor={sensor}
+            key={sensor.id}
+            componentId={sensor.id}
+          />
+        ))}
+        {binarySensors.map(sensor => (
+          <ApiBinarySensorReactorComponent
+            binarySensor={sensor}
             key={sensor.id}
             componentId={sensor.id}
           />

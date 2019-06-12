@@ -8,6 +8,7 @@ import ReactorComponent from '../ReactorComponent';
 import PumpConfigurationModal from '../PumpConfigurationModal';
 import useModal from '@/hooks/useModal';
 import { GET_PUMP_WITH_LATEST_MEASUREMENT } from '@/graphql/queries';
+import { PumpStatus } from '@/constants';
 
 const renderValue = ({ unit, value }) => {
   return unit ? `${value} ${unit}` : value;
@@ -22,8 +23,16 @@ const renderName = ({ title, subtitle }) => {
   );
 };
 
-const getStatus = status => {
-  return status ? status : 'off';
+const getColorByStatus = status => {
+  if (status === PumpStatus.MANUAL) {
+    return 'primary';
+  } else if (status === PumpStatus.AUTOMATIC) {
+    return 'success';
+  } else if (status === PumpStatus.FAULT) {
+    return 'danger';
+  }
+
+  return null;
 };
 
 const ApiPumpReactorComponent = ({ pump, ...props }) => {
@@ -56,8 +65,8 @@ const ApiPumpReactorComponent = ({ pump, ...props }) => {
         onSubmit={onSubmitConfig}
       />
       <ReactorComponent
-        status={getStatus(status)}
-        value={isNumber(rpm) ? renderValue({ value: rpm, unit }) : null}
+        statusColor={getColorByStatus(status)}
+        value={isNumber(rpm) ? renderValue({ value: rpm, unit }) : '-'}
         name={renderName({ title, subtitle })}
         onStatusClick={toggle}
         label={<Icon>play_arrow</Icon>}

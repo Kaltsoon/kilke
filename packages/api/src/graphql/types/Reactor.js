@@ -59,7 +59,7 @@ const Reactor = new GraphQLObjectType({
           .map(sensor =>
             isObject(get(config, ['binarySensors', sensor]))
               ? {
-                  ...config.sensors[sensor],
+                  ...config.binarySensors[sensor],
                   type: sensor,
                   systemId,
                 }

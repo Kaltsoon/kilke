@@ -17,6 +17,7 @@ const configSchema = yup.object().shape({
       }),
       title: yup.string().required(),
       subtitle: yup.string(),
+      reactorTitle: yup.string(),
       minRpm: yup.number(),
       maxRpm: yup.number(),
     }),
@@ -25,6 +26,7 @@ const configSchema = yup.object().shape({
     yup.object().shape({
       title: yup.string().required(),
       subtitle: yup.string(),
+      reactorTitle: yup.string(),
     }),
   ),
   sensors: keySchema(

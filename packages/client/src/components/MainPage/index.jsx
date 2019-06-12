@@ -10,10 +10,19 @@ import ConfigPage from '../ConfigPage';
 import SystemIdContext from '../SystemIdContext';
 import SystemSelectionPage from '../SystemSelectionPage';
 import AppBar from '../AppBar';
+import MeasurementsPage from '../MeasurementsPage';
 
 const Container = styled.div`
   min-height: 100vh;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Content = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 const NavigationContainer = styled.div`
@@ -39,6 +48,7 @@ const SystemPage = ({
       <Route path={`${url}/tabs/:tab`} component={TabPage} />
       <Route path={`${url}/reactor`} component={ReactorPage} />
       <Route path={`${url}/config`} component={ConfigPage} />
+      <Route path={`${url}/measurements`} component={MeasurementsPage} />
       <Redirect to={`${url}/config`} />
     </Switch>
   </SystemIdContext.Provider>
@@ -48,15 +58,17 @@ const MainPage = () => {
   return (
     <Container>
       <AppBar />
-      <Switch>
-        <Route
-          path="/system-selection"
-          exatct
-          component={SystemSelectionPage}
-        />
-        <Route path={'/:systemId'} component={SystemPage} />
-        <Redirect to="/system-selection" />
-      </Switch>
+      <Content>
+        <Switch>
+          <Route
+            path="/system-selection"
+            exatct
+            component={SystemSelectionPage}
+          />
+          <Route path={'/:systemId'} component={SystemPage} />
+          <Redirect to="/system-selection" />
+        </Switch>
+      </Content>
     </Container>
   );
 };

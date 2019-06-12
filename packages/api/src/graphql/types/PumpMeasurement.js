@@ -3,7 +3,10 @@ import {
   GraphQLNonNull,
   GraphQLID,
   GraphQLFloat,
+  GraphQLString,
 } from 'graphql';
+
+import { GraphQLDateTime } from 'graphql-iso-date';
 
 import PumpStatus from './PumpStatus';
 
@@ -21,6 +24,12 @@ const PumpMeasurement = new GraphQLObjectType({
     },
     status: {
       type: PumpStatus,
+    },
+    createdAt: {
+      type: GraphQLDateTime,
+    },
+    type: {
+      type: GraphQLString,
     },
   }),
 });

@@ -16,6 +16,7 @@ import { spacing } from '@/theme';
 
 const Wrapper = styled.div`
   width: 100%;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;

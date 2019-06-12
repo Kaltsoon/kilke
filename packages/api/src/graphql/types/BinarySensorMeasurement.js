@@ -2,23 +2,20 @@ import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLID,
-  GraphQLFloat,
   GraphQLString,
+  GraphQLBoolean,
 } from 'graphql';
 
 import { GraphQLDateTime } from 'graphql-iso-date';
 
-const SensorMeasurement = new GraphQLObjectType({
-  name: 'SensorMeasurement',
+const BinarySensorMeasurement = new GraphQLObjectType({
+  name: 'BinarySensorMeasurement',
   fields: () => ({
     id: {
       type: new GraphQLNonNull(GraphQLID),
     },
     value: {
-      type: GraphQLFloat,
-    },
-    rawValue: {
-      type: GraphQLFloat,
+      type: GraphQLBoolean,
     },
     createdAt: {
       type: GraphQLDateTime,
@@ -29,4 +26,4 @@ const SensorMeasurement = new GraphQLObjectType({
   }),
 });
 
-export default SensorMeasurement;
+export default BinarySensorMeasurement;

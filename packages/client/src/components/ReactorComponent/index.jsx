@@ -64,7 +64,7 @@ const LabelContainer = styled.div`
 
 const ReactorComponent = ({
   label = null,
-  status = null,
+  statusColor = null,
   name = null,
   value = null,
   onNameClick,
@@ -88,7 +88,7 @@ const ReactorComponent = ({
       </LabelContainer>
       <IconContainer>
         <Status
-          status={status}
+          color={statusColor}
           onClick={onStatusClick}
           clickable={isFunction(onStatusClick)}
         >

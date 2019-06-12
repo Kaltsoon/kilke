@@ -31,16 +31,14 @@ const ApiSensorReactorComponent = ({ sensor, ...props }) => {
     },
   });
 
-  const value = get(data, 'sensor.measurements[0].value')
+  const value = isNumber(get(data, 'sensor.measurements[0].value'))
     ? data.sensor.measurements[0].value
     : null;
 
   return (
     <ReactorComponent
-      status="automatic"
-      value={
-        isNumber(value) !== undefined ? renderValue({ value, unit }) : null
-      }
+      statusColor="primary"
+      value={isNumber(value) ? renderValue({ value, unit }) : '-'}
       name={renderName({ title, subtitle })}
       label={label}
       {...props}

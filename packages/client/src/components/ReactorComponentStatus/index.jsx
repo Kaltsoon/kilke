@@ -1,30 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
-import { setLightness, darken } from 'polished';
+import { setLightness } from 'polished';
 
 import { themeProp } from '@/theme';
 
-const getColorCss = ({ status, theme }) => {
+const getColorCss = ({ color, theme }) => {
   let palette = {
-    backgroundColor: darken(0.1, '#eeeeee'),
-    color: darken(0.4, '#eeeeee'),
+    backgroundColor: '#d4d4d4',
+    color: '#878787',
   };
 
-  if (status === 'manual') {
+  if (color === 'primary') {
     palette = {
       backgroundColor: setLightness(0.9, theme.palette.primary.main),
       color: theme.palette.primary.main,
     };
   }
 
-  if (status === 'automatic') {
+  if (color === 'success') {
     palette = {
       backgroundColor: setLightness(0.9, theme.palette.success.main),
       color: theme.palette.success.main,
     };
   }
 
-  if (status === 'fault') {
+  if (color === 'error') {
     palette = {
       backgroundColor: setLightness(0.9, theme.palette.error.main),
       color: theme.palette.error.main,
@@ -52,14 +52,14 @@ const Container = styled.div`
 `;
 
 const ReactorComponentStatus = ({
-  status,
+  color,
   name = null,
   value = null,
   children = null,
   ...props
 }) => {
   return (
-    <Container status={status} {...props}>
+    <Container color={color} {...props}>
       <TypeContainer>{children}</TypeContainer>
     </Container>
   );

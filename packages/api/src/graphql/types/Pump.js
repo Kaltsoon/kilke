@@ -27,6 +27,9 @@ const Pump = new GraphQLObjectType({
     subtitle: {
       type: GraphQLString,
     },
+    reactorTitle: {
+      type: GraphQLString,
+    },
     unitFullName: {
       type: GraphQLString,
       resolve: ({ unit }) => get(unit, 'title') || 'Revolutions per minute',
@@ -45,7 +48,7 @@ const Pump = new GraphQLObjectType({
           defaultValue: 50,
         },
       },
-      type: GraphQLList(PumpMeasurement),
+      type: new GraphQLList(PumpMeasurement),
       resolve: ({ systemId, type }, { limit }, { models }) => {
         if (!systemId || !type) {
           return [];
@@ -57,7 +60,7 @@ const Pump = new GraphQLObjectType({
             type,
           })
           .limit(limit)
-          .orderBy('createdAt');
+          .orderBy('createdAt', 'desc');
       },
     },
   }),
