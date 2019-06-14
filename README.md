@@ -72,6 +72,7 @@ yarn pm2 start
     [string]: {
       title: string,
       subtitle: string,
+      reactorTitle: string,
     },
   },
   visualization: {
