@@ -3,6 +3,7 @@ import Icon from '@material-ui/core/Icon';
 import { useQuery } from 'react-apollo-hooks';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
+import { useSnackbar } from 'notistack';
 
 import ReactorComponent from '../ReactorComponent';
 import PumpConfigurationModal from '../PumpConfigurationModal';
@@ -37,6 +38,7 @@ const getColorByStatus = status => {
 
 const ApiPumpReactorComponent = ({ pump, ...props }) => {
   const { unitShortName: unit, title, subtitle } = pump;
+  const { enqueueSnackbar } = useSnackbar();
 
   const { data } = useQuery(GET_PUMP_WITH_LATEST_MEASUREMENT, {
     pollInterval: 5000,
@@ -52,9 +54,10 @@ const ApiPumpReactorComponent = ({ pump, ...props }) => {
 
   const onSubmitConfig = useCallback(
     () => {
+      enqueueSnackbar('Pump configuration has been sent to the pump');
       close();
     },
-    [close],
+    [close, enqueueSnackbar],
   );
 
   return (

@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
+import { useEffect } from 'react';
+import { useSnackbar } from 'notistack';
 
 const createErrorInterceptor = fn => error => {
   fn(error);
@@ -8,18 +8,15 @@ const createErrorInterceptor = fn => error => {
 };
 
 export const HttpErrorNotifications = ({ httpClient }) => {
-  const [snackIsOpen, setSnackIsOpen] = useState(false);
-
-  const onCloseSnack = useCallback(
-    () => {
-      setSnackIsOpen(false);
-    },
-    [setSnackIsOpen],
-  );
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(
     () => {
-      const interceptorFn = createErrorInterceptor(() => setSnackIsOpen(true));
+      const interceptorFn = createErrorInterceptor(() =>
+        enqueueSnackbar(
+          'A network request has failed. Check the internet connection',
+        ),
+      );
       const interceptor = httpClient.interceptors.response.use(
         null,
         interceptorFn,
@@ -27,21 +24,10 @@ export const HttpErrorNotifications = ({ httpClient }) => {
 
       return () => httpClient.interceptor.response.eject(interceptor);
     },
-    [setSnackIsOpen, httpClient],
+    [enqueueSnackbar, httpClient],
   );
 
-  return (
-    <Snackbar
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={snackIsOpen}
-      autoHideDuration={6000}
-      onClose={onCloseSnack}
-      message="A network request has failed. Check the logs"
-    />
-  );
+  return null;
 };
 
 export default HttpErrorNotifications;

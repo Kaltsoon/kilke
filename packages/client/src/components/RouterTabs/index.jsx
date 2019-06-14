@@ -16,7 +16,7 @@ const RouterTabs = ({ children, location: { pathname }, ...props }) => {
   );
 
   return (
-    <Tabs value={activeIndex || 0} {...props}>
+    <Tabs value={activeIndex < 0 ? 0 : activeIndex} {...props}>
       {children}
     </Tabs>
   );

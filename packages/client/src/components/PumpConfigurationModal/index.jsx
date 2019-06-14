@@ -4,7 +4,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import { Form } from 'react-final-form';
+import { Form, Formik } from 'formik';
 
 import PumpConfigurationForm from '../PumpConfigurationForm';
 
@@ -14,22 +14,26 @@ export const PumpConfigurationModal = ({
   onSubmit = () => {},
 }) => (
   <Dialog open={open} onClose={onClose} fullWidth>
-    <Form onSubmit={onSubmit}>
-      {({ handleSubmit }) => (
-        <>
-          <DialogTitle>Send pump configuration</DialogTitle>
-          <DialogContent>
-            <PumpConfigurationForm />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={onClose}>Cancel</Button>
-            <Button color="primary" variant="contained" onClick={handleSubmit}>
-              Submit
-            </Button>
-          </DialogActions>
-        </>
-      )}
-    </Form>
+    <Formik onSubmit={onSubmit} initialValues={{ status: '', manualRpm: '' }}>
+      {() => {
+        return (
+          <Form>
+            <DialogTitle>Send pump configuration</DialogTitle>
+            <DialogContent>
+              <PumpConfigurationForm />
+            </DialogContent>
+            <DialogActions>
+              <Button type="button" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" color="primary" variant="contained">
+                Submit
+              </Button>
+            </DialogActions>
+          </Form>
+        );
+      }}
+    </Formik>
   </Dialog>
 );
 

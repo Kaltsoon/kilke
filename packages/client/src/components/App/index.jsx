@@ -10,6 +10,7 @@ import GlobalStyle from '../GlobalStyle';
 import MainPage from '../MainPage';
 import ApiContext from '../ApiContext';
 import HttpErrorNotifications from '../HttpErrorNotifications';
+import { SnackbarProvider } from 'notistack';
 
 const App = ({ store, theme, history, apiClient, apolloClient, persistor }) => (
   <ApolloProvider client={apolloClient}>
@@ -19,11 +20,22 @@ const App = ({ store, theme, history, apiClient, apolloClient, persistor }) => (
           <MuiThemeProvider theme={theme}>
             <ThemeProvider theme={theme}>
               <Fragment>
-                <HttpErrorNotifications httpClient={apiClient} />
                 <GlobalStyle />
-                <Router history={history}>
-                  <MainPage />
-                </Router>
+                <SnackbarProvider
+                  maxSnack={3}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  autoHideDuration={6000}
+                >
+                  <>
+                    <Router history={history}>
+                      <MainPage />
+                    </Router>
+                    <HttpErrorNotifications httpClient={apiClient} />
+                  </>
+                </SnackbarProvider>
               </Fragment>
             </ThemeProvider>
           </MuiThemeProvider>

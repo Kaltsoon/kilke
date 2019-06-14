@@ -3,8 +3,8 @@ import Select from '@material-ui/core/Select';
 
 import { createComponent } from './utils';
 
-const simpleMapProps = ({ input, inputProps, inputLabel, ...props }) => ({
-  ...input,
+const simpleMapProps = ({ field, form, inputProps, inputLabel, ...props }) => ({
+  ...field,
   ...props,
 });
 

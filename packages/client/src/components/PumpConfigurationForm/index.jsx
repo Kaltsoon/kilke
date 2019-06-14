@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from 'react-final-form';
+import { Field } from 'formik';
 import MenuItem from '@material-ui/core/MenuItem';
 import Box from '@material-ui/core/Box';
 

@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
-import Snackbar from '@material-ui/core/Snackbar';
+import { useSnackbar } from 'notistack';
 
 import useSystem from '@/hooks/useSystem';
 import CodeEditor from '../CodeEditor';
@@ -65,8 +65,7 @@ const getPrettyConfig = rawConfig => {
 };
 
 const ConfigPage = () => {
-  const [snackIsOpen, setSnackIsOpen] = useState(false);
-  const [snackMessage, setSnackMessage] = useState('');
+  const { enqueueSnackbar } = useSnackbar();
   const { system, refetch: refetchSystem } = useSystem();
   const { run: runUpdate } = useApiAsync({ deferFn: updateConfig });
 
@@ -86,47 +85,24 @@ const ConfigPage = () => {
           throw response;
         }
 
-        setSnackMessage('Configuration has been saved');
+        enqueueSnackbar('Configuration has been saved');
       } catch (e) {
-        setSnackMessage('Could not save the configuration. Check the logs');
+        enqueueSnackbar('Could not save the configuration');
       }
 
-      setSnackIsOpen(true);
       refetchSystem();
     },
-    [setSnackIsOpen, runUpdate, refetchSystem],
-  );
-
-  const onCloseSnack = useCallback(
-    () => {
-      setSnackIsOpen(false);
-    },
-    [setSnackIsOpen],
+    [enqueueSnackbar, runUpdate, refetchSystem],
   );
 
   return (
-    <>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={snackIsOpen}
-        autoHideDuration={6000}
-        onClose={onCloseSnack}
-        message={snackMessage}
-      />
-      <Box p={3}>
-        <Card>
-          {system ? (
-            <UpdateConfigForm
-              initialConfig={prettyConfig}
-              onSubmit={onSubmit}
-            />
-          ) : null}
-        </Card>
-      </Box>
-    </>
+    <Box p={3}>
+      <Card>
+        {system ? (
+          <UpdateConfigForm initialConfig={prettyConfig} onSubmit={onSubmit} />
+        ) : null}
+      </Card>
+    </Box>
   );
 };
 
