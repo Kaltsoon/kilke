@@ -193,7 +193,7 @@ const makeController = context => {
         rpms = [
           ...rpms,
           {
-            id: pumpType,
+            type: pumpType,
             manualRpm: controller.getRpm(),
           },
         ];

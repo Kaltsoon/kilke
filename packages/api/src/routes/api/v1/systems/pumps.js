@@ -22,6 +22,8 @@ router.get('/:type', async ctx => {
 router.put('/:type', async ctx => {
   const {
     models: { Pump },
+    systemInput,
+    logger,
   } = ctx;
   const { type, systemId } = ctx.params;
 
@@ -46,6 +48,19 @@ router.put('/:type', async ctx => {
       .returning('*');
 
     ctx.body = createdPump;
+  }
+
+  try {
+    systemInput.sendMessage({
+      systemId,
+      type: 'pump_configuration',
+      payload: {
+        type,
+        status,
+      },
+    });
+  } catch (e) {
+    logger.error(e);
   }
 });
 

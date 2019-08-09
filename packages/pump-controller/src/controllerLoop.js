@@ -41,11 +41,11 @@ const runController = async context => {
   try {
     const manualRpms = await controller(controllerArgs);
 
-    manualRpms.forEach(({ id, manualRpm }) => {
-      logger.info(`Setting rpm of ${manualRpm} RPM for pump "${id}"`);
+    manualRpms.forEach(({ type, manualRpm }) => {
+      logger.info(`Setting rpm of ${manualRpm} RPM for pump "${type}"`);
       sendPumpConfiguration({
-        id,
-        manual_rpm: manualRpm,
+        type,
+        manualRpm,
         status: 'manual',
       }).catch(e => logger.error(e));
     });
