@@ -1,39 +1,48 @@
-import knex from 'knex';
-import { createHttpInput, sendPumpConfiguration } from '@kilke/core/sensorIo';
+import { SystemClient, SystemInput } from '@kilke/core/systemIo';
 import createLogger from '@kilke/core/logger';
+import dotenv from 'dotenv';
 import path from 'path';
-import { readFileSync } from 'fs';
-
-import knexFile from '../../../knexfile';
 
 import startControllerLoop from './controllerLoop';
+import ApiClient from './apiClient';
 
-const {
-  SENSOR_CONFIGURATION_SERVER_URL = 'http://localhost:4001',
-} = process.env;
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
+
+const { SYSTEM_IO_PORT, SYSTEM_IO_HOST, API_URL, SYSTEM_ID } = process.env;
+
+if (!SYSTEM_ID) {
+  throw new Error(
+    'System id is not defined in the SYSTEM_ID environment variable',
+  );
+}
 
 const INTERVAL = 15000;
 
 const logger = createLogger();
 
-const config = JSON.parse(
-  readFileSync(path.join(__dirname, '..', '..', '..', 'config.json')),
-);
-
-const sensorIoInput = createHttpInput({
-  url: SENSOR_CONFIGURATION_SERVER_URL,
+const systemClient = new SystemClient({
+  port: SYSTEM_IO_PORT,
+  host: SYSTEM_IO_HOST,
+  onConnect: () => {
+    logger.info('Connected to system-io');
+  },
 });
 
-const db = knex(knexFile);
+const systemInput = new SystemInput({
+  client: systemClient,
+});
 
 const context = {
   logger,
-  db,
-  sensorIoInput,
+  apiClient: new ApiClient({ url: API_URL }),
   interval: INTERVAL,
-  config,
+  systemId: SYSTEM_ID,
   sendPumpConfiguration: configuration =>
-    sendPumpConfiguration({ input: sensorIoInput, configuration }),
+    systemInput.sendMessage({
+      systemId: SYSTEM_ID,
+      type: 'pump_configuration',
+      payload: configuration,
+    }),
 };
 
 startControllerLoop(context);

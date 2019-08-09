@@ -1,69 +1,39 @@
-import { get, keyBy, mapValues } from 'lodash';
+import { keyBy, mapValues } from 'lodash';
 
 import makeController from './controller';
 
-const getPumpTypes = config => Object.keys(get(config, 'pumps') || {});
-
-const getByTypes = ({ measurements = [], types = [] }) => {
-  const byType = keyBy(
-    measurements.filter(
-      ({ type, value }) =>
-        Boolean(type) && types.includes(type) && typeof value === 'number',
-    ),
-    ({ type }) => type,
-  );
+const getMeasurementsByType = (measurements, getValue) => {
+  const byType = keyBy(measurements, ({ type }) => type);
 
   return mapValues(byType, v => {
     return {
-      value: v.value,
-      createdAt: v.max_created_at ? new Date(v.max_created_at) : null,
+      value: getValue(v),
+      createdAt: v.createdAt ? new Date(v.createdAt) : null,
     };
   });
 };
 
-const getSensors = ({ measurements = [], config = {} }) => {
-  return getByTypes({
-    measurements,
-    types: Object.keys(get(config, 'sensors') || {}),
-  });
-};
-
-const getPumps = ({ measurements = [], config = {} }) => {
-  return getByTypes({
-    measurements,
-    types: getPumpTypes(config),
-  });
-};
-
-const getLatestMeasurements = ({ db }) => {
-  return db.select('sa.type', 'sa.max_created_at', 'sb.value').from(
-    db.raw(
-      `(select max(created_at) as max_created_at, type from sensor_measurements sa group by type) sa left join sensor_measurements sb on sa.max_created_at = sb.created_at and sa.type = sb.type;
-`,
-    ),
-  );
-};
-
-const getAutomaticPumpTypes = async ({ db }) => {
-  const automaticPumps = await db('pumps').where('status', '=', 'automatic');
-
-  return automaticPumps.map(({ id }) => id);
-};
-
 const runController = async context => {
-  const { db, sendPumpConfiguration, logger, config, controller } = context;
+  const {
+    sendPumpConfiguration,
+    logger,
+    apiClient,
+    controller,
+    systemId,
+  } = context;
 
-  const [measurements, automaticPumps] = await Promise.all([
-    getLatestMeasurements({ db }),
-    getAutomaticPumpTypes({ db }),
-  ]);
+  const {
+    automaticPumps,
+    pumpMeasurements,
+    sensorMeasurements,
+  } = await apiClient.getPumpControllerState(systemId);
 
   const controllerArgs = {
     measurements: {
-      sensors: getSensors({ measurements, config }),
-      pumps: getPumps({ measurements, config }),
+      sensors: getMeasurementsByType(sensorMeasurements, ({ value }) => value),
+      pumps: getMeasurementsByType(pumpMeasurements, ({ rpm }) => rpm),
     },
-    automaticPumps,
+    automaticPumps: automaticPumps.map(({ type }) => type),
   };
 
   logger.info('Running the pump controller', controllerArgs);
@@ -84,12 +54,14 @@ const runController = async context => {
   }
 };
 
-export const startControllerLoop = context => {
-  const { logger, interval } = context;
+export const startControllerLoop = async context => {
+  const { logger, interval, apiClient, systemId } = context;
+
+  const system = await apiClient.getSystem(systemId);
 
   logger.info('Pump controller is online');
 
-  const controller = makeController(context);
+  const controller = makeController({ ...context, system });
 
   setInterval(() => {
     runController({ ...context, controller });

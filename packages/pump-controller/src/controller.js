@@ -1,4 +1,4 @@
-import { clamp, get, reverse, difference } from 'lodash';
+import { clamp, get, reverse, zipObject } from 'lodash';
 
 const isNumber = value => typeof value === 'number';
 
@@ -118,8 +118,9 @@ class PumpController {
 }
 
 const makeController = context => {
-  const { logger, config } = context;
+  const { logger, system } = context;
 
+  const config = get(system, 'config') || {};
   const pumpConfig = get(config, 'pumps') || {};
   const pumpControllerConfig = get(config, 'pumpController.pumps') || {};
   const controlledPupms = Object.keys(pumpControllerConfig);
@@ -152,57 +153,52 @@ const makeController = context => {
     }
   });
 
-  const controllers = controlledPupms.map(
-    pump =>
-      new PumpController({
-        name: pump,
-        targetValue: get(pumpControllerConfig, [pump, 'targetValue']),
-        logger,
-        errorMultiplier: get(pumpControllerConfig, [pump, 'errorMultiplier']),
-        differentialMultiplier: get(pumpControllerConfig, [
-          pump,
-          'differentialMultiplier',
-        ]),
-        minRpm: pumpConfig[pump].minRpm,
-        maxRpm: pumpConfig[pump].maxRpm,
-      }),
+  const controllers = zipObject(
+    controlledPupms,
+    controlledPupms.map(
+      pump =>
+        new PumpController({
+          name: pump,
+          targetValue: get(pumpControllerConfig, [pump, 'targetValue']),
+          logger,
+          errorMultiplier: get(pumpControllerConfig, [pump, 'errorMultiplier']),
+          differentialMultiplier: get(pumpControllerConfig, [
+            pump,
+            'differentialMultiplier',
+          ]),
+          minRpm: pumpConfig[pump].minRpm,
+          maxRpm: pumpConfig[pump].maxRpm,
+        }),
+    ),
   );
-
-  let previousAutomaticPumps = [];
 
   return ({ measurements: { sensors, pumps }, automaticPumps }) => {
     let rpms = [];
 
-    const controllersToReset = difference(
-      previousAutomaticPumps,
-      automaticPumps,
-    );
+    for (let pumpType in controllers) {
+      const controller = controllers[pumpType];
 
-    controllersToReset.forEach(c => {
-      c.reset();
-    });
+      if (!automaticPumps.includes(pumpType)) {
+        logger.info(
+          `Reseting controller for pump ${pumpType}, because its status is no longer automatic`,
+        );
 
-    if (controllersToReset.length > 0) {
-      logger.info(
-        `Reseting controllers ${controllersToReset.map(c => c.name)}`,
-      );
-    }
-
-    controllers.forEach(c => {
-      if (automaticPumps.includes(c.name)) {
-        c.addState({
-          rpm: get(pumps, [c.name, 'value']),
-          value: get(sensors, [
-            pumpControllerConfig[c.name].targetSensor,
-            'value',
-          ]),
+        controller.reset();
+      } else {
+        controller.addState({
+          rpm: get(pumps, [pumpType, 'value']),
+          value: get(sensors, [controller.targetSensor, 'value']),
         });
 
-        rpms = [...rpms, { id: c.name, manualRpm: c.getRpm() }];
+        rpms = [
+          ...rpms,
+          {
+            id: pumpType,
+            manualRpm: controller.getRpm(),
+          },
+        ];
       }
-    });
-
-    previousAutomaticPumps = automaticPumps;
+    }
 
     return rpms;
   };

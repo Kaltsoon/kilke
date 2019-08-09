@@ -59,6 +59,16 @@ const configSchema = yup.object().shape({
       }),
     ),
   }),
+  pumpController: yup.object().shape({
+    pumps: keySchema(
+      yup.object().shape({
+        targetSensor: yup.string().required(),
+        targetValue: yup.number().required(),
+        errorMultiplier: yup.number().required(),
+        differentialMultiplier: yup.number().required(),
+      }),
+    ),
+  }),
 });
 
 const systemSchema = yup.object().shape({
