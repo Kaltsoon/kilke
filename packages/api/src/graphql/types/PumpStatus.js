@@ -4,9 +4,7 @@ export const PumpStatus = new GraphQLEnumType({
   name: 'PumpStatus',
   values: {
     FAULT: { value: 'fault' },
-    MANUAL: { value: 'manual' },
-    AUTOMATIC: { value: 'automatic' },
-    OFF: { value: 'off' },
+    OK: { value: 'ok' },
   },
 });
 

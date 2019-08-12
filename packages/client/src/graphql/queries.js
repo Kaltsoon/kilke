@@ -31,6 +31,8 @@ const PumpBaseFields = gql`
     unitFullName
     unitShortName
     type
+    status
+    mode
   }
 `;
 
@@ -49,7 +51,6 @@ const PumpMeasurementBaseFields = gql`
     id
     rpm
     flowRate
-    status
   }
 `;
 

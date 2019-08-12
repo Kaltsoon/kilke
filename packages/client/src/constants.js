@@ -1,6 +1,9 @@
 export const PumpStatus = {
   FAULT: 'fault',
-  MANUAL: 'manual',
+  OK: 'ok',
+};
+
+export const PumpMode = {
   AUTOMATIC: 'automatic',
-  OFF: 'off',
+  MANUAL: 'manual',
 };

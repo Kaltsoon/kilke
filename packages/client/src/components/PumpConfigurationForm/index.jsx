@@ -9,19 +9,13 @@ const PumpConfigurationForm = () => {
   return (
     <>
       <Box mb={2}>
-        <Field name="status" component={FormFieldSelect} inputLabel="Status">
-          <MenuItem value="off">Off</MenuItem>
+        <Field name="mode" component={FormFieldSelect} inputLabel="Mode">
           <MenuItem value="automatic">Automatic</MenuItem>
           <MenuItem value="manual">Manual</MenuItem>
-          <MenuItem value="fault">Fault</MenuItem>
         </Field>
       </Box>
       <Box>
-        <Field
-          name="manualRpm"
-          component={FormFieldInput}
-          inputLabel="Manual RPM"
-        />
+        <Field name="rpm" component={FormFieldInput} type="number" inputLabel="Manual RPM" />
       </Box>
     </>
   );

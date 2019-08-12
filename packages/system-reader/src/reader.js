@@ -15,19 +15,33 @@ const createSensorMeasurements = ({ apiClient, data, systemId, time }) => {
   return apiClient.createSensorMeasurements({ measurements: rows, systemId });
 };
 
-const createPumpMeasurements = ({ apiClient, data, systemId, time }) => {
+const createPumpMeasurements = async ({ apiClient, data, systemId, time }) => {
   const rows = Object.entries(data)
-    .filter(([, value]) => isNumber(get(value, 'rpm')) && get(value, 'status'))
-    .map(([type, value]) => {
+    .filter(([, rpm]) => isNumber(rpm))
+    .map(([type, rpm]) => {
       return {
         type,
         createdAt: time,
-        rpm: value.rpm,
-        status: value.status,
+        rpm,
       };
     });
 
-  return apiClient.createPumpMeasurements({ measurements: rows, systemId });
+  const measurements = await apiClient.createPumpMeasurements({
+    measurements: rows,
+    systemId,
+  });
+
+  await Promise.all(
+    rows.map(({ type }) =>
+      apiClient.updatePump({
+        systemId,
+        type,
+        update: { status: 'ok' },
+      }),
+    ),
+  );
+
+  return measurements;
 };
 
 const createBinarySensorMeasurements = ({
@@ -104,10 +118,10 @@ const createPumpFaultSubscribe = ({ apiClient, logger }) => async ({
 
   logger.info('Pump fault', { payload });
 
-  if (payload.pumpId) {
+  if (payload.type) {
     try {
       await apiClient.updatePump({
-        type: payload.pumpId,
+        type: payload.type,
         systemId,
         update: { status: 'fault' },
       });
@@ -115,43 +129,7 @@ const createPumpFaultSubscribe = ({ apiClient, logger }) => async ({
       logger.error(e);
     }
   } else {
-    logger.error("pumpId is not defined in the message's payload");
-  }
-};
-
-const createPumpAckSubscribe = ({ apiClient, logger }) => async ({
-  payload,
-  systemId,
-}) => {
-  if (!systemId) {
-    return logger.error('systemId is not defined in the message');
-  }
-
-  logger.info('Pump ack', { payload });
-
-  const { pumpId, data } = payload;
-
-  if (pumpId) {
-    return logger.error("pumpId is not defined in the message's payload");
-  }
-
-  if (isNumber(data)) {
-    const measurement = {
-      type: pumpId,
-      rawValue: data,
-      value: data,
-    };
-
-    try {
-      await apiClient.createSensorMeasurements({
-        measurements: [measurement],
-        systemId,
-      });
-    } catch (e) {
-      logger.error(e);
-    }
-  } else {
-    logger.warning(`Pump "${pumpId}" did not provide a numeric rpm`);
+    logger.error("Pump type is not defined in the message's payload");
   }
 };
 
@@ -165,8 +143,4 @@ export default ({ systemOutput, apiClient, logger }) => {
   observable
     .filter(({ type }) => type === 'pump_fault')
     .subscribe(createPumpFaultSubscribe({ apiClient, logger }));
-
-  observable
-    .filter(({ type }) => type === 'pump_ack')
-    .subscribe(createPumpAckSubscribe({ apiClient, logger }));
 };

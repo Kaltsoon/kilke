@@ -8,8 +8,6 @@ import {
 
 import { GraphQLDateTime } from 'graphql-iso-date';
 
-import PumpStatus from './PumpStatus';
-
 const PumpMeasurement = new GraphQLObjectType({
   name: 'PumpMeasurement',
   fields: () => ({
@@ -21,9 +19,6 @@ const PumpMeasurement = new GraphQLObjectType({
     },
     flowRate: {
       type: GraphQLFloat,
-    },
-    status: {
-      type: PumpStatus,
     },
     createdAt: {
       type: GraphQLDateTime,

@@ -10,6 +10,8 @@ import {
 import { get } from 'lodash';
 
 import PumpMeasurement from './PumpMeasurement';
+import PumpMode from './PumpMode';
+import PumpStatus from './PumpStatus';
 
 const Pump = new GraphQLObjectType({
   name: 'Pump',
@@ -61,6 +63,30 @@ const Pump = new GraphQLObjectType({
           })
           .limit(limit)
           .orderBy('createdAt', 'desc');
+      },
+    },
+    status: {
+      type: PumpStatus,
+      resolve: async (
+        { systemId, type },
+        args,
+        { dataLoaders: { pumpLoader } },
+      ) => {
+        const pump = await pumpLoader.load([systemId, type]);
+
+        return pump ? pump.status || 'fault' : 'fault';
+      },
+    },
+    mode: {
+      type: PumpMode,
+      resolve: async (
+        { systemId, type },
+        args,
+        { dataLoaders: { pumpLoader } },
+      ) => {
+        const pump = await pumpLoader.load([systemId, type]);
+
+        return pump ? pump.mode || 'manual' : 'manual';
       },
     },
   }),

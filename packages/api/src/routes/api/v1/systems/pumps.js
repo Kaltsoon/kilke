@@ -1,6 +1,13 @@
 import Router from 'koa-router';
+import * as yup from 'yup';
 
 const router = new Router();
+
+const pumpSchema = yup.object().shape({
+  mode: yup.string().oneOf(['manual', 'automatic']),
+  status: yup.string().oneOf(['ok', 'fault']),
+  rpm: yup.number(),
+});
 
 router.get('/:type', async ctx => {
   const {
@@ -9,12 +16,7 @@ router.get('/:type', async ctx => {
 
   const { type, systemId } = ctx.params;
 
-  const pump = await Pump.query()
-    .where({
-      type,
-      systemId,
-    })
-    .first();
+  const pump = await Pump.findById([systemId, type]);
 
   ctx.body = pump;
 });
@@ -27,11 +29,9 @@ router.put('/:type', async ctx => {
   } = ctx;
   const { type, systemId } = ctx.params;
 
-  const { status } = ctx.request.body;
-
-  const update = {
-    ...(status && { status }),
-  };
+  const { rpm, ...update } = await pumpSchema.validate(ctx.request.body, {
+    stripUnknown: true,
+  });
 
   const existingPump = await Pump.query().findById([systemId, type]);
 
@@ -50,17 +50,19 @@ router.put('/:type', async ctx => {
     ctx.body = createdPump;
   }
 
-  try {
-    systemInput.sendMessage({
-      systemId,
-      type: 'pump_configuration',
-      payload: {
-        type,
-        status,
-      },
-    });
-  } catch (e) {
-    logger.error(e);
+  if (rpm !== undefined) {
+    try {
+      systemInput.sendMessage({
+        systemId,
+        type: 'pump_configuration',
+        payload: {
+          type,
+          rpm,
+        },
+      });
+    } catch (e) {
+      logger.error(e);
+    }
   }
 });
 

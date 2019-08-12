@@ -6,6 +6,8 @@ exports.up = function(knex, Promise) {
     table.timestamp('created_at');
     table.timestamp('updated_at');
     table.primary(['system_id', 'type']);
+    table.text('status');
+    table.text('mode');
 
     table.index('system_id');
   });
