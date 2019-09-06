@@ -1,14 +1,20 @@
 import Observable from 'zen-observable';
 import { isNumber, get, isObject, isBoolean } from 'lodash';
 
-const createSensorMeasurements = ({ apiClient, data, systemId, time }) => {
+const createSensorMeasurements = ({
+  apiClient,
+  data,
+  systemId,
+  time,
+  calibrated = false,
+}) => {
   const rows = Object.entries(data)
     .filter(([, value]) => isNumber(value))
     .map(([type, value]) => {
       return {
         type,
         createdAt: time,
-        rawValue: value,
+        ...(calibrated ? { value } : { rawValue: value }),
       };
     });
 
@@ -16,15 +22,15 @@ const createSensorMeasurements = ({ apiClient, data, systemId, time }) => {
 };
 
 const createPumpMeasurements = async ({ apiClient, data, systemId, time }) => {
-  const rows = Object.entries(data)
-    .filter(([, rpm]) => isNumber(rpm))
-    .map(([type, rpm]) => {
-      return {
-        type,
-        createdAt: time,
-        rpm,
-      };
-    });
+  const entries = Object.entries(data).filter(([, { rpm }]) => isNumber(rpm));
+
+  const rows = entries.map(([type, { rpm }]) => {
+    return {
+      type,
+      createdAt: time,
+      rpm,
+    };
+  });
 
   const measurements = await apiClient.createPumpMeasurements({
     measurements: rows,
@@ -32,11 +38,11 @@ const createPumpMeasurements = async ({ apiClient, data, systemId, time }) => {
   });
 
   await Promise.all(
-    rows.map(({ type }) =>
+    entries.map(([type, { status, mode }]) =>
       apiClient.updatePump({
         systemId,
         type,
-        update: { status: 'ok' },
+        update: { status, mode },
       }),
     ),
   );
@@ -77,6 +83,9 @@ const createMeasurementSubscribe = ({ apiClient, logger }) => async ({
   const measurementType = get(payload, 'type');
   const data = get(payload, 'data');
   const time = get(payload, 'time');
+  const calibrated = isBoolean(get(payload, 'calibrated'))
+    ? payload.calibrated
+    : false;
 
   if (!isObject(data)) {
     return logger.error('Measurement data is not defined in the message', {
@@ -93,6 +102,7 @@ const createMeasurementSubscribe = ({ apiClient, logger }) => async ({
     data,
     time: measurementTime,
     systemId,
+    calibrated,
   };
 
   try {
@@ -108,39 +118,10 @@ const createMeasurementSubscribe = ({ apiClient, logger }) => async ({
   }
 };
 
-const createPumpFaultSubscribe = ({ apiClient, logger }) => async ({
-  payload,
-  systemId,
-}) => {
-  if (!systemId) {
-    return logger.error('systemId is not defined in the message');
-  }
-
-  logger.info('Pump fault', { payload });
-
-  if (payload.type) {
-    try {
-      await apiClient.updatePump({
-        type: payload.type,
-        systemId,
-        update: { status: 'fault' },
-      });
-    } catch (e) {
-      logger.error(e);
-    }
-  } else {
-    logger.error("Pump type is not defined in the message's payload");
-  }
-};
-
 export default ({ systemOutput, apiClient, logger }) => {
   const observable = Observable.from(systemOutput.observable());
 
   observable
     .filter(({ type }) => type === 'measurement')
     .subscribe(createMeasurementSubscribe({ apiClient, logger }));
-
-  observable
-    .filter(({ type }) => type === 'pump_fault')
-    .subscribe(createPumpFaultSubscribe({ apiClient, logger }));
 };

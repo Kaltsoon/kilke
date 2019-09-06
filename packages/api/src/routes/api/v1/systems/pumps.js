@@ -6,7 +6,16 @@ const router = new Router();
 const pumpSchema = yup.object().shape({
   mode: yup.string().oneOf(['manual', 'automatic']),
   status: yup.string().oneOf(['ok', 'fault']),
-  rpm: yup.number(),
+  rpm: yup
+    .number()
+    .when('mode', {
+      is: 'manual',
+      then: yup.number().required(),
+    })
+    .when('mode', {
+      is: 'automatic',
+      then: yup.number().required(),
+    }),
 });
 
 router.get('/:type', async ctx => {
@@ -29,9 +38,11 @@ router.put('/:type', async ctx => {
   } = ctx;
   const { type, systemId } = ctx.params;
 
-  const { rpm, ...update } = await pumpSchema.validate(ctx.request.body, {
+  const { rpm, mode, status } = await pumpSchema.validate(ctx.request.body, {
     stripUnknown: true,
   });
+
+  const update = { mode, status };
 
   const existingPump = await Pump.query().findById([systemId, type]);
 
@@ -50,14 +61,16 @@ router.put('/:type', async ctx => {
     ctx.body = createdPump;
   }
 
-  if (rpm !== undefined) {
+  if (rpm !== undefined || mode !== undefined) {
     try {
       systemInput.sendMessage({
         systemId,
         type: 'pump_configuration',
         payload: {
           type,
-          rpm,
+          mode,
+          ...(mode === 'automatic' && { automaticRpm: rpm }),
+          ...(mode === 'manual' && { manualRpm: rpm }),
         },
       });
     } catch (e) {
