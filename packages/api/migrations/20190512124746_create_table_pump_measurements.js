@@ -11,7 +11,6 @@ exports.up = function(knex, Promise) {
     table.text('type');
     table.float('rpm');
     table.float('flow_rate');
-    table.text('status');
 
     table.index(['system_id', 'type', 'created_at']);
   });

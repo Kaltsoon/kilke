@@ -12,5 +12,3 @@ cd ./packages/api && yarn install && yarn build && yarn knex migrate:latest &&
 cd $CURRENT_PATH
 cd ./packages/client && yarn install && yarn build &&
 cd $CURRENT_PATH
-cd ./packages/pump-controller && yarn install &&
-cd $CURRENT_PATH
