@@ -35,8 +35,8 @@ const ApiSensorReactorComponent = ({ binarySensor, ...props }) => {
     },
   });
 
-  const value = isBoolean(get(data, 'sensor.measurements[0].value'))
-    ? data.sensor.measurements[0].value
+  const value = isBoolean(get(data, 'binarySensor.measurements[0].value'))
+    ? data.binarySensor.measurements[0].value
     : null;
 
   return (
