@@ -2,7 +2,7 @@ import Router from 'koa-router';
 
 import ping from './ping';
 import systems from './systems';
-import pumpControllers from './pumpControllerss';
+import pumpControllers from './pumpControllers';
 
 const router = new Router();
 
