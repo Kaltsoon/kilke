@@ -29,7 +29,7 @@ const renderName = ({ title, subtitle, mode }) => {
 
 const getColorByStatus = (status, rpm) => {
   if (status === PumpStatus.FAULT) {
-    return 'danger';
+    return 'error';
   } else if (rpm === 0) {
     return null;
   } else {
