@@ -51,6 +51,7 @@ const PumpMeasurementBaseFields = gql`
     id
     rpm
     flowRate
+    type
   }
 `;
 
@@ -61,6 +62,7 @@ const BinarySensorBaseFields = gql`
     title
     subtitle
     reactorTitle
+    type
   }
 `;
 
