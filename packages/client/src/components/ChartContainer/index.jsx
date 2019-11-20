@@ -19,7 +19,7 @@ const AverageWrapper = styled.div`
 const Filters = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-bottom: ${spacing(1)};
+  margin: ${spacing(2)} 0px;
 `;
 
 const Actions = styled.div`

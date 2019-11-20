@@ -1,21 +1,21 @@
 import React from 'react';
-import { Field } from 'formik';
 import MenuItem from '@material-ui/core/MenuItem';
 import Box from '@material-ui/core/Box';
 
-import { FormFieldInput, FormFieldSelect } from '../FormFields';
+import SelectField from '../SelectField';
+import TextFieldField from '../TextFieldField';
 
 const PumpConfigurationForm = () => {
   return (
     <>
-      <Box mb={2}>
-        <Field name="mode" component={FormFieldSelect} inputLabel="Mode">
+      <Box mb={4}>
+        <SelectField name="mode" label="Mode">
           <MenuItem value="automatic">Automatic</MenuItem>
           <MenuItem value="manual">Manual</MenuItem>
-        </Field>
+        </SelectField>
       </Box>
       <Box>
-        <Field name="rpm" component={FormFieldInput} type="number" inputLabel="Manual RPM" />
+        <TextFieldField name="rpm" type="number" label="Manual RPM" />
       </Box>
     </>
   );

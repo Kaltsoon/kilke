@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from 'react';
 import { connect } from 'react-redux';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
@@ -10,6 +9,7 @@ import ChartContainer from '../ChartContainer';
 import ChartAverage from '../ChartAverage';
 import Chart from '../Chart';
 import useSensorChart from '@/hooks/useSensorChart';
+import Select from '../Select';
 
 const oneHour = 3600000;
 const oneDay = 86400000;
@@ -75,7 +75,11 @@ const renderChart = ({ data, chartConfig }) => {
 
 const renderFilters = ({ onFilterPresetChange, filterPreset }) => {
   return (
-    <Select value={filterPreset} onChange={onFilterPresetChange}>
+    <Select
+      label="Interval"
+      value={filterPreset}
+      onChange={onFilterPresetChange}
+    >
       <MenuItem value="realTime">Real-time</MenuItem>
       <MenuItem value="lastHour">Last hour</MenuItem>
       <MenuItem value="last24Hours">Last 24 hours</MenuItem>

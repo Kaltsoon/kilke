@@ -1,9 +1,8 @@
-import merge from 'lodash/merge';
 import get from 'lodash/get';
 import { darken, lighten } from 'polished';
 import { createMuiTheme } from '@material-ui/core/styles';
 
-const createPalette = (color, contrastText = '#ffffff') => {
+const createPaletteVariants = (color, contrastText = '#ffffff') => {
   return {
     light: lighten(0.2, color),
     main: color,
@@ -12,33 +11,28 @@ const createPalette = (color, contrastText = '#ffffff') => {
   };
 };
 
-const primaryColor = '#1483fb';
-const successColor = '#66c54b';
-const dangerColor = '#e93f33';
-const secondaryColor = '#eeeeee';
+const createPalette = () => {
+  const primaryColor = '#1483fb';
+  const successColor = '#66c54b';
+  const dangerColor = '#e93f33';
+  const secondaryColor = '#eeeeee';
 
-const defaultTheme = {
-  palette: {
-    primary: createPalette(primaryColor),
-    success: createPalette(successColor),
-    danger: createPalette(dangerColor),
-    error: createPalette(dangerColor),
-    secondary: createPalette(secondaryColor, '#545454'),
-  },
+  return {
+    primary: createPaletteVariants(primaryColor),
+    success: createPaletteVariants(successColor),
+    danger: createPaletteVariants(dangerColor),
+    error: createPaletteVariants(dangerColor),
+    secondary: createPaletteVariants(secondaryColor, '#545454'),
+    background: {
+      default: '#eeeeee',
+    },
+  };
 };
 
-const createTheme = (theme = {}) => {
-  return createMuiTheme(
-    merge(
-      {
-        typography: {
-          useNextVariants: true,
-        },
-      },
-      defaultTheme,
-      theme,
-    ),
-  );
+const createTheme = () => {
+  return createMuiTheme({
+    palette: createPalette(),
+  });
 };
 
 export const themeProp = path => props =>

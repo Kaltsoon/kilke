@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
-import Icon from '@material-ui/core/Icon';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import { useSnackbar } from 'notistack';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
 import ReactorComponent from '../ReactorComponent';
 import PumpConfigurationModal from '../PumpConfigurationModal';
@@ -95,7 +95,7 @@ const ApiPumpReactorComponent = ({ pump, ...props }) => {
         value={isNumber(rpm) ? renderValue({ value: rpm, unit }) : '-'}
         name={renderName({ title, subtitle, mode })}
         onStatusClick={toggle}
-        label={<Icon>play_arrow</Icon>}
+        label={<PlayArrowIcon />}
         {...props}
       />
     </>

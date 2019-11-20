@@ -1,24 +1,40 @@
+import { normalize } from 'polished';
 import { createGlobalStyle } from 'styled-components';
 
-import { themeProp } from '@/theme';
-
 const GlobalStyle = createGlobalStyle`
-  html {
-    font-size: ${themeProp('typography.fontSize')};
-  }
-
-  body {
-    background-color: #eeeeee;
-  }
-
-  html, body {
-    margin: 0px;
-    padding: 0px;
-  }
+  ${normalize()};
 
   a {
     text-decoration: none;
+    color: inherit;
   }
+
+  ${({ theme }) => ({
+    // From https://github.com/mui-org/material-ui/blob/master/packages/material-ui/src/CssBaseline/CssBaseline.js
+    html: {
+      WebkitFontSmoothing: 'antialiased',
+      MozOsxFontSmoothing: 'grayscale',
+      boxSizing: 'border-box',
+    },
+    '*, *::before, *::after': {
+      boxSizing: 'inherit',
+    },
+    'strong, b': {
+      fontWeight: 'bolder',
+    },
+    body: {
+      margin: 0,
+      color: theme.palette.text.primary,
+      ...theme.typography.body1,
+      backgroundColor: theme.palette.background.default,
+      '@media print': {
+        backgroundColor: theme.palette.common.white,
+      },
+      '&::backdrop': {
+        backgroundColor: theme.palette.background.default,
+      },
+    },
+  })}
 `;
 
 export default GlobalStyle;

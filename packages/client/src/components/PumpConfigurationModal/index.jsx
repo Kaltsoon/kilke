@@ -14,25 +14,26 @@ export const PumpConfigurationModal = ({
   onSubmit = () => {},
 }) => (
   <Dialog open={open} onClose={onClose} fullWidth>
-    <Formik onSubmit={onSubmit} initialValues={{ status: '', manualRpm: '' }}>
-      {() => {
-        return (
-          <Form>
-            <DialogTitle>Send pump configuration</DialogTitle>
-            <DialogContent>
-              <PumpConfigurationForm />
-            </DialogContent>
-            <DialogActions>
-              <Button type="button" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit" color="primary" variant="contained">
-                Submit
-              </Button>
-            </DialogActions>
-          </Form>
-        );
-      }}
+    <Formik
+      onSubmit={onSubmit}
+      initialValues={{ status: '', manualRpm: '', mode: '' }}
+    >
+      {() => (
+        <Form>
+          <DialogTitle>Send pump configuration</DialogTitle>
+          <DialogContent>
+            <PumpConfigurationForm />
+          </DialogContent>
+          <DialogActions>
+            <Button type="button" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" color="primary" variant="contained">
+              Submit
+            </Button>
+          </DialogActions>
+        </Form>
+      )}
     </Formik>
   </Dialog>
 );

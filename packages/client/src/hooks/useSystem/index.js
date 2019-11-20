@@ -1,4 +1,4 @@
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
 import useSystemId from '../useSystemId';
 import { GET_SYSTEM } from '@/graphql/queries';
@@ -11,7 +11,7 @@ export const useSystem = ({ id, includeReactor = false } = {}) => {
     variables: { id: targetId, includeReactor },
   });
 
-  return { system: data.system, ...rest };
+  return { system: data ? data.system : undefined, ...rest };
 };
 
 export default useSystem;

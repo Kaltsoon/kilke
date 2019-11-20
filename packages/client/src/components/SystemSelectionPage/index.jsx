@@ -5,14 +5,12 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
 import { GET_SYSTEMS } from '@/graphql/queries';
 import { spacing } from '@/theme';
+import Select from '../Select';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -47,7 +45,8 @@ export const SystemSelectionPage = ({ history }) => {
   );
 
   const { data } = useQuery(GET_SYSTEMS);
-  const systems = data.systems ? data.systems : [];
+
+  const systems = data && data.systems ? data.systems : [];
 
   return (
     <Wrapper>
@@ -57,16 +56,13 @@ export const SystemSelectionPage = ({ history }) => {
             <Typography gutterBottom variant="h5" component="h2">
               Select the system
             </Typography>
-            <FormControl fullWidth>
-              <InputLabel>System</InputLabel>
-              <Select value={systemId} onChange={onSystemChange}>
-                {systems.map(({ id, name }) => (
-                  <MenuItem value={id} key={id}>
-                    {name || 'Anonymous system'}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Select label="System" value={systemId} onChange={onSystemChange}>
+              {systems.map(({ id, name }) => (
+                <MenuItem value={id} key={id}>
+                  {name || 'Anonymous system'}
+                </MenuItem>
+              ))}
+            </Select>
           </CardContent>
           <CardActions>
             <Button

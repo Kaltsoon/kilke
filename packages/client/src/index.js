@@ -1,9 +1,7 @@
-import './icons.sass';
-
 import React from 'react';
 import { render } from 'react-dom';
 import axios from 'axios';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 
 import createApiClient from './utils/createApiClient';
 import App from './components/App';

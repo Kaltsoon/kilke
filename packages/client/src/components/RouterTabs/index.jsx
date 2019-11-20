@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import Tabs from '@material-ui/core/Tabs';
-import { withRouter, matchPath } from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom';
 import get from 'lodash/get';
 
-const RouterTabs = ({ children, location: { pathname }, ...props }) => {
+const RouterTabs = ({ children, ...props }) => {
+  const { pathname } = useLocation();
+
   const activeIndex = useMemo(
     () => {
       return React.Children.toArray(children)
@@ -22,4 +24,4 @@ const RouterTabs = ({ children, location: { pathname }, ...props }) => {
   );
 };
 
-export default withRouter(RouterTabs);
+export default RouterTabs;

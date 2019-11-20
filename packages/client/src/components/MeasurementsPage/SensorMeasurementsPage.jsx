@@ -1,13 +1,13 @@
 import React, { memo, useCallback } from 'react';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import get from 'lodash/get';
 import CardContent from '@material-ui/core/CardContent';
-import TextField from '@material-ui/core/TextField';
 
 import { GET_SENSOR_MEASUREMENTS } from '@/graphql/queries';
 import useSystemId from '@/hooks/useSystemId';
 import useDebounceState from '@/hooks/useDebounceState';
 import SensorMeasurementsTable from '../SensorMeasurementsTable';
+import TextField from '../TextField';
 
 const TableContent = memo(({ measurements }) => (
   <SensorMeasurementsTable measurements={measurements} />
