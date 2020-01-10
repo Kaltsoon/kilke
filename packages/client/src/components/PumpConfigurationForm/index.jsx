@@ -8,7 +8,7 @@ import TextFieldField from '../TextFieldField';
 const PumpConfigurationForm = () => {
   return (
     <>
-      <Box mb={4}>
+      <Box mb={2}>
         <SelectField name="mode" label="Mode">
           <MenuItem value="automatic">Automatic</MenuItem>
           <MenuItem value="manual">Manual</MenuItem>

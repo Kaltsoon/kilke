@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useQuery } from '@apollo/react-hooks';
+import Box from '@material-ui/core/Box';
 
 import { GET_SYSTEMS } from '@/graphql/queries';
 import { spacing } from '@/theme';
@@ -53,16 +54,18 @@ export const SystemSelectionPage = ({ history }) => {
       <Container>
         <Card>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
+            <Typography variant="h5" component="h2">
               Select the system
             </Typography>
-            <Select label="System" value={systemId} onChange={onSystemChange}>
-              {systems.map(({ id, name }) => (
-                <MenuItem value={id} key={id}>
-                  {name || 'Anonymous system'}
-                </MenuItem>
-              ))}
-            </Select>
+            <Box mt={2}>
+              <Select label="System" value={systemId} onChange={onSystemChange}>
+                {systems.map(({ id, name }) => (
+                  <MenuItem value={id} key={id}>
+                    {name || 'Anonymous system'}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
           </CardContent>
           <CardActions>
             <Button
