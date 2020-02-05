@@ -49,7 +49,7 @@ const getMeasurementsCsvString = options => {
 
   const content = data.map(({ createdAt, ...typeData }) => {
     return [
-      formatDate(new Date(createdAt), 'DD/MM/YYYY'),
+      formatDate(new Date(createdAt), 'dd/MM/yyyy'),
       formatDate(new Date(createdAt), 'HH:mm:ss'),
       ...sortBy(Object.entries(typeData), ([type]) => type).map(([, value]) =>
         periodsToCommas(value),

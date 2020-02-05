@@ -16,10 +16,10 @@ import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 import { spacing } from '@/theme';
 import useModal from '@/hooks/useModal';
 
-const MenuButton = styled(IconButton).attrs({
+const MenuButton = styled(IconButton).attrs(() => ({
   color: 'inherit',
   'aria-label': 'Menu',
-})`
+}))`
   margin-right: ${spacing(2)} !important;
 `;
 

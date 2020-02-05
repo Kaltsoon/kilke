@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { subMinutes } from 'date-fns';
+import subMinutes from 'date-fns/subMinutes';
 import { get } from 'lodash';
 
 import { NotFoundError } from '@/errors';

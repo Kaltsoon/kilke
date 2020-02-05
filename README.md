@@ -2,12 +2,6 @@
 
 ## Setup
 
-- Define value for environment variable `REACT_APP_API_URL` in `packages/client/.env` file. You can use the default environment variable values, which are:
-
-```
-REACT_APP_API_URL=http://localhost:5000
-```
-
 - Install PostgreSQL, if not already installed:
 
 ```
@@ -17,20 +11,20 @@ sudo apt-get install postgresql postgresql-client
 Then open the `psql` shell:
 
 ```
-sudo -u postgres psql
+psql -U postgres
 ```
 
-In the `psql` shell, run `create database kilke;` to create database and then `\password postgres` to set the password (memoize this password for the configuration).
+In the `psql` shell, run `create database kilke;` to create a database.
 
-- Add database configuration (username, password, database) to the `knexfile.js` file
+- If required, add database configuration (username, password, database) to the `packages/api/.env` file (`POSTGRES_*` variables).
 
-- Run the setup script:
+- Install `node` (version `12.2.0` has been tested) and `yarn` package manager.
+
+- Build the packages by running:
 
 ```
-./setup.sh
+bash ./build.sh
 ```
-
-- Add the configuration to the `config.json` file
 
 - Start everything:
 
@@ -38,9 +32,19 @@ In the `psql` shell, run `create database kilke;` to create database and then `\
 yarn pm2 start
 ```
 
-## Configuration file
+- Create a system by calling the API with the following request:
 
-`config.json` file format:
+```bash
+curl -d '{"name": "System"}' -H "Content-Type: application/json" -X POST http://localhost:5000/api/v1/systems
+```
+
+### Package configuration
+
+You can override each packages configuration in the `.env` file within packages folder (e.g. `packages/api/.env`).
+
+## System configuration
+
+System configuration format:
 
 ```javascript
 {

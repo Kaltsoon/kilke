@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeProvider as ScThemeProvider } from 'styled-components';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 import {
   ThemeProvider as MuiThemeProvider,
@@ -9,7 +10,12 @@ import {
 const ThemeProvider = ({ theme, children }) => (
   <StylesProvider injectFirst>
     <ScThemeProvider theme={theme}>
-      <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
+      <MuiThemeProvider theme={theme}>
+        <>
+          <CssBaseline />
+          {children}
+        </>
+      </MuiThemeProvider>
     </ScThemeProvider>
   </StylesProvider>
 );

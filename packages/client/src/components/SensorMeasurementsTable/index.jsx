@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import formatDate from 'date-fns/format';
-import isValidDate from 'date-fns/is_valid';
+import isValidDate from 'date-fns/isValid';
 
 const SensorMeasurementsTable = memo(({ measurements }) => (
   <Table>
@@ -24,7 +24,7 @@ const SensorMeasurementsTable = memo(({ measurements }) => (
           <TableCell>{type}</TableCell>
           <TableCell>
             {isValidDate(new Date(createdAt))
-              ? formatDate(new Date(createdAt), 'DD.MM.YYYY')
+              ? formatDate(new Date(createdAt), 'dd.MM.yyyy')
               : null}
           </TableCell>
           <TableCell>

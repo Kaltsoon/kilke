@@ -15,14 +15,14 @@ const ValuesWrapper = styled.div`
   white-space: nowrap;
 `;
 
-const Current = styled(Typography).attrs({ variant: 'body1' })``;
+const Current = styled(Typography).attrs(() => ({ variant: 'body1' }))``;
 
 const Footer = styled(Typography)`
   margin-top: 0.25em;
   color: ${themeProp('palette.text.secondary')};
 `;
 
-const Trend = styled(Typography).attrs({ variant: 'body1' })`
+const Trend = styled(Typography).attrs(() => ({ variant: 'body1' }))`
   margin-left: ${spacing(1)};
   display: flex;
   align-items: center;
