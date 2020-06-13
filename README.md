@@ -2,36 +2,8 @@
 
 ## Setup
 
-- Install PostgreSQL, if not already installed:
-
-```
-sudo apt-get install postgresql postgresql-client
-```
-
-Then open the `psql` shell:
-
-```
-psql -U postgres
-```
-
-In the `psql` shell, run `create database kilke;` to create a database.
-
-- If required, add database configuration (username, password, database) to the `packages/api/.env` file (`POSTGRES_*` variables).
-
-- Install `node` (version `12.2.0` has been tested) and `yarn` package manager.
-
-- Build the packages by running:
-
-```
-bash ./build.sh
-```
-
-- Start everything:
-
-```
-yarn pm2 start
-```
-
+- Install Docker and Docker Compose
+- Run `docker-compose up`
 - Create a system by calling the API with the following request:
 
 ```bash
@@ -40,7 +12,7 @@ curl -d '{"name": "System"}' -H "Content-Type: application/json" -X POST http://
 
 ### Package configuration
 
-You can override each packages configuration in the `.env` file within packages folder (e.g. `packages/api/.env`).
+You can override each packages configuration in the `.env` file within packages folder (e.g. `packages/api/.env`). Note that most of these changes require altering the `Dockerfile`s and `docker-compose.yml` file as well.
 
 ## System configuration
 
@@ -93,37 +65,9 @@ System configuration format:
 }
 ```
 
-## Stop
+## Inspecting logs
 
-You can stop all the apps by running:
-
-```
-yarn pm2 stop all
-```
-
-## Restart
-
-If you have changed the source code, first build all the apps by running:
-
-```
-./build.sh
-```
-
-Then, you can restart all the apps by running:
-
-```
-yarn pm2 restart all
-```
-
-## Logs
-
-You can read the logs by running:
-
-```
-yarn pm2 logs
-```
-
-You can display logs from only certain services by definining their names, for example `yarn pm2 logs sensor-io`.
+Run `docker logs <container>` where `<container>` is the target container. E.g. `docker logs kilke-system-reader`
 
 ## Database connection
 

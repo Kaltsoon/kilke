@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import isValidDate from 'date-fns/is_valid';
+import { isValid as isValidDate } from 'date-fns';
 
 import { selectAsTimeslot } from '@/utils';
 import getMeasurementsCsvString from '@/utils/getMeasurementsCsvString';

@@ -1,0 +1,48 @@
+version: '3.5'
+
+services:
+  db:
+    image: postgres:11
+    container_name: kilke-db
+    environment:
+      - PGDATA=/data
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kilke
+    volumes:
+      - pg_data:/data
+  client:
+    build:
+      context: ./packages/client
+    image: kilke-client
+    ports:
+      - 8080:8080
+    container_name: kilke-client
+  api:
+    build:
+      context: ./packages/api
+    image: kilke-api
+    ports:
+      - 5000:5000
+    container_name: kilke-api
+    depends_on:
+      - db
+      - system-io
+  system-io:
+    build:
+      context: ./packages/system-io
+    image: kilke-system-io
+    ports:
+      - 6000:6000
+    container_name: kilke-system-io
+  system-reader:
+    build:
+      context: ./packages/system-reader
+    image: kilke-system-reader
+    container_name: kilke-system-reader
+    depends_on:
+      - db
+      - system-io
+      - api
+
+volumes:
+  pg_data:

@@ -7,6 +7,7 @@
     "start": "node ./build/index.js",
     "start:dev": "yarn babel-node ./src/index.js",
     "build": "rm -rf build && yarn babel ./src --out-dir ./build",
+    "migrate:latest": "yarn knex migrate:latest",
     "lint": "yarn eslint"
   },
   "dependencies": {

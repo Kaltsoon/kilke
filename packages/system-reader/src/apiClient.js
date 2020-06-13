@@ -9,25 +9,25 @@ export class ApiClient {
 
   createSensorMeasurements({ measurements, systemId }) {
     return this.client
-      .post(`/v1/systems/${systemId}/sensor-measurements`, measurements)
+      .post(`/api/v1/systems/${systemId}/sensor-measurements`, measurements)
       .then(({ data }) => data);
   }
 
   createPumpMeasurements({ measurements, systemId }) {
     return this.client
-      .post(`/v1/systems/${systemId}/pump-measurements`, measurements)
+      .post(`/api/v1/systems/${systemId}/pump-measurements`, measurements)
       .then(({ data }) => data);
   }
 
   createBinarySensorMeasurements({ measurements, systemId }) {
     return this.client
-      .post(`/v1/systems/${systemId}/binary-sensor-measurements`, measurements)
+      .post(`/api/v1/systems/${systemId}/binary-sensor-measurements`, measurements)
       .then(({ data }) => data);
   }
 
   updatePump({ systemId, type, update }) {
     return this.client
-      .put(`/v1/systems/${systemId}/pumps/${type}`, update)
+      .put(`/api/v1/systems/${systemId}/pumps/${type}`, update)
       .then(({ data }) => data);
   }
 }
