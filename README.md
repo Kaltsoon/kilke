@@ -2,8 +2,10 @@
 
 ## Setup
 
+Note that all `docker` and `docker-compose` commands might require `sudo`.
+
 1. Install Docker and Docker Compose
-2. Run `docker-compose up` (might require sudo)
+2. Run `docker-compose up`
 3. Once `kilke-db` and `kilke-api` containers are running, run the migrations by first connecting to the `kilke-api` container by running `docker exec -it kilke-api /bin/bash` and once connected run `yarn migrate:latest`
 4. _(Optional)_ Create a system by calling the API with the following request:
 
@@ -11,7 +13,7 @@
 curl -d '{"name": "System"}' -H "Content-Type: application/json" -X POST http://localhost:5000/api/v1/systems
 ```
 
-5. _(Optional)_ Install [Yarn](https://classic.yarnpkg.com/en/docs/install) to use scripts defined in the root directory's `package.json` file
+5. _(Optional)_ Install [Yarn](https://classic.yarnpkg.com/en/docs/install) to use scripts defined in the root directory's `package.json` file. Then run `yarn` in the root directory
 
 ### Package configuration
 
