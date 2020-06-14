@@ -68,9 +68,8 @@ router.put('/:type', async ctx => {
         type: 'pump_configuration',
         payload: {
           type,
-          mode,
-          ...(mode === 'automatic' && { automaticRpm: rpm }),
-          ...(mode === 'manual' && { manualRpm: rpm }),
+          ...(mode === 'automatic' && { automaticRpm: rpm, mode: 'auto' }),
+          ...(mode === 'manual' && { manualRpm: rpm, mode: 'man' }),
         },
       });
     } catch (e) {

@@ -3,7 +3,8 @@
 ## Setup
 
 - Install Docker and Docker Compose
-- Run `docker-compose up`
+- Run `docker-compose up` (might require sudo)
+- Once `kilke-db` and `kilke-api` containers are running, run the migrations by first connecting to the `kilke-api` container by running `docker exec -it kilke-api /bin/bash` and once connected run `yarn migrate:latest`
 - Create a system by calling the API with the following request:
 
 ```bash
@@ -71,8 +72,8 @@ Run `docker logs <container>` where `<container>` is the target container. E.g. 
 
 ## Database connection
 
-You can access the database from terminal by running the command:
+Once containers are running after running `docker-compose up`, you can access the database container by running `docker exec -it kilke-db /bin/bash`. Once connected to the database container you can access the database from terminal by running the command:
 
 ```
-sudo -u postgres psql -d kilke
+psql -U postgres -d kilke
 ```

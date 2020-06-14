@@ -21,6 +21,17 @@ const createSensorMeasurements = ({
   return apiClient.createSensorMeasurements({ measurements: rows, systemId });
 };
 
+const normalizePumpMode = mode => {
+  const alias = {
+    manual: 'manual',
+    automatic: 'automatic',
+    man: 'manual',
+    auto: 'automatic',
+  };
+
+  return mode ? alias[mode] : undefined;
+}
+
 const createPumpMeasurements = async ({ apiClient, data, systemId, time }) => {
   const entries = Object.entries(data).filter(([, { rpm }]) => isNumber(rpm));
 
@@ -42,7 +53,7 @@ const createPumpMeasurements = async ({ apiClient, data, systemId, time }) => {
       apiClient.updatePump({
         systemId,
         type,
-        update: { status, mode },
+        update: { status, mode: normalizePumpMode(mode) },
       }),
     ),
   );
