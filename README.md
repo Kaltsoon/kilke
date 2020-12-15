@@ -6,7 +6,7 @@ Note that all `docker` and `docker-compose` commands might require `sudo`.
 
 1. Install Docker and Docker Compose
 2. Run `docker-compose up`
-3. Once `kilke-db` and `kilke-api` containers are running, run the migrations by first connecting to the `kilke-api` container by running `docker exec -it kilke-api /bin/bash` and once connected run `yarn migrate:latest`
+3. Once `kilke-db` and `kilke-api` containers are running, run the migrations by first connecting to the `kilke-api` container by running `docker-compose exec kilke-api yarn migrate:latest`
 4. _(Optional)_ Create a system by calling the API with the following request:
 
 ```bash
