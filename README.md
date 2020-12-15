@@ -6,7 +6,7 @@ Note that all `docker` and `docker-compose` commands might require `sudo`.
 
 1. Install Docker and Docker Compose
 2. Run `docker-compose up`
-3. Once `kilke-db` and `kilke-api` containers are running, run the migrations by first connecting to the `kilke-api` container by running `docker-compose exec kilke-api yarn migrate:latest`
+3. Once `db` and `api` services are running, run the migrations by running `docker-compose exec api yarn migrate:latest`
 4. _(Optional)_ Create a system by calling the API with the following request:
 
 ```bash
@@ -15,9 +15,11 @@ curl -d '{"name": "System"}' -H "Content-Type: application/json" -X POST http://
 
 5. _(Optional)_ Install [Yarn](https://classic.yarnpkg.com/en/docs/install) to use scripts defined in the root directory's `package.json` file. Then run `yarn` in the root directory
 
+After the setup is done, the client should be available at <http://localhost:8080/>.
+
 ### Package configuration
 
-You can override each packages configuration in the `.env` file within packages folder (e.g. `packages/api/.env`). Note that most of these changes require altering the `Dockerfile`s and `docker-compose.yml` file as well.
+You can override each packages configuration in the `.env` file within packages folder (e.g. `packages/api/.env`). Note that some of these changes (such as ports) require altering the `Dockerfile`s and `docker-compose.yml` file as well.
 
 ## System configuration
 
@@ -72,11 +74,11 @@ System configuration format:
 
 ## Inspecting logs
 
-Run `docker-compose logs <service>` where `<service>` is the target container. E.g. `docker-compose logs kilke-system-reader`
+Run `docker-compose logs <service>` where `<service>` is the target container. E.g. `docker-compose logs system-reader`
 
 ## Database connection
 
-Once containers are running after running `docker-compose up`, you can access the database container by running `docker exec -it kilke-db /bin/bash`. Once connected to the database container you can access the database from terminal by running the command:
+Once containers are running after running `docker-compose up`, you can access the database container by running `docker-compose exec db /bin/bash`. Once connected to the database container you can access the database from terminal by running the command:
 
 ```
 psql -U postgres -d kilke
