@@ -72,7 +72,7 @@ System configuration format:
 
 ## Inspecting logs
 
-Run `docker logs <container>` where `<container>` is the target container. E.g. `docker logs kilke-system-reader`
+Run `docker-compose logs <service>` where `<service>` is the target container. E.g. `docker-compose logs kilke-system-reader`
 
 ## Database connection
 
