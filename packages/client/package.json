@@ -20,7 +20,7 @@
     "highcharts-react-official": "2.2.2",
     "history": "^4.7.2",
     "humanize-duration": "^3.15.3",
-    "immer": "5.3.3",
+    "immer": "8.0.1",
     "koa": "^2.6.1",
     "koa-static": "^5.0.0",
     "lodash": "^4.17.11",
