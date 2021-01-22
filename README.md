@@ -70,7 +70,7 @@ System configuration format:
 
 ## Inspecting logs
 
-Run `docker-compose logs <service>` where `<service>` is the target container. E.g. `docker-compose logs system-reader`
+Run `docker-compose logs <service>` where `<service>` is the target service. E.g. `docker-compose logs system-reader`
 
 ## Database connection
 
