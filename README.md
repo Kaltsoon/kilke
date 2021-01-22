@@ -2,9 +2,7 @@
 
 ## Setup
 
-Note that all `docker` and `docker-compose` commands might require `sudo`.
-
-1. Install Docker and Docker Compose
+1. Install [Docker](https://www.docker.com/)
 2. Run `docker-compose up`
 3. Once `db` and `api` services are running, run the migrations by running `docker-compose exec api yarn migrate:latest`
 4. _(Optional)_ Create a system by calling the API with the following request:
@@ -13,13 +11,11 @@ Note that all `docker` and `docker-compose` commands might require `sudo`.
 curl -d '{"name": "System"}' -H "Content-Type: application/json" -X POST http://localhost:5000/api/v1/systems
 ```
 
-5. _(Optional)_ Install [Yarn](https://classic.yarnpkg.com/en/docs/install) to use scripts defined in the root directory's `package.json` file. Then run `yarn` in the root directory
-
 After the setup is done, the client should be available at <http://localhost:8080/>.
 
 ### Package configuration
 
-You can override each packages configuration in the `.env` file within packages folder (e.g. `packages/api/.env`). Note that some of these changes (such as ports) require altering the `Dockerfile`s and `docker-compose.yml` file as well.
+You can override each package's configuration in the `.env` file within package's directory (e.g. `packages/api/.env`). Note that some of these changes (such as ports) require altering the `Dockerfile`s and `docker-compose.yml` file as well.
 
 ## System configuration
 
