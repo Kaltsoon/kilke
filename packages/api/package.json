@@ -20,7 +20,7 @@
     "esm": "3.2.22",
     "graphql": "^14.3.0",
     "graphql-iso-date": "^3.6.1",
-    "knex": "0.19.5",
+    "knex": "2.4.0",
     "koa": "^2.5.3",
     "koa-bodyparser": "^4.2.1",
     "koa-morgan": "^1.0.1",
