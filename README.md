@@ -1,5 +1,27 @@
 # Kilke
 
+> _"A small metal object that jingles."_
+>
+> — A definition for the Finnish word "kilke".
+
+Kilke, is an IOT platform for reading and visualising sensor data. The platform's architecture consists of 6 components, which can be found in the `packages` directory.
+
+```mermaid
+flowchart LR
+    api[API]
+    client[Client]
+    sr[System Reader]
+    sio[System IO]
+    pc[Pump Controller]
+    pg[(PostgreSQL)]
+    api --> pg
+    client --> api
+    sr --> api
+    sr --> sio
+    pc --> api
+    pc --> sio
+```
+
 ## Setup
 
 1. Install [Docker](https://www.docker.com/)
