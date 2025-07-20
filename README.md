@@ -4,7 +4,7 @@
 >
 > — A definition for the Finnish word "kilke".
 
-Kilke is an IOT platform for reading and visualising sensor data and to automatically control certain laboratory devices based on the sensor outputs. The platform was developed for a research project which purpose was to extract valuable minerals from mining wastewater. Its architecture consists of five components, which can be found in the `packages` directory.
+Kilke is an IOT platform for reading and visualising sensor data and to automatically control certain laboratory devices (e.g. pumps) based on the sensor outputs. The platform was developed for a research project which purpose was to extract valuable minerals from mining wastewater. Its architecture consists of five components, which can be found in the `packages` directory.
 
 ```mermaid
 flowchart LR
