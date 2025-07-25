@@ -101,3 +101,7 @@ Once containers are running after running `docker-compose up`, you can access th
 ```
 psql -U postgres -d kilke
 ```
+
+## License
+
+[MIT](./LICENSE)
