@@ -10,7 +10,7 @@
     "apollo-client": "^2.5.1",
     "apollo-link-batch-http": "^1.2.11",
     "apollo-link-http": "^1.5.14",
-    "axios": "0.19.2",
+    "axios": "0.21.1",
     "date-fns": "^2.9.0",
     "esm": "^3.0.84",
     "formik": "^2.1.3",
